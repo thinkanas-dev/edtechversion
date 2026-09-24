@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f1815" />
+  <title>Nqta — Ton système personnel pour le Bac</title>
+  <meta name="description" content="Préparation personnalisée au Bac marocain, centrée sur le cadre de référence et l’objectif de note." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23d8ff6a'/%3E%3Cpath d='M18 18h28v28H18z' fill='none' stroke='%230f1815' stroke-width='5'/%3E%3Cpath d='M25 33l5 5 10-13' fill='none' stroke='%230f1815' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navigation principale">
+      <button class="brand" data-route="home" aria-label="Accueil Nqta"><span class="brand-mark">ن</span><span>Nqta</span></button>
+      <nav class="desktop-nav">
+        <button class="nav-item active" data-route="home"><span>⌂</span>Accueil</button>
+        <button class="nav-item" data-route="today"><span>◷</span>Aujourd’hui</button>
+        <button class="nav-item" data-route="learn"><span>▤</span>Apprendre</button>
+        <button class="nav-item" data-route="annales"><span>◎</span>Annales</button>
+        <button class="nav-item" data-route="progress"><span>↗</span>Mon niveau</button>
+        <button class="nav-item" data-route="score"><span>◈</span>Score Bac</button>
+      </nav>
+      <div class="side-bottom">
+        <button class="kzako-side" data-route="kzako"><span>?</span><b>KZAKO</b><small>Je n’ai rien compris</small></button>
+        <button class="profile-mini"><span>YM</span><div><b>Yassine</b><small>Sciences Maths A</small></div><i>•••</i></button>
+      </div>
+    </aside>
+
+    <main id="main" tabindex="-1">
+      <header class="topbar">
+        <button class="mobile-brand brand" data-route="home"><span class="brand-mark">ن</span><span>Nqta</span></button>
+        <div class="crumb"><span>2e Bac</span><b>Sciences Maths A</b></div>
+        <div class="top-actions"><button class="icon-btn" aria-label="Recherche">⌕</button><button class="icon-btn notification" aria-label="Notifications">♢</button><button class="avatar">YM</button></div>
+      </header>
+
+      <section class="page active" id="home" data-page="home">
+        <div class="hero-grid">
+          <div class="greeting"><span class="eyebrow">BONSOIR YASSINE</span><h1>Ton objectif se<br><em>rapproche.</em></h1><p>Chaque session compte. Celle d’aujourd’hui a été ajustée selon tes dernières erreurs.</p><button class="primary" data-route="today">Commencer ma session <span>→</span></button></div>
+          <div class="countdown-card"><span class="spark">✦</span><small>AVANT LE BAC</small><strong>J−94</strong><div class="date-line"><span></span>Objectif : juin 2027</div><div class="mini-note"><span>Objectif</span><b>17<small>/20</small></b></div></div>
+        </div>
+        <div class="metric-row">
+          <article class="metric lime"><span>Niveau estimé</span><strong>13,8<small>/20</small></strong><p>↗ +1,4 ce mois</p></article>
+          <article class="metric violet"><span>Programme couvert</span><strong>68<small>%</small></strong><div class="bar"><i style="width:68%"></i></div></article>
+          <article class="metric mint"><span>Maîtrise globale</span><strong>61<small>%</small></strong><div class="bar"><i style="width:61%"></i></div></article>
+        </div>
+        <section class="today-card">
+          <div class="section-title"><div><span class="eyebrow">TON PLAN AUJOURD’HUI</span><h2>1 h 40 pour avancer</h2></div><span class="plan-status">4 étapes · personnalisé</span></div>
+          <div class="plan-list">
+            <button class="plan-item current" data-toast="Session Mathématiques lancée"><span class="step">01</span><div><b>Suites numériques</b><small>Mathématiques · Comprendre</small></div><span class="duration">35 min</span><i>→</i></button>
+            <button class="plan-item"><span class="step">02</span><div><b>Mécanique</b><small>Physique · Maîtriser</small></div><span class="duration">30 min</span><i>→</i></button>
+            <button class="plan-item"><span class="step">03</span><div><b>Exercice Bac</b><small>Mathématiques · Niveau national</small></div><span class="duration">25 min</span><i>→</i></button>
+            <button class="plan-item"><span class="step">04</span><div><b>Flash Review</b><small>4 notions à consolider</small></div><span class="duration">10 min</span><i>→</i></button>
+          </div>
+        </section>
+        <section class="road-card">
+          <div><span class="eyebrow">YOUR ROAD TO 16</span><h2>Tu as déjà gagné <em>0,6 point</em></h2><p>Continue à ce rythme : ta trajectoire rejoint ton objectif.</p></div>
+          <div class="road-chart" aria-label="Progression estimée vers 16 sur 20"><svg viewBox="0 0 600 170" role="img"><defs><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8ff6a" stop-opacity=".45"/><stop offset="1" stop-color="#d8ff6a" stop-opacity="0"/></linearGradient></defs><path d="M20 145 C120 140 135 110 220 115 S330 78 395 82 S490 42 575 28 L575 165 L20 165Z" fill="url(#fill)"/><path d="M20 145 C120 140 135 110 220 115 S330 78 395 82 S490 42 575 28" fill="none" stroke="#b5ea25" stroke-width="5" stroke-linecap="round"/><circle cx="20" cy="145" r="7"/><circle cx="220" cy="115" r="7"/><circle cx="395" cy="82" r="7"/><circle cx="575" cy="28" r="9" fill="#d8ff6a" stroke="#101714" stroke-width="4"/></svg><div class="chart-labels"><span>13,2<small>Départ</small></span><span>13,8<small>Aujourd’hui</small></span><span>14,7<small>Projection</small></span><span>16,0<small>Objectif</small></span></div></div>
+        </section>
+      </section>
+
+      <section class="page" id="today" data-page="today">
+        <div class="page-head"><div><span class="eyebrow">MERCREDI 24 SEPTEMBRE</span><h1>Ta session du jour.</h1><p>Construite à partir de ton objectif, de tes lacunes et de ton rythme.</p></div><div class="focus-ring"><b>1h40</b><span>focus</span></div></div>
+        <div class="session-layout"><div class="session-stack"><article class="session-feature"><span class="chip">À FAIRE MAINTENANT</span><h2>Suites numériques</h2><p>Comprendre la convergence puis résoudre 3 questions progressives.</p><div class="session-meta"><span>◷ 35 min</span><span>◆ +18 XP</span><span>Cadre : Analyse</span></div><button class="primary" data-toast="Cours ouvert — Suites numériques">Démarrer <span>→</span></button></article><div class="plan-list compact"><button class="plan-item"><span class="step">02</span><div><b>Mécanique</b><small>30 min · Maîtriser</small></div><i>→</i></button><button class="plan-item"><span class="step">03</span><div><b>Exercice Bac</b><small>25 min · Niveau national</small></div><i>→</i></button><button class="plan-item"><span class="step">04</span><div><b>Flash Review</b><small>10 min · 4 notions</small></div><i>→</i></button></div></div><aside class="insight-card"><span class="eyebrow">POURQUOI CE PLAN ?</span><h3>Les suites peuvent te rapporter <em>+0,4 point</em>.</h3><p>Tu connais le cours, mais tes réponses perdent des points dans la justification.</p><div class="skill-line"><span>Rédiger</span><div class="bar"><i style="width:48%"></i></div><b>48%</b></div><button class="text-btn" data-route="progress">Voir mon diagnostic →</button></aside></div>
+      </section>
+
+      <section class="page" id="learn" data-page="learn">
+        <div class="page-head"><div><span class="eyebrow">APPRENDRE</span><h1>Le programme, sans le bruit.</h1><p>Tout est organisé selon ta filière et relié au cadre de référence.</p></div><button class="outline">68% couvert</button></div>
+        <div class="subject-tabs"><button class="active">Mathématiques</button><button>Physique</button><button>Philosophie</button><button>Anglais</button></div>
+        <div class="chapter-grid"><article class="chapter hero-chapter"><div><span class="chip">EN COURS</span><h2>Suites numériques</h2><p>Limites, monotonie, convergence et raisonnement par récurrence.</p></div><div class="chapter-score"><b>78%</b><small>maîtrisé</small></div><button class="primary" data-toast="Chapitre ouvert">Continuer →</button></article><article class="chapter"><span class="chapter-no">02</span><h3>Limites & continuité</h3><div class="bar"><i style="width:86%"></i></div><p><b>86%</b> maîtrisé · 8 notions</p></article><article class="chapter warning"><span class="chapter-no">03</span><h3>Calcul intégral</h3><div class="bar"><i style="width:54%"></i></div><p><b>54%</b> maîtrisé · Priorité</p></article><article class="chapter"><span class="chapter-no">04</span><h3>Nombres complexes</h3><div class="bar"><i style="width:72%"></i></div><p><b>72%</b> maîtrisé · 6 notions</p></article><article class="chapter danger"><span class="chapter-no">05</span><h3>Probabilités</h3><div class="bar"><i style="width:43%"></i></div><p><b>43%</b> maîtrisé · À renforcer</p></article></div>
+      </section>
+
+      <section class="page" id="annales" data-page="annales">
+        <div class="page-head"><div><span class="eyebrow">ANNALES</span><h1>Entraîne-toi sur le vrai format.</h1><p>Travaille un sujet entier ou question par question, sans réponse prématurée.</p></div><button class="outline" data-toast="Filtres ouverts">Filtrer ⌄</button></div>
+        <div class="dna-card"><div><span class="eyebrow">BAC DNA · STATISTIQUES HISTORIQUES</span><h2>Ce qui revient dans les annales.</h2><p>Analyse descriptive des sujets disponibles — aucune prédiction du prochain Bac.</p></div><div class="dna-stat"><strong>7<small>/10</small></strong><span>Intégrales présentes</span></div><div class="dna-tags"><span>Calcul direct</span><span>Aire</span><span>Primitive</span><span>Étude de fonction</span></div></div>
+        <div class="exam-list"><article><div class="exam-year">2025</div><div><span class="chip">SESSION NORMALE</span><h3>Mathématiques · Sciences Maths A</h3><p>4 h · 20 points · 5 exercices</p></div><div class="exam-actions"><button data-toast="Mode exercice par exercice">Découper</button><button class="dark" data-toast="Sujet 2025 ouvert">Ouvrir →</button></div></article><article><div class="exam-year">2024</div><div><span class="chip neutral">RATTRAPAGE</span><h3>Mathématiques · Sciences Maths A</h3><p>4 h · 20 points · 4 exercices</p></div><div class="exam-actions"><button data-toast="Correction intelligente ouverte">Correction IA</button><button class="dark" data-toast="Sujet 2024 ouvert">Ouvrir →</button></div></article></div>
+      </section>
+
+      <section class="page" id="progress" data-page="progress">
+        <div class="page-head"><div><span class="eyebrow">MON BAC DIGITAL</span><h1>Ton niveau, notion par notion.</h1><p>Une estimation vivante, affinée après chaque activité.</p></div><div class="score-pill">13,8 <small>/20 estimé</small></div></div>
+        <div class="progress-grid"><section class="mastery-card"><h2>Mathématiques</h2><div class="mastery-list"><div><span>Suites</span><div class="bar"><i style="width:92%"></i></div><b>92%</b></div><div><span>Limites</span><div class="bar"><i style="width:86%"></i></div><b>86%</b></div><div><span>Dérivation</span><div class="bar"><i style="width:81%"></i></div><b>81%</b></div><div><span>Intégrales</span><div class="bar"><i style="width:54%"></i></div><b>54%</b></div><div><span>Complexes</span><div class="bar"><i style="width:72%"></i></div><b>72%</b></div><div><span>Probabilités</span><div class="bar"><i style="width:43%"></i></div><b>43%</b></div></div></section><section class="skills-card"><span class="eyebrow">CARTE DE COMPÉTENCES</span><h2>Tu sais calculer.<br><em>Travaille ta rédaction.</em></h2><div class="radar-bars"><div><span>Calculer</span><i style="--v:88%"></i><b>88</b></div><div><span>Raisonner</span><i style="--v:71%"></i><b>71</b></div><div><span>Modéliser</span><i style="--v:64%"></i><b>64</b></div><div class="low"><span>Rédiger</span><i style="--v:48%"></i><b>48</b></div></div></section></div>
+      </section>
+
+      <section class="page" id="score" data-page="score">
+        <div class="page-head"><div><span class="eyebrow">BAC SCORE SIMULATOR</span><h1>Teste ton chemin vers 16.</h1><p>Projection indicative. Les coefficients doivent être validés dans le référentiel annuel.</p></div><div class="score-pill accent"><span>Moyenne</span><b id="average">14,80</b><small>/20</small></div></div>
+        <div class="simulator"><div class="score-inputs"><label>Mathématiques <span>coef. à valider</span><input type="range" min="0" max="20" step=".5" value="16" data-subject="Mathématiques"><output>16</output></label><label>Physique <span>coef. à valider</span><input type="range" min="0" max="20" step=".5" value="14" data-subject="Physique"><output>14</output></label><label>Philosophie <span>coef. à valider</span><input type="range" min="0" max="20" step=".5" value="13" data-subject="Philosophie"><output>13</output></label><label>Anglais <span>coef. à valider</span><input type="range" min="0" max="20" step=".5" value="16" data-subject="Anglais"><output>16</output></label></div><aside class="target-card"><span class="eyebrow">POUR ATTEINDRE 16/20</span><h2>Il te manque <em id="gap">1,20 point</em>.</h2><p>Le meilleur levier selon tes résultats actuels :</p><div class="recommend"><b>Mathématiques</b><span>16 → 18</span></div><div class="recommend"><b>Physique</b><span>14 → 15,5</span></div><small>Simulation pédagogique, non officielle.</small></aside></div>
+      </section>
+
+      <section class="page kzako-page" id="kzako" data-page="kzako">
+        <div class="kzako-hero"><span class="big-q">?</span><div><span class="eyebrow">KZAKO ?</span><h1>Qu’est-ce qui te bloque ?</h1><p>Écris une notion. On repart de zéro, sans jugement et sans te donner la réponse trop vite.</p></div></div>
+        <form class="ask-box" id="askForm"><label for="question">Ta question</label><div><input id="question" placeholder="Ex. Je n’ai rien compris aux limites…" required><button>Expliquer →</button></div></form>
+        <div class="explain-modes"><button data-mode="normal" class="active">Normalement</button><button data-mode="simple">Très simplement</button><button data-mode="darija">En Darija</button><button data-mode="visual">Graphiquement</button><button data-mode="real">Exemple réel</button></div>
+        <div class="kzako-steps"><article><span>1</span><b>C’est quoi ?</b></article><article><span>2</span><b>À quoi ça sert ?</b></article><article><span>3</span><b>Exemple simple</b></article><article><span>4</span><b>Exemple Bac</b></article><article><span>5</span><b>Teste-toi</b></article></div>
+      </section>
+    </main>
+
+    <nav class="mobile-nav" aria-label="Navigation mobile"><button class="active" data-route="home"><span>⌂</span>Accueil</button><button data-route="today"><span>◷</span>Session</button><button class="kzako-mobile" data-route="kzako"><span>?</span></button><button data-route="learn"><span>▤</span>Cours</button><button data-route="progress"><span>↗</span>Niveau</button></nav>
+  </div>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
