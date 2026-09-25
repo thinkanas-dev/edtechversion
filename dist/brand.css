@@ -3,6 +3,9 @@ body,body.landing-active{background:#fff;padding:0}
 .landing{border-radius:0;background:#fff;max-width:1400px;margin-inline:auto}
 .l-logo{gap:0}
 .l-logo>span{margin-left:0}
+.l-account{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.morocco-flag{display:block;width:30px;height:20px;border-radius:3px;overflow:hidden;flex-shrink:0;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+@media(max-width:760px){.l-account{gap:10px}.morocco-flag{width:27px;height:18px}}
 .app-shell,.onboarding{background:#fff}
 .app-shell main{background:#fff;border-radius:0}
 .onboarding-top,.onboarding-card{border-radius:0;box-shadow:none}
