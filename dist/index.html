@@ -13,6 +13,17 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <section class="onboarding" id="onboarding" aria-label="Configuration de votre espace Nqta">
+    <header class="onboarding-top"><button class="brand" aria-label="Nqta"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M9 28c5-9 8-4 12-10s7-7 11-6"/><path d="M11 12c3 2 4 5 3 8M25 25c2 2 3 5 2 8"/><circle cx="9" cy="28" r="2.2"/><circle cx="32" cy="12" r="3.3"/></svg></span><span class="wordmark">nqta<span>.</span></span></button><span class="setup-step">CONFIGURATION · <b id="stepCount">1/4</b></span></header>
+    <div class="setup-progress"><i id="setupProgress"></i></div>
+    <form class="onboarding-card" id="onboardingForm">
+      <section class="setup-panel active" data-step="1"><span class="eyebrow">BIENVENUE SUR NQTA</span><h1>Vous êtes ici pour<br><em>apprendre ou transmettre ?</em></h1><p>Votre réponse adapte entièrement l’espace, les outils et le vocabulaire.</p><div class="choice-grid role-grid"><button type="button" class="setup-choice" data-role="student"><span class="choice-art student-art">↗</span><b>Je suis élève</b><small>Préparer mon Bac et atteindre ma note cible.</small></button><button type="button" class="setup-choice" data-role="teacher"><span class="choice-art teacher-art">✦</span><b>Je suis professeur</b><small>Organiser mes matières et accompagner mes élèves.</small></button></div></section>
+      <section class="setup-panel" data-step="2"><span class="eyebrow">VOTRE NIVEAU</span><h1>Quelle classe<br><em>vous concerne ?</em></h1><p>Nqta est actuellement conçu exclusivement pour l’examen national de 2e année Bac.</p><div class="choice-grid"><button type="button" class="setup-choice wide selected" data-level="2bac"><span class="level-mark">02</span><b>2e année Baccalauréat</b><small>Programme national marocain · année scolaire à confirmer</small></button></div></section>
+      <section class="setup-panel" data-step="3"><span class="eyebrow">FILIÈRE SCIENTIFIQUE</span><h1>Choisissez votre<br><em>cadre de travail.</em></h1><p>Nomenclature vérifiée sur les publications officielles du ministère.</p><div class="track-grid" id="trackGrid"></div></section>
+      <section class="setup-panel" data-step="4"><span class="eyebrow">MATIÈRES</span><h1>Que souhaitez-vous<br><em>travailler en priorité ?</em></h1><p>Sélectionnez une ou plusieurs matières. Les coefficients et contenus seront activés après validation du référentiel annuel.</p><div class="subject-grid" id="subjectGrid"></div><div class="official-note"><span>✓</span><div><b>Cadre de référence protégé</b><small>Aucune donnée pédagogique non vérifiée ne sera présentée comme officielle.</small></div></div></section>
+      <footer class="setup-actions"><button type="button" class="setup-back" id="setupBack">Retour</button><button type="button" class="setup-next" id="setupNext" disabled>Continuer <span>→</span></button></footer>
+    </form>
+  </section>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navigation principale">
       <button class="brand" data-route="home" aria-label="Accueil Nqta"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M9 28c5-9 8-4 12-10s7-7 11-6"/><path d="M11 12c3 2 4 5 3 8M25 25c2 2 3 5 2 8"/><circle cx="9" cy="28" r="2.2"/><circle cx="32" cy="12" r="3.3"/></svg></span><span class="wordmark">nqta<span>.</span></span></button>
