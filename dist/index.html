@@ -15,26 +15,26 @@
 <body>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navigation principale">
-      <button class="brand" data-route="home" aria-label="Accueil Nqta"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M10 27.5 18 20l5 4.5L31 14"/><circle cx="10" cy="27.5" r="2.4"/><circle cx="31" cy="14" r="3.4"/></svg></span><span class="wordmark">nqta<span>.</span></span></button>
+      <button class="brand" data-route="home" aria-label="Accueil Nqta"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M9 28c5-9 8-4 12-10s7-7 11-6"/><path d="M11 12c3 2 4 5 3 8M25 25c2 2 3 5 2 8"/><circle cx="9" cy="28" r="2.2"/><circle cx="32" cy="12" r="3.3"/></svg></span><span class="wordmark">nqta<span>.</span></span></button>
       <nav class="desktop-nav">
         <span class="nav-label">ESPACE BAC</span>
-        <button class="nav-item active" data-route="home"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1Z"/></svg></span><span class="nav-copy">Vue d’ensemble</span><i></i></button>
-        <button class="nav-item" data-route="today"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span><span class="nav-copy">Ma session</span><i></i></button>
-        <button class="nav-item" data-route="learn"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 9H12v11H8.5A3.5 3.5 0 0 0 5 16.5Z"/><path d="M19 5.5A3.5 3.5 0 0 0 15.5 9H12v11h3.5a3.5 3.5 0 0 1 3.5-3.5Z"/></svg></span><span class="nav-copy">Apprendre</span><i></i></button>
-        <button class="nav-item" data-route="annales"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v5h4M10 12h6M10 16h6"/></svg></span><span class="nav-copy">Annales Bac</span><i></i></button>
+        <button class="nav-item active nav-overview" data-route="home"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m5 8 4-4 4 4-4 4zM13 12l4-4 3 3-4 4zM5 16l3-3 5 5-3 3z"/><circle cx="17.5" cy="18.5" r="2.5"/></svg></span><span class="nav-copy">Vue d’ensemble</span><i></i></button>
+        <button class="nav-item nav-session" data-route="today"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4.5 12c0-4.5 3-7.5 7.5-7.5 3.8 0 6.8 2.3 7.5 5.8"/><path d="m17 7.5 2.7 2.8-3.7 1.2M19.5 14c-.7 3.4-3.5 5.5-7 5.5-2.4 0-4.3-.8-5.6-2.3"/><path d="M8 8.5 12 12l-2 4"/></svg></span><span class="nav-copy">Ma session</span><i></i></button>
+        <button class="nav-item nav-learn" data-route="learn"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 17c4.5-7 6.5-8 9-6s3.8 1.5 7-4"/><circle cx="4" cy="17" r="2"/><circle cx="13" cy="11" r="2"/><circle cx="20" cy="7" r="2.6"/><path d="M7 5c1.5 1 2.3 2.2 2.2 3.8"/></svg></span><span class="nav-copy">Apprendre</span><i></i></button>
+        <button class="nav-item nav-annales" data-route="annales"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M6 5.5c4-2.7 8-2.7 12 0v13c-4-2.7-8-2.7-12 0z"/><path d="M9 9c2-.8 4-.8 6 0M9 13c2-.8 4-.8 6 0"/><path d="m16.5 3 1.5 2.5L20.5 7"/></svg></span><span class="nav-copy">Annales Bac</span><i></i></button>
         <span class="nav-label nav-label-second">MA PROGRESSION</span>
-        <button class="nav-item" data-route="progress"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/><path d="m4 7 6-4 5 3 5-4"/></svg></span><span class="nav-copy">Mon niveau</span><i></i></button>
-        <button class="nav-item" data-route="score"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="m17.5 6.5 2-2"/></svg></span><span class="nav-copy">Objectif 17</span><span class="nav-badge">13,8</span></button>
+        <button class="nav-item nav-level" data-route="progress"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 19c2-7 4-11 7-11 2.5 0 3 3 7-4"/><path d="m15 4 4-.5.5 4"/><circle cx="5" cy="19" r="2"/><path d="M9 18h8"/></svg></span><span class="nav-copy">Mon niveau</span><i></i></button>
+        <button class="nav-item nav-goal" data-route="score"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 18c4-1 5-4 7-7s4-5 9-5"/><circle cx="4" cy="18" r="2"/><path d="m16 3 4 3-3 4M10 18c3 2 6 2 9 0"/></svg></span><span class="nav-copy">Objectif 17</span><span class="nav-badge">13,8</span></button>
       </nav>
       <div class="side-bottom">
-        <button class="kzako-side" data-route="kzako"><span class="kzako-glyph">?</span><span class="kzako-copy"><b>KZAKO<span>?</span></b><small>Débloquer une notion</small></span><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
+        <button class="kzako-side" data-route="kzako"><span class="kzako-glyph"><svg viewBox="0 0 36 36"><path d="M9 13c1-5 5-8 10-7 5 0 8 3 8 7 0 5-6 5-8 9"/><path d="M14 27c3-2 6-2 9 0"/><circle cx="18.5" cy="30" r="1.5"/></svg></span><span class="kzako-copy"><b>KZAKO<span>?</span></b><small>Débloquer une notion</small></span><svg viewBox="0 0 24 24"><path d="M5 12h13M14 7l5 5-5 5"/></svg></button>
         <button class="profile-mini"><span class="profile-orbit"><b>Y</b></span><div><b>Yassine</b><small>Sciences Maths A</small></div><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
       </div>
     </aside>
 
     <main id="main" tabindex="-1">
       <header class="topbar">
-        <button class="mobile-brand brand" data-route="home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M10 27.5 18 20l5 4.5L31 14"/><circle cx="10" cy="27.5" r="2.4"/><circle cx="31" cy="14" r="3.4"/></svg></span><span class="wordmark">nqta<span>.</span></span></button>
+        <button class="mobile-brand brand" data-route="home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M9 28c5-9 8-4 12-10s7-7 11-6"/><path d="M11 12c3 2 4 5 3 8M25 25c2 2 3 5 2 8"/><circle cx="9" cy="28" r="2.2"/><circle cx="32" cy="12" r="3.3"/></svg></span><span class="wordmark">nqta<span>.</span></span></button>
         <div class="crumb"><span>2e Bac</span><b>Sciences Maths A</b></div>
         <div class="top-actions"><button class="icon-btn" aria-label="Recherche">⌕</button><button class="icon-btn notification" aria-label="Notifications">♢</button><button class="avatar">YM</button></div>
       </header>
@@ -99,7 +99,7 @@
       </section>
     </main>
 
-    <nav class="mobile-nav" aria-label="Navigation mobile"><button class="active" data-route="home"><span><svg viewBox="0 0 24 24"><path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1Z"/></svg></span>Accueil</button><button data-route="today"><span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span>Session</button><button class="kzako-mobile" data-route="kzako" aria-label="KZAKO"><span>?</span></button><button data-route="learn"><span><svg viewBox="0 0 24 24"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 9H12v11H8.5A3.5 3.5 0 0 0 5 16.5ZM19 5.5A3.5 3.5 0 0 0 15.5 9H12v11h3.5a3.5 3.5 0 0 1 3.5-3.5Z"/></svg></span>Cours</button><button data-route="progress"><span><svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/></svg></span>Niveau</button></nav>
+    <nav class="mobile-nav" aria-label="Navigation mobile"><button class="active" data-route="home"><span><svg viewBox="0 0 24 24"><path d="m5 8 4-4 4 4-4 4zM13 12l4-4 3 3-4 4zM5 16l3-3 5 5-3 3z"/><circle cx="17.5" cy="18.5" r="2.5"/></svg></span>Accueil</button><button data-route="today"><span><svg viewBox="0 0 24 24"><path d="M4.5 12c0-4.5 3-7.5 7.5-7.5 3.8 0 6.8 2.3 7.5 5.8M17 7.5l2.7 2.8-3.7 1.2M19.5 14c-.7 3.4-3.5 5.5-7 5.5-2.4 0-4.3-.8-5.6-2.3M8 8.5 12 12l-2 4"/></svg></span>Session</button><button class="kzako-mobile" data-route="kzako" aria-label="KZAKO"><span><svg viewBox="0 0 36 36"><path d="M9 13c1-5 5-8 10-7 5 0 8 3 8 7 0 5-6 5-8 9M14 27c3-2 6-2 9 0"/><circle cx="18.5" cy="30" r="1.5"/></svg></span></button><button data-route="learn"><span><svg viewBox="0 0 24 24"><path d="M4 17c4.5-7 6.5-8 9-6s3.8 1.5 7-4"/><circle cx="4" cy="17" r="2"/><circle cx="13" cy="11" r="2"/><circle cx="20" cy="7" r="2.6"/></svg></span>Cours</button><button data-route="progress"><span><svg viewBox="0 0 24 24"><path d="M5 19c2-7 4-11 7-11 2.5 0 3 3 7-4M15 4l4-.5.5 4"/><circle cx="5" cy="19" r="2"/></svg></span>Niveau</button></nav>
   </div>
   <div class="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
