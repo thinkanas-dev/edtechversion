@@ -1,0 +1,9 @@
+/* An unframed, white canvas keeps the content central on every surface. */
+body,body.landing-active{background:#fff;padding:0}
+.landing{border-radius:0;background:#fff;max-width:1400px;margin-inline:auto}
+.l-logo{gap:0}
+.l-logo>span{margin-left:0}
+.app-shell,.onboarding{background:#fff}
+.app-shell main{background:#fff;border-radius:0}
+.onboarding-top,.onboarding-card{border-radius:0;box-shadow:none}
+@media(min-width:721px) and (max-width:1000px){.sidebar>.brand{width:auto}.sidebar .wordmark{display:block;font-size:20px;letter-spacing:-1px}}
