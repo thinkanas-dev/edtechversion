@@ -11,8 +11,6 @@ const toast=document.querySelector('.toast');let toastTimer;
 function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2200)}
 document.querySelectorAll('[data-toast]').forEach(b=>b.addEventListener('click',()=>showToast(b.dataset.toast)));
 document.querySelectorAll('.subject-tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.subject-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');showToast(`${b.textContent} sélectionné`)}));
-document.querySelectorAll('.explain-modes button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.explain-modes button').forEach(x=>x.classList.remove('active'));b.classList.add('active')}));
-document.querySelector('#askForm').addEventListener('submit',e=>{e.preventDefault();showToast('KZAKO prépare une explication en 5 étapes')});
 const sliders=[...document.querySelectorAll('.score-inputs input')];
 function updateScore(){const values=sliders.map(s=>Number(s.value));const avg=values.reduce((a,b)=>a+b,0)/values.length;document.querySelector('#average').textContent=avg.toFixed(2).replace('.',',');document.querySelector('#gap').textContent=`${Math.max(0,16-avg).toFixed(2).replace('.',',')} point${16-avg>1?'s':''}`;sliders.forEach(s=>s.parentElement.querySelector('output').textContent=String(s.value).replace('.',','))}
 sliders.forEach(s=>s.addEventListener('input',updateScore));
