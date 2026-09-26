@@ -19,21 +19,22 @@
   <div id="landing" class="landing">
     <header class="l-header">
       <a class="l-logo" href="#welcome" aria-label="Noqta accueil">noqta<span>.</span></a>
-      <nav aria-label="Découvrir Noqta"><a href="#approche">L’approche</a><a href="#apercu">Essaie Noqta</a><a href="#tarifs">Les offres</a></nav>
+      <button class="landing-menu-toggle" type="button" aria-expanded="false" aria-controls="landingNavigation">Menu <span aria-hidden="true">+</span></button>
+      <nav id="landingNavigation" aria-label="Découvrir Noqta"><a href="#approche">L’approche</a><a href="#apercu">Essaie Noqta</a><a href="#profils">Élève / professeur</a><a href="#tarifs">Les offres</a><a href="#questions">Questions</a></nav>
       <div class="l-account"><svg class="morocco-flag" viewBox="0 0 60 40" role="img" aria-label="Maroc"><rect width="60" height="40" fill="#c1272d"/><path d="M30 10 35.88 28.09 20.49 16.91 39.51 16.91 24.12 28.09Z" fill="none" stroke="#006233" stroke-width="1.8"/></svg><button class="l-space" data-enter>Mon espace <span aria-hidden="true">↗</span></button></div>
     </header>
     <main class="l-main" id="welcome">
       <section class="l-hero" aria-labelledby="landing-title">
         <div class="l-kicker"><span>2e BAC MAROCAIN · UN NOUVEAU POINT DE DÉPART</span><span lang="ar" dir="rtl">كل نقطة كتفرق</span></div>
         <div class="hero-composition">
-          <div class="hero-copy"><div class="hero-overline"><span class="tiny-orbit" aria-hidden="true"></span>Du « pourquoi ? » au « j’ai compris ».</div><h1 id="landing-title">Le déclic.<br><em>Et la suite.</em></h1><p>Ta préparation au Bac marocain, pensée autour de ta filière. Comprendre, t’entraîner, avancer : un point à la fois.</p><div class="hero-actions"><button class="l-button" data-enter>Choisir mon parcours <span aria-hidden="true">↗</span></button><a class="underlink" href="#apercu">Essayer un déclic <span aria-hidden="true">↓</span></a></div><small>Prototype à explorer · Aucun paiement</small></div>
-          <figure class="hero-art" data-parallax><img id="heroArtwork" src="assets/declic.png" width="1024" height="1024" fetchpriority="high" alt="Un ruban lilas traverse un cadre vert et devient un escalier : une idée qui se transforme en progression."><figcaption><span>LA PETITE ÉTINCELLE</span><em>qui change la suite.</em></figcaption><span class="art-stamp" aria-hidden="true">Bac<br><em>& toi.</em></span></figure>
+          <div class="hero-copy"><div class="hero-overline"><span class="tiny-orbit" aria-hidden="true"></span>Du « pourquoi ? » au « j’ai compris ».</div><h1 id="landing-title">Le déclic.<br><em>Et la suite.</em></h1><p>Ta préparation au Bac marocain, selon ta filière. Comprends, entraîne-toi, avance.</p><div class="hero-actions"><button class="l-button" data-enter>Choisir mon parcours <span aria-hidden="true">↗</span></button><a class="underlink" href="#apercu">Essayer un déclic <span aria-hidden="true">↓</span></a></div><small>Prototype à explorer · Aucun paiement</small></div>
+          <figure class="hero-art" data-parallax><img id="heroArtwork" src="assets/declic.webp" width="1254" height="1254" decoding="async" fetchpriority="high" alt="Un ruban lilas traverse un cadre vert et devient un escalier : une idée qui se transforme en progression."><figcaption><span>LA PETITE ÉTINCELLE</span><em>qui change la suite.</em></figcaption><span class="art-stamp" aria-hidden="true">Bac<br><em>& toi.</em></span></figure>
         </div>
         <div class="hero-bottom"><span>Moins de par cœur.<br><b>Plus de liens qui se créent.</b></span><div class="subject-ribbon" aria-label="Sciences"><span>ƒ(x) <b>Maths</b></span><span>Δ <b>Physique</b></span><span>∞ <b>Curiosité</b></span></div><a href="#approche" class="scroll-link">Le chemin commence ici <span aria-hidden="true">↓</span></a></div>
       </section>
 
       <section class="journey l-reveal" id="approche" aria-labelledby="journey-title">
-        <div class="section-heading"><div><span class="l-eyebrow">01 — TA TRAJECTOIRE</span><h2 id="journey-title">Pas à pas.<br><em>Pas au hasard.</em></h2></div><p>Quatre étapes pour donner du sens à tes révisions. Explore le parcours que Noqta prépare pour toi.</p></div>
+        <div class="section-heading"><div><span class="l-eyebrow">01 — TA TRAJECTOIRE</span><h2 id="journey-title">Pas à pas.<br><em>Pas au hasard.</em></h2></div><p>Ta filière, les bonnes méthodes, de la pratique. Explore chaque étape.</p></div>
         <div class="journey-track" role="tablist" aria-label="Étapes du parcours">
           <button id="journey-tab-0" role="tab" aria-selected="true" aria-controls="journeyPanel" data-journey="0"><span class="journey-number">01</span><b>Ma filière</b><small>Le bon point de départ</small></button>
           <button id="journey-tab-1" role="tab" aria-selected="false" aria-controls="journeyPanel" tabindex="-1" data-journey="1"><span class="journey-number">02</span><b>Je comprends</b><small>Faire les bons liens</small></button>
