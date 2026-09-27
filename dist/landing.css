@@ -92,6 +92,9 @@ body:not(.landing-active) .landing{display:none}
 .progress-example span{padding:20px 8px;border:1px solid #d8cc95;border-radius:14px;background:#fff;font-size:14px}
 .progress-example b{display:block;margin-bottom:8px;font-size:25px;font-weight:400}
 .program-section{padding:90px 0 80px;scroll-margin-top:25px}
+.moroccan-label{display:inline-flex;align-items:center;gap:10px;padding:7px 8px 7px 13px;border:1px solid #cfccd4;border-radius:50px;background:#fff}
+.moroccan-label b{font-size:10px;letter-spacing:1.25px}
+.moroccan-label i{padding:5px 10px;border-radius:30px;background:#19191b;color:#d8ff6a;font:500 13px 'DM Sans',sans-serif}
 .program-heading{display:grid;grid-template-columns:1.15fr .85fr;gap:70px;align-items:end;margin-bottom:42px}
 .program-heading>p{font-size:17px;line-height:1.7;color:#5d5d65;max-width:500px;padding-bottom:8px}
 .program-board{display:grid;grid-template-columns:.82fr 1.18fr;border:1px solid #1b1b1e;border-radius:30px;overflow:hidden;background:#fff;box-shadow:10px 11px 0 #e7ddfb}
