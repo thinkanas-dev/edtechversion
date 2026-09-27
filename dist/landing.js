@@ -53,11 +53,6 @@ function renderAudience(role){
   panel.innerHTML='<div class="audience-copy"><span>'+ (teacher?'CÔTÉ PROFESSEUR':'CÔTÉ ÉLÈVE')+'</span><h3>'+title+'</h3><p>'+description+'</p><button class="l-button" data-enter data-enter-role="'+role+'">'+(teacher?'Configurer mon profil professeur':'Configurer mon profil élève')+' <span aria-hidden="true">↗</span></button><small>Configuration locale uniquement. Aucun compte en ligne créé.</small></div><div class="audience-preview"><div class="notebook"><header><span>noqta. / '+(teacher?'TRANSMETTRE':'APPRENDRE')+'</span><span>APERÇU</span></header><h4>'+ (teacher?'Un cadre pour accompagner.':'Une place pour commencer.')+'</h4><ul>'+rows.map((row,i)=>'<li><span>0'+(i+1)+'</span>'+row+'</li>').join('')+'</ul><p>Illustration du parcours, sans données élèves ni résultats de démonstration.</p></div></div>';
 }
 document.querySelectorAll('[data-audience]').forEach(button=>button.addEventListener('click',()=>renderAudience(button.dataset.audience)));
-document.querySelectorAll('[data-billing]').forEach(button=>button.addEventListener('click',()=>{
-  const yearly=button.dataset.billing==='yearly';document.querySelectorAll('[data-billing]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
-  document.querySelector('#billingStatus').textContent=(yearly?'Offres annuelles':'Offres mensuelles')+' : tarifs et conditions à annoncer.';
-  document.querySelector('[data-period-label]').textContent=yearly?'Formule annuelle à définir':'Formule mensuelle à définir';
-}));
 function keyboardTabs(container,selector,select){
   container.addEventListener('keydown',event=>{
     if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
