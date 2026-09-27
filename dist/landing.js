@@ -30,8 +30,8 @@ document.querySelector('.nav-goal .nav-copy b').textContent='Objectif Bac';docum
 let previewTrack='Sciences Maths';
 const journeyContent=[
   {title:'Le bon parcours commence par toi.',text:'Une filière, des matières, ton propre point de départ. Essaie de choisir une filière dans cet aperçu.',link:'Choisir ma filière',href:'#',visual:()=>'<span class="visual-label">APERÇU · MA FILIÈRE</span><div class="track-options">'+['Sciences Maths','Sciences Physiques','SVT'].map(name=>'<button data-track-preview="'+name+'" aria-pressed="'+(name===previewTrack)+'">'+name+'</button>').join('')+'</div><p class="track-choice-feedback" aria-live="polite">'+previewTrack+' · sélection de démonstration</p>'},
-  {title:'Une règle. Et soudain, le lien.',text:'Avant de multiplier les exercices, comprendre ce que l’on fait. Un exemple concret donne du sens à une règle abstraite.',link:'Essayer l’exemple',href:'#apercu',visual:()=>'<span class="visual-label">EXEMPLE · UNE SUITE</span><div class="method-equation">uₙ₊₁ = 2uₙ + 1</div><p>Le terme suivant : doubler le précédent, puis ajouter 1.</p>'},
-  {title:'C’est en essayant que ça se précise.',text:'Répondre d’abord. Demander un indice si nécessaire. Puis décomposer la méthode au lieu de sauter à la réponse.',link:'À moi de jouer',href:'#apercu',visual:()=>'<span class="visual-label">L’AIDE, AU BON MOMENT</span><div class="visual-steps"><span>Mon essai</span><i>→</i><span>Un indice</span><i>→</i><span>La méthode</span></div>'},
+  {title:'Une notion. Puis le lien se crée.',text:'Cours structurés, résumés et exemples : chaque chapitre reprend l’essentiel avant de passer à la pratique.',link:'Découvrir les cours',href:'#ressources',visual:()=>'<span class="visual-label">DANS CHAQUE CHAPITRE</span><div class="visual-steps"><span>Le cours</span><i>→</i><span>L’exemple</span><i>→</i><span>Le résumé</span></div>'},
+  {title:'C’est en s’entraînant que ça se précise.',text:'Exercices progressifs, corrigés détaillés et annales : tu pratiques, puis tu comprends chaque étape de la méthode.',link:'Voir les ressources',href:'#ressources',visual:()=>'<span class="visual-label">UNE PRÉPARATION COMPLÈTE</span><div class="visual-steps"><span>Exercices</span><i>→</i><span>Corrigés</span><i>→</i><span>Annales</span></div>'},
   {title:'Des repères. Pas des chiffres inventés.',text:'Le suivi sera construit à partir des réponses réelles. Pour le moment, aucune note ni progression n’est calculée par Noqta.',link:'Ce qui est disponible',href:'#questions',visual:()=>'<span class="visual-label">LE SUIVI ENVISAGÉ · À VENIR</span><div class="progress-example"><span><b>—</b>Compris</span><span><b>—</b>À pratiquer</span><span><b>—</b>À revoir</span></div>'}
 ];
 function renderJourney(index){
@@ -42,17 +42,6 @@ function renderJourney(index){
 }
 document.querySelectorAll('[data-journey]').forEach(button=>button.addEventListener('click',()=>renderJourney(Number(button.dataset.journey))));
 document.querySelector('#journeyPanel').addEventListener('click',event=>{const button=event.target.closest('[data-track-preview]');if(!button)return;previewTrack=button.dataset.trackPreview;document.querySelectorAll('[data-track-preview]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelector('.track-choice-feedback').textContent=previewTrack+' · sélection de démonstration'});
-
-const feedback=document.querySelector('#demoFeedback'),solution=document.querySelector('#demoSolution'),hint=document.querySelector('#demoHint');
-document.querySelectorAll('[data-answer]').forEach(button=>button.addEventListener('click',()=>{
-  document.querySelectorAll('[data-answer]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
-  const correct=button.dataset.answer==='11';
-  feedback.textContent=correct?'Oui, 11 ! Ouvre la méthode pour retrouver chaque étape.':'Pas tout à fait. Repars de 5 et applique les deux opérations. Tu peux demander un indice.';
-  document.querySelector('#sequenceResult').textContent=correct?'11':'?';
-}));
-document.querySelector('#hintButton').addEventListener('click',event=>{hint.hidden=!hint.hidden;event.currentTarget.setAttribute('aria-expanded',String(!hint.hidden))});
-document.querySelector('#solutionButton').addEventListener('click',event=>{solution.hidden=!solution.hidden;event.currentTarget.setAttribute('aria-expanded',String(!solution.hidden));if(!solution.hidden)document.querySelector('#sequenceResult').textContent='11'});
-document.querySelector('#resetDemo').addEventListener('click',()=>{document.querySelectorAll('[data-answer]').forEach(button=>button.setAttribute('aria-pressed','false'));feedback.textContent='Prends ton temps. Ici, tu peux essayer.';hint.hidden=true;solution.hidden=true;document.querySelector('#sequenceResult').textContent='?';document.querySelector('#hintButton').setAttribute('aria-expanded','false');document.querySelector('#solutionButton').setAttribute('aria-expanded','false')});
 
 function renderAudience(role){
   const teacher=role==='teacher';const panel=document.querySelector('#audiencePanel');
@@ -95,7 +84,7 @@ renderJourney(0);renderAudience('student');
 // Keep direct links to the landing sections usable after a reload.
 const initialSection=location.hash;
 showLanding();
-if(['#approche','#apercu','#profils','#tarifs','#questions','#billing-faq'].includes(initialSection)){
+if(['#approche','#ressources','#profils','#tarifs','#questions','#billing-faq'].includes(initialSection)){
   history.replaceState(null,'',initialSection);
   if(initialSection==='#billing-faq')document.querySelector(initialSection).open=true;
   requestAnimationFrame(()=>document.querySelector(initialSection)?.scrollIntoView({behavior:'instant'}));
