@@ -91,6 +91,33 @@ body:not(.landing-active) .landing{display:none}
 .progress-example{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
 .progress-example span{padding:20px 8px;border:1px solid #d8cc95;border-radius:14px;background:#fff;font-size:14px}
 .progress-example b{display:block;margin-bottom:8px;font-size:25px;font-weight:400}
+.program-section{padding:90px 0 80px;scroll-margin-top:25px}
+.program-heading{display:grid;grid-template-columns:1.15fr .85fr;gap:70px;align-items:end;margin-bottom:42px}
+.program-heading>p{font-size:17px;line-height:1.7;color:#5d5d65;max-width:500px;padding-bottom:8px}
+.program-board{display:grid;grid-template-columns:.82fr 1.18fr;border:1px solid #1b1b1e;border-radius:30px;overflow:hidden;background:#fff;box-shadow:10px 11px 0 #e7ddfb}
+.track-column{display:flex;flex-direction:column;padding:32px;background:#d8ff6a;border-right:1px solid #1b1b1e}
+.board-label{font-size:10px;font-weight:800;letter-spacing:1.5px;color:#5e5c61}
+.track-list{display:grid;gap:10px;margin:28px 0}
+.track-list article{display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,.68);border:1px solid rgba(23,23,25,.25);border-radius:16px;transition:transform .2s ease,background .2s ease}
+.track-list article:hover{transform:translateX(4px);background:#fff}
+.track-symbol{display:grid;place-items:center;flex:0 0 45px;height:45px;border-radius:14px 14px 14px 5px;background:#19191b;color:#fff;font-size:11px;font-weight:800;letter-spacing:.5px}
+.track-list b{display:block;font-size:15px;line-height:1.25}
+.track-list small{display:block;font-size:11px;line-height:1.35;color:#636166;margin-top:4px}
+.track-cta{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:auto;padding:15px 17px;border:1px solid #19191b;border-radius:50px;background:#19191b;color:#fff;font-size:13px;font-weight:700}
+.track-cta span{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#c9b9f3;color:#19191b}
+.content-column{padding:34px 36px;background:#f8f6fb}
+.content-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:27px}
+.content-head h3{font-size:clamp(28px,3vw,43px);font-weight:500;line-height:1.06;letter-spacing:-1.8px;margin-top:13px}
+.content-badge{display:grid;place-items:center;flex:0 0 72px;height:72px;border:1px solid #19191b;border-radius:50%;background:#c9b9f3;font:italic 16px Georgia,serif;transform:rotate(7deg)}
+.content-stack{display:grid;gap:10px}
+.content-stack article{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;padding:15px 17px;border:1px solid #d9d5df;border-radius:17px;background:#fff}
+.content-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:15px 15px 15px 5px;background:#c9b9f3}
+.content-icon.coral{background:#ffd5b3}
+.content-icon.green{background:#d8ff6a}
+.content-icon svg{width:31px;height:31px;fill:none;stroke:#19191b;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.content-stack b{display:block;font-size:15px}
+.content-stack small{display:block;font-size:12px;color:#747078;margin-top:3px}
+.content-arrow{font-size:10px;letter-spacing:1px;color:#77737b}
 .demo-section{display:grid;grid-template-columns:1fr 1.1fr;gap:85px;align-items:center;padding:60px 0 100px;scroll-margin-top:30px}
 .demo-intro>p{font-size:17px;line-height:1.7;color:#5d5d65;max-width:340px;margin-top:24px}
 .demo-flow{display:flex;align-items:center;gap:12px;margin:30px 0;flex-wrap:wrap}
@@ -280,6 +307,18 @@ body:not(.landing-active) .landing{display:none}
   .pricing-grid{max-width:620px;margin-top:34px}
   .price-card.plus,.price-card.plus:hover{transform:none;box-shadow:7px 8px 0 var(--lilac)}
   .price-card>p{min-height:0}
+  .program-section{padding:65px 0 55px}
+  .program-heading{grid-template-columns:1fr;gap:18px;margin-bottom:30px}
+  .program-heading>p{padding-bottom:0}
+  .program-board{grid-template-columns:1fr;box-shadow:7px 8px 0 #e7ddfb}
+  .track-column{border-right:0;border-bottom:1px solid #1b1b1e}
+}
+@media(max-width:560px){
+  .track-column,.content-column{padding:23px 20px}
+  .content-badge{width:58px;flex-basis:58px;height:58px;font-size:13px}
+  .content-stack article{gap:12px;padding:13px}
+  .content-icon{width:43px;height:43px}
+  .content-stack small{font-size:11px}
 }
 .landing a,.landing button{scroll-margin-block:30px}
 .exercise-top button,.exercise-actions button{min-height:44px}

@@ -27,22 +27,6 @@ const navDescriptions=['Votre point de départ','Votre temps de travail','Vos ma
 document.querySelectorAll('.nav-copy small').forEach((el,index)=>el.textContent=navDescriptions[index]);
 document.querySelector('.nav-goal .nav-copy b').textContent='Objectif Bac';document.querySelector('.profile-orbit b').textContent='N';document.querySelector('.avatar').textContent='N';document.querySelector('.nav-intro span').textContent='2e BAC · MAROC';
 
-let previewTrack='Sciences Maths';
-const journeyContent=[
-  {title:'Le bon parcours commence par toi.',text:'Une filière, des matières, ton propre point de départ. Essaie de choisir une filière dans cet aperçu.',link:'Choisir ma filière',href:'#',visual:()=>'<span class="visual-label">APERÇU · MA FILIÈRE</span><div class="track-options">'+['Sciences Maths','Sciences Physiques','SVT'].map(name=>'<button data-track-preview="'+name+'" aria-pressed="'+(name===previewTrack)+'">'+name+'</button>').join('')+'</div><p class="track-choice-feedback" aria-live="polite">'+previewTrack+' · sélection de démonstration</p>'},
-  {title:'Une notion. Puis le lien se crée.',text:'Cours structurés, résumés et exemples : chaque chapitre reprend l’essentiel avant de passer à la pratique.',link:'Découvrir les cours',href:'#ressources',visual:()=>'<span class="visual-label">DANS CHAQUE CHAPITRE</span><div class="visual-steps"><span>Le cours</span><i>→</i><span>L’exemple</span><i>→</i><span>Le résumé</span></div>'},
-  {title:'C’est en s’entraînant que ça se précise.',text:'Exercices progressifs, corrigés détaillés et annales : tu pratiques, puis tu comprends chaque étape de la méthode.',link:'Voir les ressources',href:'#ressources',visual:()=>'<span class="visual-label">UNE PRÉPARATION COMPLÈTE</span><div class="visual-steps"><span>Exercices</span><i>→</i><span>Corrigés</span><i>→</i><span>Annales</span></div>'},
-  {title:'Des repères. Pas des chiffres inventés.',text:'Le suivi sera construit à partir des réponses réelles. Pour le moment, aucune note ni progression n’est calculée par Noqta.',link:'Ce qui est disponible',href:'#questions',visual:()=>'<span class="visual-label">LE SUIVI ENVISAGÉ · À VENIR</span><div class="progress-example"><span><b>—</b>Compris</span><span><b>—</b>À pratiquer</span><span><b>—</b>À revoir</span></div>'}
-];
-function renderJourney(index){
-  const content=journeyContent[index];const panel=document.querySelector('#journeyPanel');
-  document.querySelectorAll('[data-journey]').forEach((button,i)=>{button.setAttribute('aria-selected',String(i===index));button.tabIndex=i===index?0:-1});
-  panel.dataset.step=index;panel.setAttribute('aria-labelledby','journey-tab-'+index);
-  panel.innerHTML='<div><span class="panel-kicker">Étape 0'+(index+1)+' / 04</span><h3>'+content.title+'</h3><p>'+content.text+'</p>'+(index===0?'<button class="panel-link" style="background:none;border-width:0 0 1px" data-enter>'+content.link+' <span aria-hidden="true">↗</span></button>':'<a class="panel-link" href="'+content.href+'">'+content.link+' <span aria-hidden="true">↗</span></a>')+'</div><div class="journey-visual">'+content.visual()+'</div>';
-}
-document.querySelectorAll('[data-journey]').forEach(button=>button.addEventListener('click',()=>renderJourney(Number(button.dataset.journey))));
-document.querySelector('#journeyPanel').addEventListener('click',event=>{const button=event.target.closest('[data-track-preview]');if(!button)return;previewTrack=button.dataset.trackPreview;document.querySelectorAll('[data-track-preview]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelector('.track-choice-feedback').textContent=previewTrack+' · sélection de démonstration'});
-
 function renderAudience(role){
   const teacher=role==='teacher';const panel=document.querySelector('#audiencePanel');
   document.querySelectorAll('[data-audience]').forEach(button=>{const active=button.dataset.audience===role;button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1});
@@ -61,7 +45,6 @@ function keyboardTabs(container,selector,select){
     select(buttons[index]);buttons[index].focus();
   });
 }
-keyboardTabs(document.querySelector('.journey-track'),'[data-journey]',button=>renderJourney(Number(button.dataset.journey)));
 keyboardTabs(document.querySelector('.audience-tabs'),'[data-audience]',button=>renderAudience(button.dataset.audience));
 landing.querySelectorAll('a[href="#billing-faq"]').forEach(link=>link.addEventListener('click',()=>document.querySelector('#billing-faq').open=true));
 
@@ -75,7 +58,7 @@ if(matchMedia('(hover:hover) and (pointer:fine)').matches){
   art.addEventListener('pointermove',event=>{if(reducedMotion.matches)return;const box=art.getBoundingClientRect();art.style.setProperty('--mx',((event.clientX-box.left)/box.width-.5)*10+'px');art.style.setProperty('--my',((event.clientY-box.top)/box.height-.5)*10+'px')});
   art.addEventListener('pointerleave',()=>{art.style.setProperty('--mx','0px');art.style.setProperty('--my','0px')});
 }
-renderJourney(0);renderAudience('student');
+renderAudience('student');
 // Keep direct links to the landing sections usable after a reload.
 const initialSection=location.hash;
 showLanding();
