@@ -9,23 +9,12 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&menuToggle.
 document.addEventListener('click',event=>{if(!event.target.closest('.l-header'))closeLandingMenu()});
 matchMedia('(min-width: 901px)').addEventListener('change',()=>closeLandingMenu());
 function showLanding(){document.body.classList.add('landing-active');history.replaceState(null,'','#welcome');window.scrollTo(0,0)}
-function enterSpace(role){
-  closeLandingMenu();
-  document.body.classList.remove('landing-active');
-  let profile;try{profile=JSON.parse(localStorage.getItem('nqtaProfileV2'))}catch{}
-  if(!role&&profile&&tracks[profile.track]&&Array.isArray(profile.subjects)){launchApp(profile)}
-  else{
-    if(role){setup.role=role;setup.step=1;document.querySelectorAll('[data-role]').forEach(button=>button.classList.toggle('selected',button.dataset.role===role))}
-    document.querySelector('#onboarding').hidden=false;document.body.classList.add('onboarding-active');syncSetup();
-  }
-  window.scrollTo(0,0);
-}
-landing.addEventListener('click',event=>{const button=event.target.closest('[data-enter]');if(button)enterSpace(button.dataset.enterRole)});
-const returnButton=document.createElement('button');returnButton.id='returnLanding';returnButton.textContent='Retour à l’accueil';returnButton.addEventListener('click',showLanding);document.querySelector('.onboarding-top').append(returnButton);
-const appReturn=returnButton.cloneNode(true);appReturn.removeAttribute('id');appReturn.className='text-btn';appReturn.addEventListener('click',showLanding);document.querySelector('.side-bottom').prepend(appReturn);
-const navDescriptions=['Votre point de départ','Votre temps de travail','Vos matières','Sujets officiels','Votre progression','Votre note cible'];
-document.querySelectorAll('.nav-copy small').forEach((el,index)=>el.textContent=navDescriptions[index]);
-document.querySelector('.nav-goal .nav-copy b').textContent='Objectif Bac';document.querySelector('.profile-orbit b').textContent='N';document.querySelector('.avatar').textContent='N';document.querySelector('.nav-intro span').textContent='2e BAC · MAROC';
+landing.querySelectorAll('[data-enter]').forEach(button=>{
+  button.disabled=true;
+  button.setAttribute('aria-disabled','true');
+  button.removeAttribute('data-enter');
+  button.removeAttribute('data-enter-role');
+});
 
 landing.querySelectorAll('a[href="#billing-faq"]').forEach(link=>link.addEventListener('click',()=>document.querySelector('#billing-faq').open=true));
 
