@@ -12,6 +12,8 @@ body:not(.landing-active) .landing{display:none}
 .landing [hidden]{display:none!important}
 .landing h1,.landing h2,.landing h3,.landing p{margin:0;color:inherit}
 .landing em{font-family:'Playfair Display',Georgia,serif;font-weight:500}
+.landing :lang(ar){font-family:'Noto Sans Arabic',Tahoma,Arial,sans-serif}
+.landing :lang(ar) em{font-family:'Noto Sans Arabic',Tahoma,Arial,sans-serif;font-style:normal;font-weight:700}
 .landing button,.landing a{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .l-header{display:flex;align-items:center;justify-content:space-between;padding:30px 5%;gap:24px}
 .landing-menu-toggle{display:none}
@@ -94,6 +96,7 @@ body:not(.landing-active) .landing{display:none}
 .program-section{padding:90px 0 80px;scroll-margin-top:25px}
 .moroccan-label{display:inline-flex;align-items:center;gap:10px;padding:7px 8px 7px 13px;border:1px solid #cfccd4;border-radius:50px;background:#fff}
 .moroccan-label b{font-size:10px;letter-spacing:1.25px}
+.moroccan-label:lang(ar) b,:lang(ar) .moroccan-label b{font-size:12px;letter-spacing:0}
 .moroccan-label i{padding:5px 10px;border-radius:30px;background:#19191b;color:#d8ff6a;font:500 13px 'DM Sans',sans-serif}
 .program-heading{display:grid;grid-template-columns:1.15fr .85fr;gap:70px;align-items:end;margin-bottom:42px}
 .program-heading>p{font-size:17px;line-height:1.7;color:#5d5d65;max-width:500px;padding-bottom:8px}
@@ -353,7 +356,7 @@ body:not(.landing-active) .landing{display:none}
 .roles-schema:before{content:'';position:absolute;left:50%;top:50%;width:92px;height:2px;background:#19191b;transform:translate(-50%,-50%);z-index:1}
 .role-route{position:relative;display:flex;flex-direction:column;min-width:0;padding:30px;border:1px solid #19191b;border-radius:30px;overflow:hidden}
 .student-route{background:#e9e0ff}.teacher-route{background:#e8ffc4}
-.role-route header{display:flex;align-items:flex-start;gap:16px}.role-mark{display:grid;place-items:center;flex:0 0 56px;height:56px;border:1px solid #19191b;border-radius:50% 50% 50% 12px;background:#fff;font:italic 24px Georgia,serif}.role-route header small{font-size:9px;font-weight:800;letter-spacing:1.3px}.role-route h3{font-size:31px;line-height:1.05;letter-spacing:-1.3px;margin-top:8px}
+.role-route header{display:flex;align-items:flex-start;gap:16px}.role-picto{display:grid;place-items:center;flex:0 0 70px;height:70px;border:1px solid #19191b;border-radius:24px 24px 24px 8px;background:#fff;box-shadow:4px 4px 0 #19191b;transform:rotate(-3deg)}.teacher-picto{transform:rotate(3deg)}.role-picto svg{width:52px;height:52px;fill:none;stroke:#19191b;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.student-picto .picto-fill{fill:#d8ff6a}.student-picto circle{fill:#c9b9f3}.teacher-picto .picto-fill{fill:#c9b9f3}.teacher-picto circle{fill:#d8ff6a}.role-route header small{font-size:11px;font-weight:800;letter-spacing:0}.role-route h3{font-size:31px;line-height:1.25;letter-spacing:-.4px;margin-top:8px}
 .route-line{display:grid;grid-template-columns:1fr 26px 1fr 26px 1fr;align-items:center;margin:34px 0 25px}.route-line>div{display:flex;flex-direction:column;align-items:center;text-align:center}.route-line>div>span{display:grid;place-items:center;width:39px;height:39px;border:1px solid #19191b;border-radius:50%;background:#fff;font-size:10px;box-shadow:3px 3px 0 #19191b}.route-line b{font-size:13px;margin-top:10px}.route-line small{font-size:9px;line-height:1.25;color:#65616a;margin-top:3px}.route-line>i{display:block;border-top:1px dashed #19191b}
 .route-result{display:grid;grid-template-columns:auto 1fr;gap:9px 15px;align-items:center;padding:16px;border:1px solid rgba(25,25,27,.35);border-radius:17px;background:rgba(255,255,255,.55)}.route-result>span{grid-column:1/-1;font-size:9px;font-weight:800;letter-spacing:1.2px}.route-result>b{font-size:13px}.mini-bars{display:flex;align-items:end;gap:5px;height:30px}.mini-bars i{width:9px;height:var(--v);background:#19191b;border-radius:4px 4px 1px 1px}.student-dots{display:grid;grid-template-columns:repeat(4,12px);gap:5px}.student-dots i{width:12px;height:12px;border:1px solid #19191b;border-radius:50%;background:#fff}.student-dots i:nth-child(-n+5){background:#c9b9f3}
 .role-route>button{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:22px;padding:14px 17px;border:1px solid #19191b;border-radius:50px;background:#19191b;color:#fff;font-size:13px;font-weight:700}.role-route>button span{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#fff;color:#19191b}
