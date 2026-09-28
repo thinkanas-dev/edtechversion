@@ -2,3 +2,5 @@
 .sites-push.mjs
 nqta-site*.tar.gz
 .sites-runtime/
+.vercel/
+.env*

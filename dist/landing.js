@@ -9,12 +9,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&menuToggle.
 document.addEventListener('click',event=>{if(!event.target.closest('.l-header'))closeLandingMenu()});
 matchMedia('(min-width: 901px)').addEventListener('change',()=>closeLandingMenu());
 function showLanding(){document.body.classList.add('landing-active');history.replaceState(null,'','#welcome');window.scrollTo(0,0)}
-landing.querySelectorAll('[data-enter]').forEach(button=>{
-  button.disabled=true;
-  button.setAttribute('aria-disabled','true');
-  button.removeAttribute('data-enter');
-  button.removeAttribute('data-enter-role');
-});
+// Authentication and onboarding entry points are wired by app.js.
 
 landing.querySelectorAll('a[href="#billing-faq"]').forEach(link=>link.addEventListener('click',()=>document.querySelector('#billing-faq').open=true));
 
