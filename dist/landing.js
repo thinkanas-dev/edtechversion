@@ -61,34 +61,10 @@ function updateOrbitCards(){
 }
 function requestOrbitUpdate(){if(!orbitFrame)orbitFrame=requestAnimationFrame(updateOrbitCards)}
 if(orbitScroll){addEventListener('scroll',requestOrbitUpdate,{passive:true});addEventListener('resize',requestOrbitUpdate);updateOrbitCards()}
-const leadRing=document.querySelector('[data-lead-ring]');
-const ringTiles=[...document.querySelectorAll('[data-ring-tile]')];
-const ringFeature=document.querySelector('[data-ring-feature]');
-const ringScenes=[['01 · الأستاذ','كيحضّر الفكرة','شرح واضح، مثال قريب، وسؤال كيكشف واش المفهوم وصل.'],['02 · التلميذ','كيجرّب ويفهم','كيطبق بيديه، كيغلط بلا خوف، وكيشوف الرابط بين الخطوات.'],['03 · الأستاذ','كيقرا الإشارات','كيشوف فين وصل القسم وكيعدّل الشرح على حساب الحاجة.'],['04 · التلميذ','كيعرف الخطوة الجاية','الأولوية كتبان، المراجعة كتتنظّم، والهدف كيقرب.']];
-let ringFrame=0,ringScene=-1;
-function updateLeadRing(){
-  ringFrame=0;if(!leadRing)return;
-  const stage=leadRing.querySelector('.orbit-sticky'),rect=leadRing.getBoundingClientRect();
-  const progress=reducedMotion.matches?0:Math.min(1,Math.max(0,-rect.top/Math.max(1,leadRing.offsetHeight-innerHeight)));
-  const compact=stage.clientWidth<621,rx=Math.min(stage.clientWidth*(compact?.61:.39),470),ry=compact?235:Math.min(stage.clientHeight*.34,300),spin=progress*145,step=360/ringTiles.length;
-  const active=Math.min(ringTiles.length-1,Math.floor(progress*ringTiles.length));
-  ringTiles.forEach((tile,index)=>{
-    const deg=-90+index*step+spin,a=deg*Math.PI/180,x=Math.cos(a)*rx,y=Math.sin(a)*ry;
-    let tilt=(deg+90)%360;if(tilt>180)tilt-=360;if(tilt>78)tilt-=180;if(tilt<-78)tilt+=180;
-    tile.classList.toggle('is-active',index===active);
-    const scale=index===active?1.1:.88+(Math.sin(a)+1)*.055;
-    tile.style.transform=`translate(-50%,-50%) translate3d(${x}px,${y}px,0) rotate(${tilt*.34}deg) scale(${scale})`;
-  });
-  stage.style.setProperty('--orbit-progress',progress.toFixed(3));
-  const scene=Math.min(3,Math.floor(progress*4));
-  if(scene!==ringScene){ringScene=scene;const data=ringScenes[scene];ringFeature.querySelector('span').textContent=data[0];ringFeature.querySelector('h4').textContent=data[1];ringFeature.querySelector('p').textContent=data[2];}
-}
-function requestLeadRing(){if(!ringFrame)ringFrame=requestAnimationFrame(updateLeadRing)}
-if(leadRing){addEventListener('scroll',requestLeadRing,{passive:true});addEventListener('resize',requestLeadRing);updateLeadRing()}
 // Keep direct links to the landing sections usable after a reload.
 const initialSection=location.hash;
 showLanding();
-if(['#approche','#ressources','#profils','#tarifs','#questions','#billing-faq'].includes(initialSection)){
+if(['#approche','#ressources','#tarifs','#questions','#billing-faq'].includes(initialSection)){
   history.replaceState(null,'',initialSection);
   if(initialSection==='#billing-faq')document.querySelector(initialSection).open=true;
   requestAnimationFrame(()=>document.querySelector(initialSection)?.scrollIntoView({behavior:'instant'}));
