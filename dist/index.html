@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="app.css" />
   <link rel="stylesheet" href="library.css" />
   <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="topbar.css" />
+  <link rel="stylesheet" href="logo.css" />
   <link rel="stylesheet" href="brand.css" />
 </head>
 <body class="landing-active">
@@ -73,7 +75,7 @@
   </div>
   <section class="auth-shell" id="authShell" aria-label="Connexion à Noqta" hidden>
     <button class="auth-close" type="button" data-auth-close aria-label="Fermer">×</button>
-    <div class="auth-brand">noqta<span>.</span></div>
+    <div class="auth-brand"><img src="assets/noqta-logo.png" alt="Noqta"></div>
     <div class="auth-card">
       <div class="auth-copy"><span class="eyebrow">TON ESPACE ESSENTIEL</span><h1>Deux matières.<br><em>Toute ton attention.</em></h1><p>Retrouve tes cours, tes annales et ta progression sur tous tes appareils.</p></div>
       <form id="authForm" class="auth-form">
@@ -89,7 +91,7 @@
   </section>
 
   <section class="onboarding" id="onboarding" aria-label="Configuration de votre espace Noqta">
-    <header class="onboarding-top"><button class="brand" aria-label="Noqta"><span class="wordmark">noqta<span>.</span></span></button><span class="setup-step">CONFIGURATION · <b id="stepCount">1/4</b></span></header>
+    <header class="onboarding-top"><button class="brand" aria-label="Noqta"><img class="official-logo" src="assets/noqta-logo.png" alt="Noqta"></button><span class="setup-step">CONFIGURATION · <b id="stepCount">1/4</b></span></header>
     <div class="setup-progress"><i id="setupProgress"></i></div>
     <form class="onboarding-card" id="onboardingForm">
       <section class="setup-panel active" data-step="1"><span class="eyebrow">BIENVENUE SUR NOQTA</span><h1>Vous êtes ici pour<br><em>apprendre ou transmettre ?</em></h1><p>Votre réponse adapte entièrement l’espace, les outils et le vocabulaire.</p><div class="choice-grid role-grid"><button type="button" class="setup-choice" data-role="student"><span class="choice-art student-art">↗</span><b>Je suis élève</b><small>Préparer mon Bac et atteindre ma note cible.</small></button><button type="button" class="setup-choice" data-role="teacher"><span class="choice-art teacher-art">✦</span><b>Je suis professeur</b><small>Organiser mes matières et accompagner mes élèves.</small></button></div></section>
@@ -102,7 +104,7 @@
   </section>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navigation principale">
-      <button class="brand" data-route="home" aria-label="Accueil Noqta"><span class="wordmark">noqta<span>.</span></span></button>
+      <button class="brand" data-route="home" aria-label="Accueil Noqta"><img class="official-logo" src="assets/noqta-logo.png" alt="Noqta"></button>
       <nav class="desktop-nav">
         <div class="nav-intro"><span>PRÉPARATION 2027</span><b>Mon espace Bac</b></div>
         <button class="nav-item active nav-overview" data-route="home"><span class="nav-number">01</span><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m5 8 4-4 4 4-4 4zM13 12l4-4 3 3-4 4zM5 16l3-3 5 5-3 3z"/><circle cx="17.5" cy="18.5" r="2.5"/></svg></span><span class="nav-copy"><b>Cockpit</b><small>Vue d’ensemble</small></span><span class="nav-arrow">↗</span></button>
@@ -119,7 +121,7 @@
 
     <main id="main" tabindex="-1">
       <header class="topbar">
-        <button class="mobile-brand brand" data-route="home"><span class="wordmark">noqta<span>.</span></span></button>
+        <button class="mobile-brand brand" data-route="home"><img class="official-logo" src="assets/noqta-logo.png" alt="Noqta"></button>
         <div class="crumb"><span>2e Bac</span><b>Sciences Maths A</b></div>
         <div class="top-actions"><button class="icon-btn" aria-label="Recherche">⌕</button><button class="icon-btn notification" aria-label="Notifications">♢</button><button class="avatar">YM</button></div>
       </header>

@@ -86,6 +86,9 @@
   async function hydrateApp(profile){
     const {data:chosen=[]}=await db.from('user_subjects').select('subject_id,subjects(name_fr)').eq('user_id',session.user.id);
     const first=(profile.full_name||session.user.email).split(' ')[0];
+    const initials=(profile.full_name||session.user.email).split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+    const topActions=document.querySelector('.top-actions');
+    if(topActions)topActions.innerHTML=`<button class="top-action search-action" type="button" data-route="learn"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg><span>Rechercher un cours</span></button><button class="top-profile" type="button" data-route="settings" aria-label="Ouvrir mes paramètres"><span>${initials}</span><div><small>MON COMPTE</small><b>${first}</b></div><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>`;
     document.querySelectorAll('.profile-mini>div>b').forEach(x=>x.textContent=profile.full_name||first);
     document.querySelectorAll('.profile-mini>div>small,.crumb>b').forEach(x=>x.textContent=`${profile.track?.toUpperCase()||'2e Bac'} · Essentiel`);
     const greeting=document.querySelector('.greeting .eyebrow');if(greeting)greeting.textContent=`BONSOIR ${first.toUpperCase()}`;
