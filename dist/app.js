@@ -90,6 +90,19 @@
     document.querySelectorAll('.profile-mini>div>small,.crumb>b').forEach(x=>x.textContent=`${profile.track?.toUpperCase()||'2e Bac'} · Essentiel`);
     const greeting=document.querySelector('.greeting .eyebrow');if(greeting)greeting.textContent=`BONSOIR ${first.toUpperCase()}`;
     const tabs=document.querySelector('.subject-tabs');if(tabs&&chosen.length)tabs.innerHTML=chosen.map((x,i)=>`<button class="${i?'':'active'}">${x.subjects?.name_fr||x.subject_id}</button>`).join('');
+    const ids=chosen.map(x=>x.subject_id);
+    if(ids.length){
+      const [{data:chapters=[]},{data:exams=[]}]=await Promise.all([
+        db.from('chapters').select('id,title,summary,subject_id,lessons(id,title,duration_minutes)').in('subject_id',ids).order('position'),
+        db.from('exams').select('*').in('subject_id',ids).order('exam_year',{ascending:false})
+      ]);
+      const grid=document.querySelector('.chapter-grid');
+      if(grid)grid.innerHTML=chapters.map((c,index)=>`<article class="chapter ${index===0?'hero-chapter':''}"><span class="chapter-no">${String(index+1).padStart(2,'0')}</span><h3>${c.title}</h3><p>${c.summary}</p><small>${c.lessons?.length||0} cours</small><button class="${index===0?'primary':'outline'}" data-lesson="${c.lessons?.[0]?.id||''}">${index===0?'Commencer':'Ouvrir'} →</button></article>`).join('')||'<p>Aucun cours publié pour ces matières.</p>';
+      const list=document.querySelector('.exam-list');
+      if(list)list.innerHTML=exams.map(e=>`<article><div class="exam-year">${e.exam_year}</div><div><span class="chip">SESSION ${e.session.toUpperCase()}</span><h3>${e.title}</h3><p>${Math.round(e.duration_minutes/60)} h · Sujet et correction</p></div><div class="exam-actions"><button data-exam="${e.id}">Commencer</button><button class="dark" ${e.correction_url?`onclick="open('${e.correction_url}','_blank')"`:'disabled'}>Correction →</button></div></article>`).join('')||'<p>Aucune annale publiée pour ces matières.</p>';
+      document.querySelectorAll('[data-lesson]').forEach(button=>button.addEventListener('click',async()=>{if(!button.dataset.lesson)return;await db.from('lesson_progress').upsert({user_id:session.user.id,lesson_id:button.dataset.lesson,progress:10,updated_at:new Date().toISOString()});showToast('Cours ajouté à ta progression.')}));
+      document.querySelectorAll('[data-exam]').forEach(button=>button.addEventListener('click',async()=>{await db.from('exam_attempts').insert({user_id:session.user.id,exam_id:button.dataset.exam});showToast('Tentative enregistrée. Bon courage !')}));
+    }
   }
 
   document.querySelectorAll('[data-route]').forEach(btn=>btn.addEventListener('click',()=>{
