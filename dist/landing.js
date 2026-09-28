@@ -39,25 +39,25 @@ function updateOrbitCards(){
   if(innerWidth<=620){orbitCards.forEach(card=>{card.style.removeProperty('--p');card.style.removeProperty('transform')});orbitCenter.style.removeProperty('opacity');return}
   const rect=orbitScroll.getBoundingClientRect();
   const distance=Math.max(1,orbitScroll.offsetHeight-innerHeight);
-  const progress=Math.min(1,Math.max(0,-rect.top/distance));
-  const morph=Math.min(1,progress/.42);
-  const travel=Math.max(0,(progress-.36)/.64);
-  const radiusX=Math.min(orbitStage.clientWidth*.36,430);
-  const radiusY=Math.min(orbitStage.clientHeight*.34,255);
+  const progress=reducedMotion.matches?1:Math.min(1,Math.max(0,-rect.top/distance));
+  const morph=Math.min(1,progress/.76);
+  const radiusX=Math.min(orbitStage.clientWidth*.34,390);
+  const radiusY=Math.min(orbitStage.clientHeight*.30,220);
+  const finalX=[-170,170,-170,170];
+  const finalY=[-125,-125,125,125];
   orbitCards.forEach((card,index)=>{
-    const angle=(-90+index*45)*Math.PI/180;
+    const angle=(-45+index*90)*Math.PI/180;
     const circleX=Math.cos(angle)*radiusX;
     const circleY=Math.sin(angle)*radiusY;
-    const lineX=(index-(orbitCards.length-1)/2)*225-travel*520;
-    const x=circleX+(lineX-circleX)*morph;
-    const y=circleY*(1-morph);
-    const rotation=((index*45)-90)*(1-morph);
-    const lift=Math.sin(progress*Math.PI)*((index%2?1:-1)*10);
+    const x=circleX+(finalX[index]-circleX)*morph;
+    const y=circleY+(finalY[index]-circleY)*morph;
+    const rotation=(index%2?-7:7)*(1-morph);
+    const lift=Math.sin(progress*Math.PI)*((index%2?1:-1)*8);
     card.style.setProperty('--p',morph.toFixed(3));
     card.style.transform=`translate(-50%,-50%) translate3d(${x}px,${y+lift}px,0) rotate(${rotation}deg)`;
   });
   orbitStage.style.setProperty('--orbit-progress',progress.toFixed(3));
-  orbitCenter.style.opacity=String(Math.max(0,1-morph*1.3));
+  orbitCenter.style.opacity=String(Math.max(.08,1-morph*1.45));
 }
 function requestOrbitUpdate(){if(!orbitFrame)orbitFrame=requestAnimationFrame(updateOrbitCards)}
 if(orbitScroll){addEventListener('scroll',requestOrbitUpdate,{passive:true});addEventListener('resize',requestOrbitUpdate);updateOrbitCards()}
