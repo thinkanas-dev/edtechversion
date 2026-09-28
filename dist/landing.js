@@ -70,8 +70,15 @@ function updateLeadRing(){
   ringFrame=0;if(!leadRing)return;
   const stage=leadRing.querySelector('.orbit-sticky'),rect=leadRing.getBoundingClientRect();
   const progress=reducedMotion.matches?0:Math.min(1,Math.max(0,-rect.top/Math.max(1,leadRing.offsetHeight-innerHeight)));
-  const rx=Math.min(stage.clientWidth*.37,440),ry=Math.min(stage.clientHeight*.31,260),spin=progress*110;
-  ringTiles.forEach((tile,index)=>{const a=(-90+index*30+spin)*Math.PI/180;const x=Math.cos(a)*rx,y=Math.sin(a)*ry;tile.style.transform=`translate(-50%,-50%) translate3d(${x}px,${y}px,0) rotate(${Math.sin(a)*6}deg) scale(${.88+(Math.sin(a)+1)*.07})`});
+  const compact=stage.clientWidth<621,rx=Math.min(stage.clientWidth*(compact?.61:.39),470),ry=compact?235:Math.min(stage.clientHeight*.34,300),spin=progress*145,step=360/ringTiles.length;
+  const active=Math.min(ringTiles.length-1,Math.floor(progress*ringTiles.length));
+  ringTiles.forEach((tile,index)=>{
+    const deg=-90+index*step+spin,a=deg*Math.PI/180,x=Math.cos(a)*rx,y=Math.sin(a)*ry;
+    let tilt=(deg+90)%360;if(tilt>180)tilt-=360;if(tilt>78)tilt-=180;if(tilt<-78)tilt+=180;
+    tile.classList.toggle('is-active',index===active);
+    const scale=index===active?1.1:.88+(Math.sin(a)+1)*.055;
+    tile.style.transform=`translate(-50%,-50%) translate3d(${x}px,${y}px,0) rotate(${tilt*.34}deg) scale(${scale})`;
+  });
   stage.style.setProperty('--orbit-progress',progress.toFixed(3));
   const scene=Math.min(3,Math.floor(progress*4));
   if(scene!==ringScene){ringScene=scene;const data=ringScenes[scene];ringFeature.querySelector('span').textContent=data[0];ringFeature.querySelector('h4').textContent=data[1];ringFeature.querySelector('p').textContent=data[2];}
