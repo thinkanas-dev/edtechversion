@@ -61,6 +61,23 @@ function updateOrbitCards(){
 }
 function requestOrbitUpdate(){if(!orbitFrame)orbitFrame=requestAnimationFrame(updateOrbitCards)}
 if(orbitScroll){addEventListener('scroll',requestOrbitUpdate,{passive:true});addEventListener('resize',requestOrbitUpdate);updateOrbitCards()}
+const leadRing=document.querySelector('[data-lead-ring]');
+const ringTiles=[...document.querySelectorAll('[data-ring-tile]')];
+const ringFeature=document.querySelector('[data-ring-feature]');
+const ringScenes=[['01 · الأستاذ','كيحضّر الفكرة','شرح واضح، مثال قريب، وسؤال كيكشف واش المفهوم وصل.'],['02 · التلميذ','كيجرّب ويفهم','كيطبق بيديه، كيغلط بلا خوف، وكيشوف الرابط بين الخطوات.'],['03 · الأستاذ','كيقرا الإشارات','كيشوف فين وصل القسم وكيعدّل الشرح على حساب الحاجة.'],['04 · التلميذ','كيعرف الخطوة الجاية','الأولوية كتبان، المراجعة كتتنظّم، والهدف كيقرب.']];
+let ringFrame=0,ringScene=-1;
+function updateLeadRing(){
+  ringFrame=0;if(!leadRing)return;
+  const stage=leadRing.querySelector('.orbit-sticky'),rect=leadRing.getBoundingClientRect();
+  const progress=reducedMotion.matches?0:Math.min(1,Math.max(0,-rect.top/Math.max(1,leadRing.offsetHeight-innerHeight)));
+  const rx=Math.min(stage.clientWidth*.37,440),ry=Math.min(stage.clientHeight*.31,260),spin=progress*110;
+  ringTiles.forEach((tile,index)=>{const a=(-90+index*30+spin)*Math.PI/180;const x=Math.cos(a)*rx,y=Math.sin(a)*ry;tile.style.transform=`translate(-50%,-50%) translate3d(${x}px,${y}px,0) rotate(${Math.sin(a)*6}deg) scale(${.88+(Math.sin(a)+1)*.07})`});
+  stage.style.setProperty('--orbit-progress',progress.toFixed(3));
+  const scene=Math.min(3,Math.floor(progress*4));
+  if(scene!==ringScene){ringScene=scene;const data=ringScenes[scene];ringFeature.querySelector('span').textContent=data[0];ringFeature.querySelector('h4').textContent=data[1];ringFeature.querySelector('p').textContent=data[2];}
+}
+function requestLeadRing(){if(!ringFrame)ringFrame=requestAnimationFrame(updateLeadRing)}
+if(leadRing){addEventListener('scroll',requestLeadRing,{passive:true});addEventListener('resize',requestLeadRing);updateLeadRing()}
 // Keep direct links to the landing sections usable after a reload.
 const initialSection=location.hash;
 showLanding();
