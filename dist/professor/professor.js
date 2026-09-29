@@ -26,7 +26,146 @@
     profile = null,
     favorites = new Set(),
     purchases = new Set(),
-    walletBalance = 0;
+    walletBalance = 0,
+    selectedMethods = new Set(),
+    sortMode = "relevant";
+  const launchOffers = [
+    {
+      id: "launch-math-1",
+      subject_id: "math",
+      title: "Les limites sans apprendre par cœur",
+      description:
+        "Une lecture visuelle des limites et des réflexes de rédaction attendus au Bac.",
+      method: "visual",
+      language: "Français + الدارجة",
+      token_price: 120,
+      duration_minutes: 12,
+      chapters: { title: "Limites et continuité" },
+      teacher_profiles: {
+        display_name: "Yasmine · Maths",
+        story:
+          "Ingénieure de formation, elle transforme chaque propriété en image mentale avant de passer au calcul.",
+        success:
+          "Une méthode construite autour des erreurs les plus fréquentes en Sciences Maths.",
+        experience: "7 ans d’accompagnement Bac",
+        signature: "Dessiner → comprendre → rédiger",
+      },
+      demo: true,
+      tone: "lilac",
+    },
+    {
+      id: "launch-physics-1",
+      subject_id: "physics",
+      title: "Newton comme une histoire de forces",
+      description:
+        "Du schéma des forces à l’équation différentielle, avec un raisonnement continu et vérifiable.",
+      method: "steps",
+      language: "Français",
+      token_price: 100,
+      duration_minutes: 14,
+      chapters: { title: "Lois de Newton" },
+      teacher_profiles: {
+        display_name: "Omar · Physique",
+        story:
+          "Professeur passionné de mécanique, il part d’une situation réelle avant d’écrire la première équation.",
+        success: "Des explications centrées sur la modélisation et les unités.",
+        experience: "9 ans en lycée",
+        signature: "Observer → modéliser → résoudre",
+      },
+      demo: true,
+      tone: "blue",
+    },
+    {
+      id: "launch-math-2",
+      subject_id: "math",
+      title: "Les complexes, enfin géométriques",
+      description:
+        "Affixes, arguments et transformations réunis sur un seul plan pour voir ce que les calculs racontent.",
+      method: "bac",
+      language: "Français + الدارجة",
+      token_price: 150,
+      duration_minutes: 11,
+      chapters: { title: "Nombres complexes" },
+      teacher_profiles: {
+        display_name: "Salma · Maths",
+        story:
+          "Ancienne élève de Sciences Maths, elle enseigne avec les raccourcis qu’elle aurait aimé connaître au Bac.",
+        success: "Une vérification graphique après chaque calcul.",
+        experience: "6 promotions accompagnées",
+        signature: "Calculer → placer → vérifier",
+      },
+      demo: true,
+      tone: "lime",
+    },
+    {
+      id: "launch-physics-2",
+      subject_id: "physics",
+      title: "Le dipôle RC, seconde par seconde",
+      description:
+        "Une animation mentale de la charge, puis la méthode exacte pour exploiter une courbe expérimentale.",
+      method: "visual",
+      language: "Français",
+      token_price: 90,
+      duration_minutes: 10,
+      chapters: { title: "Dipôle RC" },
+      teacher_profiles: {
+        display_name: "Mehdi · PC",
+        story:
+          "Il construit ses cours comme des expériences : observation, hypothèse et preuve.",
+        success:
+          "Spécialiste des schémas électriques lisibles et des contrôles dimensionnels.",
+        experience: "8 ans d’enseignement",
+        signature: "Expérience → loi → application",
+      },
+      demo: true,
+      tone: "peach",
+    },
+    {
+      id: "launch-math-3",
+      subject_id: "math",
+      title: "Intégrales : choisir la bonne porte",
+      description:
+        "Reconnaître la forme, sélectionner la technique puis contrôler le résultat.",
+      method: "steps",
+      language: "Français",
+      token_price: 110,
+      duration_minutes: 13,
+      chapters: { title: "Primitives et calcul intégral" },
+      teacher_profiles: {
+        display_name: "Imane · Maths",
+        story:
+          "Elle décompose les exercices longs en décisions très courtes pour rendre la méthode réutilisable.",
+        success:
+          "Une approche dédiée aux exercices composés de l’examen national.",
+        experience: "5 ans de préparation Bac",
+        signature: "Reconnaître → choisir → contrôler",
+      },
+      demo: true,
+      tone: "rose",
+    },
+    {
+      id: "launch-physics-3",
+      subject_id: "physics",
+      title: "Acide-base : lire avant de calculer",
+      description:
+        "Les zones importantes d’un dosage expliquées avant les formules et les pièges classiques.",
+      method: "bac",
+      language: "العربية + Français",
+      token_price: 130,
+      duration_minutes: 15,
+      chapters: { title: "Dosages acido-basiques" },
+      teacher_profiles: {
+        display_name: "Amine · Chimie",
+        story:
+          "Chimiste de formation, il relie les courbes aux transformations observables au laboratoire.",
+        success: "Une grille de lecture stable pour les dosages et le pH.",
+        experience: "10 ans en classes Bac",
+        signature: "Lire → relier → conclure",
+      },
+      demo: true,
+      tone: "mint",
+    },
+  ];
   const grid = document.querySelector("#teacherGrid"),
     search = document.querySelector("#searchInput"),
     range = document.querySelector("#tokenRange"),
@@ -120,7 +259,7 @@
   function card(x) {
     const t = x.teacher_profiles || {},
       fav = favorites.has(x.id);
-    return `<article class="teacher-card"><button class="video-slot ${tones[x.subject_id] || "lilac"}" data-offer="${x.id}"><span class="preview-tag">APERÇU · ${x.duration_minutes} MIN</span><div class="visual-symbol">${symbol(x.subject_id)}</div><span class="play"><svg viewBox="0 0 48 48"><path d="m19 14 17 10-17 10z"/></svg></span><small>VOIR SA FAÇON D’EXPLIQUER</small></button><div class="teacher-meta"><div class="teacher-placeholder"><span>${esc((t.display_name || "P")[0])}</span><div><b>${esc(t.display_name || "Professeur Noqta")}</b><small>✓ Profil vérifié</small></div></div><button class="heart ${fav ? "saved" : ""}" data-favorite="${x.id}">${fav ? "♥" : "♡"}</button></div><span class="subject-pill">${esc(names[x.subject_id] || x.subject_id)}</span><h3>${esc(x.title)}</h3><p>${esc(x.chapters?.title)}</p><div class="card-foot"><span>À partir de</span><b>${x.token_price} <small>jetons</small></b></div></article>`;
+    return `<article class="teacher-card ${x.demo ? "launch-card" : ""}"><button class="video-slot ${x.tone || tones[x.subject_id] || "lilac"}" data-offer="${x.id}"><span class="preview-tag">${x.demo ? "APERÇU DU CATALOGUE" : "APERÇU"} · ${x.duration_minutes} MIN</span><div class="visual-symbol">${symbol(x.subject_id)}</div><span class="play"><svg viewBox="0 0 48 48"><path d="m19 14 17 10-17 10z"/></svg></span><small>VOIR SA FAÇON D’EXPLIQUER</small></button><div class="teacher-meta"><button class="teacher-placeholder" data-offer="${x.id}"><span>${esc((t.display_name || "P")[0])}</span><div><b>${esc(t.display_name || "Professeur Noqta")}</b><small>${x.demo ? "Profil de lancement" : "✓ Profil vérifié"}</small></div></button><button class="heart ${fav ? "saved" : ""}" ${x.demo ? "disabled" : `data-favorite="${x.id}"`}>${fav ? "♥" : "♡"}</button></div><span class="subject-pill">${esc(names[x.subject_id] || x.subject_id)}</span><h3>${esc(x.title)}</h3><p>${esc(x.chapters?.title)}</p><div class="card-foot"><span>${x.demo ? "Tarif indicatif" : "À partir de"}</span><b>${x.token_price} <small>jetons</small></b></div></article>`;
   }
   function waitingGallery() {
     const frames = [
@@ -146,23 +285,31 @@
     return `<div class="waiting-stage"><div class="waiting-copy"><span>0 EXPLICATION PUBLIÉE</span><h3>Les formes sont là.<br><em>Les voix arrivent.</em></h3><p>Chaque cadre attend une vraie vidéo validée par Noqta. Dès sa publication, la carte du professeur prend automatiquement sa place.</p></div><div class="waiting-frames">${frames.map(([tone, label, svg, copy], i) => `<article class="waiting-card ${tone}"><div class="waiting-index">0${i + 1}</div><div class="waiting-picto">${svg}</div><small>${label}</small><b>${copy}</b><div class="waiting-slot"><i></i><span>EMPLACEMENT VIDÉO</span></div></article>`).join("")}</div></div>`;
   }
   function render() {
-    const q = search.value.trim().toLowerCase(),
+    const source = offers.length ? offers : launchOffers,
+      q = search.value.trim().toLowerCase(),
       max = +range.value,
-      shown = offers.filter(
+      shown = source.filter(
         (x) =>
           (active === "all" ||
             x.subject_id === active ||
             (active === "languages" &&
               ["english", "arabic"].includes(x.subject_id))) &&
           x.token_price <= max &&
+          (!selectedMethods.size || selectedMethods.has(x.method)) &&
           (!q ||
             `${x.title} ${x.chapters?.title} ${names[x.subject_id]}`
               .toLowerCase()
               .includes(q)),
       );
-    grid.innerHTML = shown.map(card).join("") || waitingGallery();
+    if (sortMode === "tokens")
+      shown.sort((a, b) => a.token_price - b.token_price);
+    if (sortMode === "duration")
+      shown.sort((a, b) => a.duration_minutes - b.duration_minutes);
+    grid.innerHTML =
+      shown.map(card).join("") ||
+      '<div class="empty-result"><b>Aucun résultat pour ces filtres.</b><p>Essaie une autre matière ou augmente le nombre de jetons.</p></div>';
     document.querySelector("#resultCount").textContent =
-      `${shown.length} explication${shown.length > 1 ? "s" : ""}`;
+      `${shown.length} explication${shown.length > 1 ? "s" : ""}${offers.length ? "" : " · aperçu"}`;
   }
   function setSubject(v) {
     active = v;
@@ -424,13 +571,15 @@
     closeModal();
   }
   function detail(id) {
-    const x = offers.find((o) => o.id === id);
+    const x = [...offers, ...launchOffers].find((o) => o.id === id);
     if (!x) return;
     openModal(
-      `<div class="offer-detail"><div class="detail-video ${tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>▶ Aperçu vidéo</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Durée</dt><dd>${x.duration_minutes} min</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl><div class="detail-price"><b>${x.token_price} jetons</b><button class="studio-primary" data-buy="${x.id}">${purchases.has(x.id) ? "Déjà acheté ✓" : "Acheter →"}</button></div><small class="secure-note">Paiement en jetons · débit atomique · aucun double achat.</small></div></div>`,
+      `<div class="offer-detail"><div class="detail-video ${x.tone || tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>${x.demo ? "▶ Cadre de la future vidéo" : "▶ Aperçu vidéo"}</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Expérience</dt><dd>${esc(x.teacher_profiles?.experience || `${x.duration_minutes} min`)}</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl>${x.demo ? `<div class="teacher-story"><span>SON HISTOIRE</span><p>${esc(x.teacher_profiles.story)}</p><span>SA RÉUSSITE</span><p>${esc(x.teacher_profiles.success)}</p><blockquote>« ${esc(x.teacher_profiles.signature)} »</blockquote></div>` : ""}<div class="detail-price"><b>${x.token_price} jetons</b><button class="studio-primary" ${x.demo ? "disabled" : `data-buy="${x.id}"`}>${x.demo ? "Vidéo bientôt disponible" : purchases.has(x.id) ? "Déjà acheté ✓" : "Acheter →"}</button></div><small class="secure-note">${x.demo ? "Aperçu éditorial : aucune fausse vidéo ni faux achat." : "Paiement en jetons · débit atomique · aucun double achat."}</small></div></div>`,
     );
-    document.querySelector("[data-buy]").onclick = () => purchaseOffer(x);
-    if (session)
+    document
+      .querySelector("[data-buy]")
+      ?.addEventListener("click", () => purchaseOffer(x));
+    if (session && !x.demo)
       db.from("teacher_watch_history").upsert({
         user_id: session.user.id,
         offer_id: id,
@@ -681,9 +830,32 @@
         `≤ ${range.value} jetons`;
       render();
     };
+    document.querySelectorAll('.filters input[type="checkbox"]').forEach(
+      (box) =>
+        (box.onchange = () => {
+          box.checked
+            ? selectedMethods.add(box.value)
+            : selectedMethods.delete(box.value);
+          render();
+        }),
+    );
+    const sorter = document.querySelector(".results-head select");
+    sorter.onchange = () => {
+      sortMode =
+        sorter.selectedIndex === 1
+          ? "tokens"
+          : sorter.selectedIndex === 2
+            ? "duration"
+            : "relevant";
+      render();
+    };
     document.querySelector("#resetFilters").onclick = () => {
       search.value = "";
       range.value = 500;
+      selectedMethods.clear();
+      document
+        .querySelectorAll('.filters input[type="checkbox"]')
+        .forEach((box) => (box.checked = false));
       document.querySelector("#tokenOutput").textContent = "≤ 500 jetons";
       setSubject("all");
     };

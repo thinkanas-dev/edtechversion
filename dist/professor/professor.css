@@ -478,6 +478,11 @@ main {
   display: flex;
   gap: 10px;
   align-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
 }
 .teacher-placeholder > span {
   width: 34px;
@@ -540,6 +545,62 @@ main {
 }
 .card-foot small {
   font-size: 8px;
+}
+.launch-card {
+  border-color: var(--ink);
+}
+.launch-card .video-slot {
+  cursor: pointer;
+}
+.launch-card .video-slot:before {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 1px solid rgba(21, 23, 22, 0.2);
+  border-radius: 36% 64% 55% 45%;
+  animation: launchOrbit 9s linear infinite;
+}
+.launch-card .play {
+  cursor: pointer;
+}
+.launch-card .heart:disabled {
+  opacity: 0.25;
+}
+.teacher-story {
+  margin: 20px 0;
+  padding: 18px;
+  background: #f4f5ef;
+  border-radius: 16px;
+}
+.teacher-story span {
+  display: block;
+  font: 800 8px Manrope;
+  letter-spacing: 0.14em;
+  margin-top: 12px;
+}
+.teacher-story span:first-child {
+  margin-top: 0;
+}
+.teacher-story p {
+  margin: 5px 0 0;
+  line-height: 1.55;
+  color: #555;
+}
+.teacher-story blockquote {
+  margin: 18px 0 0;
+  padding-top: 15px;
+  border-top: 1px solid #ccc;
+  font: 600 italic 18px "Playfair Display";
+}
+.detail-price button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+@keyframes launchOrbit {
+  to {
+    transform: rotate(360deg);
+  }
 }
 .empty-result {
   grid-column: 1/-1;
