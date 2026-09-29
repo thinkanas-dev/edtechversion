@@ -24,7 +24,9 @@
     active = "all",
     session = null,
     profile = null,
-    favorites = new Set();
+    favorites = new Set(),
+    purchases = new Set(),
+    walletBalance = 0;
   const grid = document.querySelector("#teacherGrid"),
     search = document.querySelector("#searchInput"),
     range = document.querySelector("#tokenRange"),
@@ -52,7 +54,12 @@
       const { data } = await db.auth.getSession();
       session = data.session;
       if (session) {
-        const [{ data: p }, { data: f = [] }] = await Promise.all([
+        const [
+          { data: p },
+          { data: f = [] },
+          { data: w },
+          { data: bought = [] },
+        ] = await Promise.all([
           db
             .from("profiles")
             .select("*")
@@ -62,9 +69,21 @@
             .from("teacher_offer_favorites")
             .select("offer_id")
             .eq("user_id", session.user.id),
+          db
+            .from("wallets")
+            .select("balance")
+            .eq("user_id", session.user.id)
+            .maybeSingle(),
+          db
+            .from("teacher_offer_purchases")
+            .select("offer_id")
+            .eq("buyer_id", session.user.id),
         ]);
         profile = p;
         favorites = new Set(f.map((x) => x.offer_id));
+        walletBalance = w?.balance || 0;
+        purchases = new Set(bought.map((x) => x.offer_id));
+        mountWalletButton();
         if (profile?.role === "admin") {
           const adminButton = document.createElement("button");
           adminButton.className = "admin-entry";
@@ -167,6 +186,8 @@
         .eq("id", session.user.id)
         .maybeSingle();
       profile = p;
+      await refreshWallet();
+      mountWalletButton();
       closeModal();
       next();
     };
@@ -181,23 +202,31 @@
     t ? offerStudio(t) : profileForm();
   }
   async function openModeration() {
-    const [{ data: pendingOffers = [] }, { data: pendingTeachers = [] }] =
-      await Promise.all([
-        db
-          .from("teacher_offers")
-          .select(
-            "id,title,token_price,teacher_profiles(display_name),subjects(name_fr),chapters(title)",
-          )
-          .eq("status", "pending")
-          .order("created_at"),
-        db
-          .from("teacher_profiles")
-          .select("user_id,display_name,bio,city,experience_years,languages")
-          .eq("verification_status", "pending")
-          .order("created_at"),
-      ]);
+    const [
+      { data: pendingOffers = [] },
+      { data: pendingTeachers = [] },
+      { data: pendingPayments = [] },
+    ] = await Promise.all([
+      db
+        .from("teacher_offers")
+        .select(
+          "id,title,token_price,teacher_profiles(display_name),subjects(name_fr),chapters(title)",
+        )
+        .eq("status", "pending")
+        .order("created_at"),
+      db
+        .from("teacher_profiles")
+        .select("user_id,display_name,bio,city,experience_years,languages")
+        .eq("verification_status", "pending")
+        .order("created_at"),
+      db
+        .from("payment_orders")
+        .select("id,user_id,amount_mad,tokens,method,status,created_at")
+        .in("status", ["pending", "awaiting_cash", "awaiting_transfer"])
+        .order("created_at"),
+    ]);
     openModal(
-      `<div class="studio-shell moderation"><span class="kicker">NOQTA · MODÉRATION</span><h2>File de validation.</h2><h3>Professeurs (${pendingTeachers.length})</h3><div class="moderation-list">${pendingTeachers.map((t) => `<article><div><b>${esc(t.display_name)}</b><small>${esc(t.city)} · ${t.experience_years} an(s) · ${esc(t.languages.join(", "))}</small><p>${esc(t.bio)}</p></div><div><button data-teacher-action="rejected" data-teacher-id="${t.user_id}">Refuser</button><button class="approve" data-teacher-action="verified" data-teacher-id="${t.user_id}">Vérifier</button></div></article>`).join("") || "<p>Aucun profil en attente.</p>"}</div><h3>Explications (${pendingOffers.length})</h3><div class="moderation-list">${pendingOffers.map((o) => `<article><div><b>${esc(o.title)}</b><small>${esc(o.teacher_profiles?.display_name)} · ${esc(o.subjects?.name_fr)} · ${esc(o.chapters?.title)} · ${o.token_price} jetons</small></div><div><button data-offer-action="rejected" data-offer-id="${o.id}">Refuser</button><button class="approve" data-offer-action="published" data-offer-id="${o.id}">Publier</button></div></article>`).join("") || "<p>Aucune offre en attente.</p>"}</div></div>`,
+      `<div class="studio-shell moderation"><span class="kicker">NOQTA · MODÉRATION</span><h2>File de validation.</h2><h3>Professeurs (${pendingTeachers.length})</h3><div class="moderation-list">${pendingTeachers.map((t) => `<article><div><b>${esc(t.display_name)}</b><small>${esc(t.city)} · ${t.experience_years} an(s) · ${esc(t.languages.join(", "))}</small><p>${esc(t.bio)}</p></div><div><button data-teacher-action="rejected" data-teacher-id="${t.user_id}">Refuser</button><button class="approve" data-teacher-action="verified" data-teacher-id="${t.user_id}">Vérifier</button></div></article>`).join("") || "<p>Aucun profil en attente.</p>"}</div><h3>Explications (${pendingOffers.length})</h3><div class="moderation-list">${pendingOffers.map((o) => `<article><div><b>${esc(o.title)}</b><small>${esc(o.teacher_profiles?.display_name)} · ${esc(o.subjects?.name_fr)} · ${esc(o.chapters?.title)} · ${o.token_price} jetons</small></div><div><button data-offer-action="rejected" data-offer-id="${o.id}">Refuser</button><button class="approve" data-offer-action="published" data-offer-id="${o.id}">Publier</button></div></article>`).join("") || "<p>Aucune offre en attente.</p>"}</div><h3>Paiements (${pendingPayments.length})</h3><div class="moderation-list">${pendingPayments.map((o) => `<article><div><b>${o.amount_mad} MAD · ${o.tokens} jetons</b><small>${esc(o.method)} · réf. ${o.id}</small></div><div><button class="approve" data-confirm-payment="${o.id}">Confirmer après vérification</button></div></article>`).join("") || "<p>Aucun paiement à vérifier.</p>"}</div></div>`,
     );
     document.querySelectorAll("[data-teacher-action]").forEach(
       (b) =>
@@ -224,6 +253,26 @@
             })
             .eq("id", b.dataset.offerId);
           toast("Offre mise à jour.");
+          openModeration();
+        }),
+    );
+    document.querySelectorAll("[data-confirm-payment]").forEach(
+      (b) =>
+        (b.onclick = async () => {
+          const reference = window.prompt(
+            "Référence du reçu bancaire / agence vérifié :",
+          );
+          if (!reference) return;
+          b.disabled = true;
+          const { error } = await db.rpc("confirm_payment_order", {
+            p_order: b.dataset.confirmPayment,
+            p_provider_reference: reference,
+          });
+          if (error) {
+            b.disabled = false;
+            return toast(error.message);
+          }
+          toast("Paiement confirmé et jetons crédités.");
           openModeration();
         }),
     );
@@ -355,8 +404,9 @@
     const x = offers.find((o) => o.id === id);
     if (!x) return;
     openModal(
-      `<div class="offer-detail"><div class="detail-video ${tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>▶ Aperçu vidéo</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Durée</dt><dd>${x.duration_minutes} min</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl><div class="detail-price"><b>${x.token_price} jetons</b><button disabled>Acheter →</button></div></div></div>`,
+      `<div class="offer-detail"><div class="detail-video ${tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>▶ Aperçu vidéo</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Durée</dt><dd>${x.duration_minutes} min</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl><div class="detail-price"><b>${x.token_price} jetons</b><button class="studio-primary" data-buy="${x.id}">${purchases.has(x.id) ? "Déjà acheté ✓" : "Acheter →"}</button></div><small class="secure-note">Paiement en jetons · débit atomique · aucun double achat.</small></div></div>`,
     );
+    document.querySelector("[data-buy]").onclick = () => purchaseOffer(x);
     if (session)
       db.from("teacher_watch_history").upsert({
         user_id: session.user.id,
@@ -364,6 +414,107 @@
         watched_seconds: 0,
         last_watched_at: new Date().toISOString(),
       });
+  }
+  async function refreshWallet() {
+    if (!session) return;
+    const [{ data: w }, { data: bought = [] }] = await Promise.all([
+      db
+        .from("wallets")
+        .select("balance")
+        .eq("user_id", session.user.id)
+        .maybeSingle(),
+      db
+        .from("teacher_offer_purchases")
+        .select("offer_id")
+        .eq("buyer_id", session.user.id),
+    ]);
+    walletBalance = w?.balance || 0;
+    purchases = new Set(bought.map((x) => x.offer_id));
+    mountWalletButton();
+  }
+  function mountWalletButton() {
+    if (!session) return;
+    let button = document.querySelector("#walletButton");
+    if (!button) {
+      button = document.createElement("button");
+      button.id = "walletButton";
+      button.className = "wallet-entry";
+      document.querySelector(".market-header nav").prepend(button);
+    }
+    button.innerHTML = `<span>●</span> ${walletBalance.toLocaleString("fr-MA")} jetons`;
+    button.onclick = openWallet;
+  }
+  async function purchaseOffer(offer) {
+    if (!session) return requireAuth(() => purchaseOffer(offer));
+    if (purchases.has(offer.id))
+      return toast("Cette explication est déjà dans ton espace.");
+    const button = document.querySelector("[data-buy]");
+    button.disabled = true;
+    button.textContent = "Achat sécurisé…";
+    const { error } = await db.rpc("purchase_teacher_offer", {
+      p_offer: offer.id,
+    });
+    if (error) {
+      button.disabled = false;
+      button.textContent = "Acheter →";
+      if (/solde/i.test(error.message)) return openWallet();
+      return toast(error.message);
+    }
+    await refreshWallet();
+    closeModal();
+    toast("Explication achetée. Elle est maintenant dans ton espace.");
+  }
+  async function openWallet() {
+    if (!session) return requireAuth(openWallet);
+    const [{ data: orders = [] }, { data: transactions = [] }] =
+      await Promise.all([
+        db
+          .from("payment_orders")
+          .select("id,amount_mad,tokens,method,status,created_at")
+          .eq("user_id", session.user.id)
+          .order("created_at", { ascending: false })
+          .limit(8),
+        db
+          .from("wallet_transactions")
+          .select("id,amount,kind,description,created_at")
+          .eq("user_id", session.user.id)
+          .order("created_at", { ascending: false })
+          .limit(8),
+      ]);
+    openModal(
+      `<div class="wallet-shell"><span class="kicker">PORTEFEUILLE NOQTA</span><div class="wallet-balance"><small>Solde disponible</small><strong>${walletBalance.toLocaleString("fr-MA")}</strong><span>jetons</span></div><div class="token-pack"><div><span class="token-picto">✦</span><div><b>Pack Pro</b><small>2 000 jetons · 10 jetons = 1 MAD</small></div></div><strong>200 MAD</strong></div><h3>Choisir le mode de règlement</h3><div class="payment-methods"><button data-pay="card"><span>▣</span><b>Carte bancaire</b><small>Passerelle sécurisée</small></button><button data-pay="wafacash"><span>W</span><b>Wafacash</b><small>Paiement en agence</small></button><button data-pay="barid"><span>B</span><b>Barid Cash</b><small>Paiement en agence</small></button><button data-pay="transfer"><span>⇄</span><b>Virement</b><small>Validation manuelle</small></button></div><p class="payment-disclaimer">Une commande ne crédite jamais le solde avant confirmation du paiement.</p><h3>Historique</h3><div class="wallet-history">${orders.map((o) => `<article><div><b>Recharge ${o.tokens.toLocaleString("fr-MA")} jetons</b><small>${esc(o.method)} · ${new Date(o.created_at).toLocaleDateString("fr-MA")}</small></div><span class="pay-status ${o.status}">${esc(o.status)}</span></article>`).join("") || transactions.map((t) => `<article><div><b>${esc(t.description)}</b><small>${new Date(t.created_at).toLocaleDateString("fr-MA")}</small></div><strong class="${t.amount > 0 ? "positive" : ""}">${t.amount > 0 ? "+" : ""}${t.amount}</strong></article>`).join("") || "<p>Aucun mouvement pour le moment.</p>"}</div></div>`,
+    );
+    document
+      .querySelectorAll("[data-pay]")
+      .forEach(
+        (button) =>
+          (button.onclick = () => createPaymentOrder(button.dataset.pay)),
+      );
+  }
+  async function createPaymentOrder(method) {
+    const status =
+      method === "transfer"
+        ? "awaiting_transfer"
+        : ["wafacash", "barid"].includes(method)
+          ? "awaiting_cash"
+          : "pending";
+    const { data, error } = await db
+      .from("payment_orders")
+      .insert({
+        user_id: session.user.id,
+        product_type: "token_pack",
+        product_code: "pro-2000",
+        amount_mad: 200,
+        tokens: 2000,
+        method,
+        status,
+      })
+      .select("id")
+      .single();
+    if (error) return toast(error.message);
+    openModal(
+      `<div class="payment-created"><span class="kicker">COMMANDE CRÉÉE</span><div class="reference-picto">✓</div><h2>Ta référence Noqta</h2><code>${esc(data.id)}</code><p>${method === "card" ? "La commande est prête. Le paiement par carte sera activé dès la connexion du prestataire bancaire." : "Présente cette référence lors du règlement. Les jetons seront crédités après validation réelle du paiement."}</p><button class="studio-primary" data-close>Compris</button></div>`,
+    );
   }
   async function favorite(id) {
     if (!session) return requireAuth(() => favorite(id));
