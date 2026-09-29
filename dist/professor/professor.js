@@ -122,6 +122,29 @@
       fav = favorites.has(x.id);
     return `<article class="teacher-card"><button class="video-slot ${tones[x.subject_id] || "lilac"}" data-offer="${x.id}"><span class="preview-tag">APERÇU · ${x.duration_minutes} MIN</span><div class="visual-symbol">${symbol(x.subject_id)}</div><span class="play"><svg viewBox="0 0 48 48"><path d="m19 14 17 10-17 10z"/></svg></span><small>VOIR SA FAÇON D’EXPLIQUER</small></button><div class="teacher-meta"><div class="teacher-placeholder"><span>${esc((t.display_name || "P")[0])}</span><div><b>${esc(t.display_name || "Professeur Noqta")}</b><small>✓ Profil vérifié</small></div></div><button class="heart ${fav ? "saved" : ""}" data-favorite="${x.id}">${fav ? "♥" : "♡"}</button></div><span class="subject-pill">${esc(names[x.subject_id] || x.subject_id)}</span><h3>${esc(x.title)}</h3><p>${esc(x.chapters?.title)}</p><div class="card-foot"><span>À partir de</span><b>${x.token_price} <small>jetons</small></b></div></article>`;
   }
+  function waitingGallery() {
+    const frames = [
+      [
+        "lilac",
+        "VISUALISER",
+        '<svg viewBox="0 0 120 120"><path d="M18 82c19-40 38-40 57 0s31 20 31-17"/><circle cx="25" cy="68" r="7"/><circle cx="61" cy="60" r="7"/><path d="M78 24h28v28H78zM85 31l14 14M99 31 85 45"/></svg>',
+        "Une idée devient un schéma.",
+      ],
+      [
+        "lime",
+        "PAS À PAS",
+        '<svg viewBox="0 0 120 120"><path d="M18 91h24V68h24V45h36"/><circle cx="30" cy="79" r="5"/><circle cx="54" cy="57" r="5"/><circle cx="83" cy="45" r="5"/><path d="m92 34 11 11-11 11"/></svg>',
+        "Chaque étape trouve sa place.",
+      ],
+      [
+        "blue",
+        "MÉTHODE BAC",
+        '<svg viewBox="0 0 120 120"><path d="M27 21h55l13 13v65H27zM82 21v17h16M40 52h39M40 66h30M40 80h19"/><path d="m72 83 8 8 18-23"/></svg>',
+        "Du sujet à la rédaction juste.",
+      ],
+    ];
+    return `<div class="waiting-stage"><div class="waiting-copy"><span>0 EXPLICATION PUBLIÉE</span><h3>Les formes sont là.<br><em>Les voix arrivent.</em></h3><p>Chaque cadre attend une vraie vidéo validée par Noqta. Dès sa publication, la carte du professeur prend automatiquement sa place.</p></div><div class="waiting-frames">${frames.map(([tone, label, svg, copy], i) => `<article class="waiting-card ${tone}"><div class="waiting-index">0${i + 1}</div><div class="waiting-picto">${svg}</div><small>${label}</small><b>${copy}</b><div class="waiting-slot"><i></i><span>EMPLACEMENT VIDÉO</span></div></article>`).join("")}</div></div>`;
+  }
   function render() {
     const q = search.value.trim().toLowerCase(),
       max = +range.value,
@@ -137,9 +160,7 @@
               .toLowerCase()
               .includes(q)),
       );
-    grid.innerHTML =
-      shown.map(card).join("") ||
-      '<div class="empty-result"><b>Les premières explications arrivent bientôt.</b><p>Aucune offre publiée ne correspond encore à ces critères.</p></div>';
+    grid.innerHTML = shown.map(card).join("") || waitingGallery();
     document.querySelector("#resultCount").textContent =
       `${shown.length} explication${shown.length > 1 ? "s" : ""}`;
   }

@@ -548,6 +548,113 @@ main {
   border-radius: 18px;
   text-align: center;
 }
+.waiting-stage {
+  grid-column: 1/-1;
+  display: grid;
+  gap: 24px;
+}
+.waiting-copy {
+  border: 1px solid var(--ink);
+  border-radius: 24px;
+  padding: 32px 36px;
+  background: #fff;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 8px 30px;
+  align-items: end;
+}
+.waiting-copy > span {
+  font: 700 8px Manrope;
+  letter-spacing: 0.17em;
+}
+.waiting-copy h3 {
+  grid-row: 2;
+  font: 800 clamp(30px, 4vw, 52px)/0.96 Manrope;
+  margin: 8px 0;
+}
+.waiting-copy h3 em {
+  font-family: "Playfair Display";
+  font-weight: 600;
+}
+.waiting-copy p {
+  grid-column: 2;
+  grid-row: 1/3;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 480px;
+}
+.waiting-frames {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.waiting-card {
+  position: relative;
+  min-height: 350px;
+  border: 1px solid var(--ink);
+  border-radius: 24px;
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+}
+.waiting-card:nth-child(2) {
+  transform: translateY(14px);
+}
+.waiting-card:hover {
+  transform: translateY(-6px) rotate(-0.6deg);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+.waiting-index {
+  position: absolute;
+  right: 18px;
+  top: 17px;
+  font: 800 10px Manrope;
+}
+.waiting-picto {
+  height: 165px;
+  display: grid;
+  place-items: center;
+}
+.waiting-picto svg {
+  width: 125px;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.waiting-card > small {
+  font: 800 8px Manrope;
+  letter-spacing: 0.14em;
+}
+.waiting-card > b {
+  font: 800 18px/1.25 Manrope;
+  max-width: 220px;
+  margin: 8px 0 22px;
+}
+.waiting-slot {
+  margin-top: auto;
+  border-top: 1px solid rgba(21, 23, 22, 0.35);
+  padding-top: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.waiting-slot i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid;
+  box-shadow: 3px 0 0 var(--ink);
+}
+.waiting-slot span {
+  font-size: 7px;
+  letter-spacing: 0.13em;
+  font-weight: 700;
+}
 .teacher-call {
   margin: 25px 0 75px;
   padding: 45px;
@@ -665,6 +772,20 @@ footer a {
   }
   .teacher-grid {
     grid-template-columns: 1fr;
+  }
+  .waiting-copy {
+    grid-template-columns: 1fr;
+    padding: 25px;
+  }
+  .waiting-copy p {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .waiting-frames {
+    grid-template-columns: 1fr;
+  }
+  .waiting-card:nth-child(2) {
+    transform: none;
   }
   .results-head {
     align-items: flex-start;
