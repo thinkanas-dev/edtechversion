@@ -1,194 +1,1329 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#ffffff" />
-  <title>Noqta — Ton système personnel pour le Bac</title>
-  <meta name="description" content="Préparation personnalisée au Bac marocain, centrée sur le cadre de référence et l’objectif de note." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="stylesheet" href="landing.css" />
-  <link rel="stylesheet" href="app.css" />
-  <link rel="stylesheet" href="library.css" />
-  <link rel="stylesheet" href="dashboard.css" />
-  <link rel="stylesheet" href="topbar.css" />
-  <link rel="stylesheet" href="logo.css" />
-  <link rel="stylesheet" href="avatar.css" />
-  <link rel="stylesheet" href="billing.css" />
-  <link rel="stylesheet" href="billing-v2.css" />
-  <link rel="stylesheet" href="brand.css" />
-</head>
-<body class="landing-active">
-  <div id="landing" class="landing">
-    <header class="l-header">
-      <a class="l-logo" href="#welcome" aria-label="Noqta accueil"><img class="official-logo" src="assets/noqta-logo.png" alt="Noqta"></a>
-      <button class="landing-menu-toggle" type="button" aria-expanded="false" aria-controls="landingNavigation">Menu <span aria-hidden="true">+</span></button>
-      <nav id="landingNavigation" aria-label="Découvrir Noqta"><a href="#approche">L’approche</a><a href="#ressources">Nos ressources</a><a href="/professor/">Professeurs</a><a href="#tarifs">Les offres</a><a href="#questions">Questions</a></nav>
-      <div class="l-account"><svg class="morocco-flag" viewBox="0 0 60 40" role="img" aria-label="Maroc"><rect width="60" height="40" fill="#c1272d"/><path d="M30 10 35.88 28.09 20.49 16.91 39.51 16.91 24.12 28.09Z" fill="none" stroke="#006233" stroke-width="1.8"/></svg><button class="l-space" type="button" data-auth-open>Mon espace <span class="space-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M10 7h7v7"/></svg></span></button></div>
-    </header>
-    <main class="l-main" id="welcome">
-      <section class="l-hero" aria-labelledby="landing-title">
-        <div class="l-kicker"><span>2e BAC MAROCAIN · UN NOUVEAU POINT DE DÉPART</span><span lang="ar" dir="rtl">كل نقطة كتفرق</span></div>
-        <div class="hero-composition">
-          <div class="hero-copy"><div class="hero-overline"><span class="tiny-orbit" aria-hidden="true"></span>Du « pourquoi ? » au « j’ai compris ».</div><h1 id="landing-title">Le déclic.<br><em>Et la suite.</em></h1><p>Cours, exercices corrigés et annales du Bac marocain, organisés selon ta filière.</p><div class="hero-actions"><button class="l-button" data-enter>Choisir mon parcours <span aria-hidden="true">↗</span></button><a class="underlink" href="#ressources">Découvrir les ressources <span aria-hidden="true">↓</span></a></div><small>Prototype à explorer · Aucun paiement</small></div>
-          <figure class="hero-art" data-parallax><img id="heroArtwork" src="assets/declic.webp" width="1254" height="1254" decoding="async" fetchpriority="high" alt="Un ruban lilas traverse un cadre vert et devient un escalier : une idée qui se transforme en progression."><figcaption><span>LA PETITE ÉTINCELLE</span><em>qui change la suite.</em></figcaption><span class="art-stamp" aria-hidden="true">Bac<br><em>& toi.</em></span></figure>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Noqta — Ton système personnel pour le Bac</title>
+    <meta
+      name="description"
+      content="Préparation personnalisée au Bac marocain, centrée sur le cadre de référence et l’objectif de note."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="landing.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="library.css" />
+    <link rel="stylesheet" href="reader.css" />
+    <link rel="stylesheet" href="dashboard.css" />
+    <link rel="stylesheet" href="topbar.css" />
+    <link rel="stylesheet" href="logo.css" />
+    <link rel="stylesheet" href="avatar.css" />
+    <link rel="stylesheet" href="billing.css" />
+    <link rel="stylesheet" href="billing-v2.css" />
+    <link rel="stylesheet" href="brand.css" />
+  </head>
+  <body class="landing-active">
+    <div id="landing" class="landing">
+      <header class="l-header">
+        <a class="l-logo" href="#welcome" aria-label="Noqta accueil"
+          ><img class="official-logo" src="assets/noqta-logo.png" alt="Noqta"
+        /></a>
+        <button
+          class="landing-menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="landingNavigation"
+        >
+          Menu <span aria-hidden="true">+</span>
+        </button>
+        <nav id="landingNavigation" aria-label="Découvrir Noqta">
+          <a href="#approche">L’approche</a
+          ><a href="#ressources">Nos ressources</a
+          ><a href="/professor/">Professeurs</a><a href="#tarifs">Les offres</a
+          ><a href="#questions">Questions</a>
+        </nav>
+        <div class="l-account">
+          <svg
+            class="morocco-flag"
+            viewBox="0 0 60 40"
+            role="img"
+            aria-label="Maroc"
+          >
+            <rect width="60" height="40" fill="#c1272d" />
+            <path
+              d="M30 10 35.88 28.09 20.49 16.91 39.51 16.91 24.12 28.09Z"
+              fill="none"
+              stroke="#006233"
+              stroke-width="1.8"
+            /></svg
+          ><button class="l-space" type="button" data-auth-open>
+            Mon espace
+            <span class="space-arrow" aria-hidden="true"
+              ><svg viewBox="0 0 24 24"><path d="M7 17 17 7M10 7h7v7" /></svg
+            ></span>
+          </button>
         </div>
-        <div class="hero-bottom"><span>Moins de par cœur.<br><b>Plus de liens qui se créent.</b></span><div class="subject-ribbon" aria-label="Sciences"><span>ƒ(x) <b>Maths</b></span><span>Δ <b>Physique</b></span><span>∞ <b>Curiosité</b></span></div><a href="#approche" class="scroll-link">Le chemin commence ici <span aria-hidden="true">↓</span></a></div>
-      </section>
-
-      <section class="program-section l-reveal" id="approche" aria-labelledby="program-title">
-        <div class="program-heading"><div lang="ar" dir="rtl"><span class="moroccan-label"><b>الشعبة ديالك</b><i>كل مسار عندو طريقو</i></span><h2 id="program-title">من الشعبة ديالك<br><em>للنقطة اللي باغي.</em></h2></div><p lang="ar" dir="rtl">نقطة كترتّب ليك البرنامج على حساب الشعبة ديالك: كتشوف المواد اللي كاتخصك، ومن بعد كتلقى كل درس، تمرين وامتحان فبلاصتو.</p></div>
-        <figure class="bac-bookshelf" aria-label="Bibliothèque Noqta organisée du choix de la filière jusqu’aux annales du Bac">
-          <img src="noqta-bookshelf.png" alt="Bibliothèque sombre remplie de livres scolaires colorés" />
-          <div class="shelf-title" lang="ar" dir="rtl"><span>مكتبة الباك</span><h3>ما كتقلّبش على الدرس.<br><em>هو اللي كيلقاك.</em></h3></div>
-          <div class="shelf-row shelf-tracks" lang="ar" dir="rtl"><span class="row-number">01</span><b>الشعبة ديالك</b><div><i>SM</i><i>PC</i><i>SVT</i></div></div>
-          <div class="shelf-row shelf-subjects" lang="ar" dir="rtl"><span class="row-number">02</span><b>المواد ديالك</b><div><i>الرياضيات</i><i>الفيزياء</i><i>علوم الحياة والأرض</i></div></div>
-          <div class="shelf-row shelf-tools" lang="ar" dir="rtl"><span class="row-number">03</span><b>باش توجد للباك</b><div><i>الدروس</i><i>التمارين</i><i>الوطنيات</i><i>التصحيح</i></div></div>
-          <figcaption lang="ar" dir="rtl"><span>كل رف كيتحل على حساب المسار ديالك.</span><b>من الشعبة… حتى للنقطة.</b><i aria-hidden="true">ن</i></figcaption>
-        </figure>
-      </section>
-
-      <section class="resources-section l-reveal" id="ressources" aria-labelledby="resources-title">
-        <div class="resources-heading"><div><span class="l-eyebrow">02 — TOUT POUR PRÉPARER TON BAC</span><h2 id="resources-title">Tout est là.<br><em>À toi d’avancer.</em></h2></div><p>Noqta rassemble les ressources utiles du programme marocain dans un seul espace, classées par filière, matière et chapitre.</p></div>
-        <div class="resources-grid">
-          <article class="resource-card resource-featured"><span class="resource-number">01</span><div class="resource-icon icon-course" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="icon-fill" d="M11 17c8-4 15-3 21 3v31c-6-6-13-7-21-3z"/><path d="M53 17c-8-4-15-3-21 3v31c6-6 13-7 21-3zM32 20v31M17 27c4-1 7 0 10 2M17 34c4-1 7 0 10 2"/><circle cx="49" cy="12" r="5"/></svg></div><span class="resource-label">COMPRENDRE</span><h3>Des cours clairs,<br>chapitre par chapitre.</h3><p>Des explications structurées, des résumés et les notions essentielles pour reprendre un chapitre à ton rythme.</p><button class="resource-link" data-enter>Explorer les cours <span aria-hidden="true">↗</span></button></article>
-          <article class="resource-card"><span class="resource-number">02</span><div class="resource-icon icon-exercise" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="icon-fill" d="M15 11h31v42H15z"/><path d="M23 22h15M23 31h11M23 40h8M42 37l4 4 8-10"/><circle cx="46" cy="16" r="8"/></svg></div><span class="resource-label">S’ENTRAÎNER</span><h3>Exercices et<br>corrigés détaillés.</h3><p>Des exercices progressifs avec une méthode expliquée étape par étape, pas seulement la réponse finale.</p><button class="resource-link" data-enter>Voir les exercices <span aria-hidden="true">↗</span></button></article>
-          <article class="resource-card"><span class="resource-number">03</span><div class="resource-icon icon-annales" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="icon-back" d="M12 15h29v37H12z"/><path class="icon-fill" d="M20 9h31v39H20z"/><path d="M27 20h16M27 28h12M27 36h7M37 38l4 4 9-11M12 21H8v37h29v-5"/><circle cx="47" cy="13" r="3"/></svg></div><span class="resource-label">SE PRÉPARER</span><h3>Annales du Bac<br>avec leurs corrigés.</h3><p>Retrouve les sujets des années précédentes, travaille en conditions réelles puis consulte la correction.</p><button class="resource-link" data-enter>Parcourir les annales <span aria-hidden="true">↗</span></button></article>
-          <article class="resource-card resource-accent"><span class="resource-number">04</span><div class="resource-icon icon-track" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="icon-fill" d="M32 10 45 23 32 36 19 23z"/><path d="M32 36v17M32 43H18v10M32 43h14v10M13 53h10M41 53h10"/><circle cx="32" cy="23" r="4"/><circle cx="13" cy="53" r="4"/><circle cx="51" cy="53" r="4"/></svg></div><span class="resource-label">SE REPÉRER</span><h3>Un parcours adapté<br>à ta filière.</h3><p>Sciences Maths, Sciences Physiques ou SVT : accède directement aux matières et contenus qui te concernent.</p><button class="resource-link" data-enter>Choisir ma filière <span aria-hidden="true">↗</span></button></article>
-        </div>
-        <div class="resources-strip" aria-label="Ressources proposées"><span>Cours</span><i>•</i><span>Résumés</span><i>•</i><span>Exercices corrigés</span><i>•</i><span>Annales</span><i>•</i><span>Quiz</span></div>
-      </section>
-
-      <section class="pricing-section l-reveal" id="tarifs" aria-labelledby="pricing-title">
-        <div class="pricing-heading"><span class="l-eyebrow">04 — CHOISIS TON NIVEAU D’ACCOMPAGNEMENT</span><h2 id="pricing-title">Le même objectif.<br><em>Trois façons d’y arriver.</em></h2><p>Commence avec deux matières, révise tout le programme ou avance avec un accompagnement rapproché.</p></div>
-        <div class="pricing-grid">
-          <article class="price-card essential"><div class="plan-top"><div class="plan-icon" aria-hidden="true"><svg viewBox="0 0 72 72"><path class="plan-fill" d="M13 18c10-5 18-3 23 3v39c-6-6-14-8-23-3z"/><path d="M59 18c-10-5-18-3-23 3v39c6-6 14-8 23-3zM36 21v39M20 30h9M20 39h9M43 30h9M43 39h9"/><circle cx="17" cy="14" r="5"/><circle cx="55" cy="14" r="5"/></svg></div><span class="plan-index">01</span></div><span class="offer-state">PRÉPARATION CIBLÉE</span><h3>Noqta<br><em>Essentiel</em></h3><div class="plan-promise"><b>2</b><span>matières<br>de ton choix</span></div><p>Concentre tes efforts sur les deux matières qui comptent le plus pour toi.</p><ul><li>Tous les cours des 2 matières choisies</li><li>Toutes leurs annales du Bac</li><li>Corrigés détaillés</li><li>Exercices et quiz associés</li></ul><button class="plan-button" data-enter>Choisir Essentiel <span aria-hidden="true">↗</span></button></article>
-          <article class="price-card plus"><div class="recommended-ribbon">LE CHOIX COMPLET</div><div class="plan-top"><div class="plan-icon" aria-hidden="true"><svg viewBox="0 0 72 72"><circle class="plan-fill" cx="36" cy="35" r="23"/><circle cx="36" cy="35" r="6"/><path d="M36 29V15M31 38 19 46M41 38l12 8M18 17c4-5 9-8 15-9M54 17c-4-5-9-8-15-9M14 52c5 7 12 11 22 11s17-4 22-11"/><circle cx="36" cy="10" r="4"/><circle cx="17" cy="48" r="4"/><circle cx="55" cy="48" r="4"/></svg></div><span class="plan-index">02</span></div><span class="offer-state">PRÉPARATION COMPLÈTE</span><h3>Noqta<br><em>Plus</em></h3><div class="plan-promise"><b>∞</b><span>toutes les<br>matières</span></div><p>Tout le programme et l’énergie d’une grande communauté d’élèves.</p><ul><li>Tous les cours, toutes les matières</li><li>Toutes les annales et leurs corrigés</li><li>Exercices et quiz</li><li>Classe virtuelle générale</li></ul><button class="plan-button" data-enter>Choisir Plus <span aria-hidden="true">↗</span></button></article>
-          <article class="price-card pro"><div class="plan-top"><div class="plan-icon" aria-hidden="true"><svg viewBox="0 0 72 72"><path class="plan-fill" d="M12 15h48v35H42l-6 8-6-8H12z"/><path d="M20 42c2-7 7-11 16-11s14 4 16 11M36 17a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM17 22h6M49 22h6"/><circle cx="17" cy="22" r="3"/><circle cx="55" cy="22" r="3"/></svg></div><span class="plan-index">03</span></div><span class="offer-state">ACCOMPAGNEMENT PREMIUM</span><h3>Noqta<br><em>Pro</em></h3><div class="plan-promise"><b>15</b><span>élèves max.<br>+ 1-to-1</span></div><p>Un petit groupe pour participer davantage, complété par un suivi individuel.</p><ul><li>Tout ce qui est inclus dans Noqta Plus</li><li>Classe virtuelle de 15 élèves maximum</li><li>Sessions individuelles 1-to-1</li><li>Suivi pédagogique rapproché</li></ul><button class="plan-button" data-enter>Choisir Pro <span aria-hidden="true">↗</span></button></article>
-        </div><p class="pricing-footnote">Les tarifs de lancement et les modalités d’inscription seront annoncés avant l’ouverture des abonnements.</p>
-      </section>
-
-      <section class="l-faq l-reveal" id="questions"><div><span class="l-eyebrow">05 — TOUT SIMPLEMENT</span><h2>Les bonnes<br><em>questions.</em></h2><p>Ce qui existe, ce qui arrive.<br>On fait la différence.</p></div><div class="faq-list"><details><summary>Qu’est-ce que je peux essayer maintenant ?</summary><p>La configuration de ton parcours : profil, filière et matières. Le parcours est conservé dans ton navigateur, sans compte en ligne ni synchronisation entre appareils.</p></details><details><summary>Les cours et le professeur IA sont-ils disponibles ?</summary><p>Pas encore. Les cours, annales, diagnostics, estimations et outils IA sont à développer. Les aperçus de cette page expliquent la direction du produit ; ils ne sont pas des résultats réels.</p></details><details><summary>Comment sera respecté le programme marocain ?</summary><p>Les contenus et coefficients devront être associés au cadre de référence de la filière et de l’année concernées, puis validés avant publication. Ce prototype ne constitue pas une préparation officiellement validée.</p></details><details id="billing-faq"><summary>Quelle formule Noqta choisir ?</summary><p>Essentiel couvre deux matières au choix. Plus ouvre toutes les matières et la classe virtuelle générale. Pro ajoute une classe virtuelle limitée à 15 élèves et des sessions individuelles 1-to-1. Les tarifs seront publiés avant l’ouverture des abonnements.</p></details><details><summary>Puis-je déjà rejoindre ma classe ?</summary><p>Non. Les champs établissement et classe sont un brouillon temporaire. Les groupes, invitations et outils de gestion professeur nécessitent encore une connexion au LMS et des contrôles d’accès.</p></details></div></section>
-      <section class="l-closing l-reveal"><span class="closing-kicker" lang="ar" dir="rtl">نقطة بداية جديدة</span><h2>Et si tout partait<br><em>d’un déclic ?</em></h2><button class="l-button" data-enter>Trouver mon point de départ <span aria-hidden="true">↗</span></button><p>2e Bac marocain. Ta filière. Ta façon d’avancer.</p><span class="closing-word" aria-hidden="true">noqta.</span></section>
-    </main>
-    <footer class="l-footer"><a class="l-logo" href="#welcome"><img class="official-logo" src="assets/noqta-logo.png" alt="Noqta"></a><span>Chaque point compte.</span><nav aria-label="Pied de page"><a href="#ressources">Ressources</a><a href="#tarifs">Offres</a><a href="#questions">Questions</a></nav><small>PROTOTYPE · CONÇU POUR LE BAC MAROCAIN</small></footer>
-  </div>
-  <section class="auth-shell" id="authShell" aria-label="Connexion à Noqta" hidden>
-    <button class="auth-close" type="button" data-auth-close aria-label="Fermer">×</button>
-    <div class="auth-brand"><img src="assets/noqta-logo.png" alt="Noqta"></div>
-    <div class="auth-card">
-      <div class="auth-copy"><span class="eyebrow">TON ESPACE ESSENTIEL</span><h1>Deux matières.<br><em>Toute ton attention.</em></h1><p>Retrouve tes cours, tes annales et ta progression sur tous tes appareils.</p></div>
-      <form id="authForm" class="auth-form">
-        <div class="auth-tabs"><button type="button" class="active" data-auth-mode="signin">Connexion</button><button type="button" data-auth-mode="signup">Créer un compte</button></div>
-        <label class="signup-only" hidden>Prénom et nom<input id="authName" autocomplete="name" minlength="2" placeholder="Yassine El Amrani"></label>
-        <label>Adresse email<input id="authEmail" type="email" autocomplete="email" required placeholder="prenom@email.com"></label>
-        <label>Mot de passe<input id="authPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 caractères minimum"></label>
-        <button class="auth-submit" type="submit">Se connecter <span>→</span></button>
-        <button class="auth-forgot" type="button" data-forgot>Mot de passe oublié ?</button>
-        <p class="auth-message" id="authMessage" role="status"></p>
-      </form>
-    </div>
-  </section>
-
-  <section class="onboarding" id="onboarding" aria-label="Configuration de votre espace Noqta">
-    <header class="onboarding-top"><button class="brand" aria-label="Noqta"><img class="official-logo" src="assets/noqta-logo.png" alt="Noqta"></button><span class="setup-step">CONFIGURATION · <b id="stepCount">1/4</b></span></header>
-    <div class="setup-progress"><i id="setupProgress"></i></div>
-    <form class="onboarding-card" id="onboardingForm">
-      <section class="setup-panel active" data-step="1"><span class="eyebrow">BIENVENUE SUR NOQTA</span><h1>Vous êtes ici pour<br><em>apprendre ou transmettre ?</em></h1><p>Votre réponse adapte entièrement l’espace, les outils et le vocabulaire.</p><div class="choice-grid role-grid"><button type="button" class="setup-choice" data-role="student"><span class="choice-art student-art">↗</span><b>Je suis élève</b><small>Préparer mon Bac et atteindre ma note cible.</small></button><button type="button" class="setup-choice" data-role="teacher"><span class="choice-art teacher-art">✦</span><b>Je suis professeur</b><small>Organiser mes matières et accompagner mes élèves.</small></button></div></section>
-      <section class="setup-panel" data-step="2"><span class="eyebrow">VOTRE NIVEAU</span><h1>Quelle classe<br><em>vous concerne ?</em></h1><p>Noqta est actuellement conçu exclusivement pour l’examen national de 2e année Bac.</p><div class="choice-grid"><button type="button" class="setup-choice wide selected" data-level="2bac"><span class="level-mark">02</span><b>2e année Baccalauréat</b><small>Programme national marocain · année scolaire à confirmer</small></button></div></section>
-      <section class="setup-panel" data-step="3"><span class="eyebrow">FILIÈRE SCIENTIFIQUE</span><h1>Choisissez votre<br><em>cadre de travail.</em></h1><p>Nomenclature vérifiée sur les publications officielles du ministère.</p><div class="track-grid" id="trackGrid"></div></section>
-      <section class="setup-panel" data-step="4"><span class="eyebrow">MATIÈRES</span><h1>Que souhaitez-vous<br><em>travailler en priorité ?</em></h1><p>Sélectionnez une ou plusieurs matières. Les coefficients et contenus seront activés après validation du référentiel annuel.</p><div class="subject-grid" id="subjectGrid"></div><div class="official-note"><span>✓</span><div><b>Cadre de référence protégé</b><small>Aucune donnée pédagogique non vérifiée ne sera présentée comme officielle.</small></div></div></section>
-      <section class="setup-panel" data-step="5"><span class="eyebrow">ÉTABLISSEMENT & CLASSE</span><h1>Le même lycée.<br><em>Le même élan.</em></h1><p>Préparez les informations de votre classe. Cette étape est facultative : la connexion aux établissements et aux groupes n’est pas encore active.</p><div class="school-fields"><label>Ville<input id="schoolCity" autocomplete="address-level2" maxlength="100" placeholder="Votre ville"></label><label>Établissement<input id="schoolName" autocomplete="off" maxlength="160" placeholder="Nom complet du lycée"></label><label>Classe<input id="schoolClass" autocomplete="off" maxlength="80" placeholder="Ex. 2 Bac SM A — 1"></label></div><div class="school-group-note"><b>Retrouver ma classe · Sur invitation</b><p>La création du groupe et le lien pour inviter vos camarades seront activés après la connexion du LMS. Aucun élève n’est ajouté automatiquement.</p><small>Ces trois champs sont un brouillon temporaire : ils ne sont ni enregistrés, ni transmis.</small></div></section>
-      <footer class="setup-actions"><button type="button" class="setup-back" id="setupBack">Retour</button><button type="button" class="setup-next" id="setupNext" disabled>Continuer <span>→</span></button></footer>
-    </form>
-  </section>
-  <div class="app-shell">
-    <aside class="sidebar" aria-label="Navigation principale">
-      <button class="brand" data-route="home" aria-label="Accueil Noqta"><img class="official-logo" src="assets/noqta-logo.png" alt="Noqta"></button>
-      <nav class="desktop-nav">
-        <div class="nav-intro"><span>PRÉPARATION 2027</span><b>Mon espace Bac</b></div>
-        <button class="nav-item active nav-overview" data-route="home"><span class="nav-number">01</span><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m5 8 4-4 4 4-4 4zM13 12l4-4 3 3-4 4zM5 16l3-3 5 5-3 3z"/><circle cx="17.5" cy="18.5" r="2.5"/></svg></span><span class="nav-copy"><b>Cockpit</b><small>Vue d’ensemble</small></span><span class="nav-arrow">↗</span></button>
-        <button class="nav-item nav-session" data-route="today"><span class="nav-number">02</span><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4.5 12c0-4.5 3-7.5 7.5-7.5 3.8 0 6.8 2.3 7.5 5.8M17 7.5l2.7 2.8-3.7 1.2M19.5 14c-.7 3.4-3.5 5.5-7 5.5-2.4 0-4.3-.8-5.6-2.3M8 8.5 12 12l-2 4"/></svg></span><span class="nav-copy"><b>Ma session</b><small>1 h 40 aujourd’hui</small></span><span class="nav-arrow">↗</span></button>
-        <button class="nav-item nav-learn" data-route="learn"><span class="nav-number">03</span><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 17c4.5-7 6.5-8 9-6s3.8 1.5 7-4"/><circle cx="4" cy="17" r="2"/><circle cx="13" cy="11" r="2"/><circle cx="20" cy="7" r="2.6"/><path d="M7 5c1.5 1 2.3 2.2 2.2 3.8"/></svg></span><span class="nav-copy"><b>Apprendre</b><small>68 % du programme</small></span><span class="nav-arrow">↗</span></button>
-        <button class="nav-item nav-annales" data-route="annales"><span class="nav-number">04</span><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M6 5.5c4-2.7 8-2.7 12 0v13c-4-2.7-8-2.7-12 0zM9 9c2-.8 4-.8 6 0M9 13c2-.8 4-.8 6 0m1.5-10L18 5.5 20.5 7"/></svg></span><span class="nav-copy"><b>Annales Bac</b><small>7 sujets réalisés</small></span><span class="nav-arrow">↗</span></button>
-        <button class="nav-item nav-level" data-route="progress"><span class="nav-number">05</span><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 19c2-7 4-11 7-11 2.5 0 3 3 7-4m-4 0 4-.5.5 4"/><circle cx="5" cy="19" r="2"/><path d="M9 18h8"/></svg></span><span class="nav-copy"><b>Mon niveau</b><small>13,8 / 20 estimé</small></span><span class="nav-arrow">↗</span></button>
-        <button class="nav-item nav-goal" data-route="score"><span class="nav-number">06</span><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 18c4-1 5-4 7-7s4-5 9-5"/><circle cx="4" cy="18" r="2"/><path d="m16 3 4 3-3 4M10 18c3 2 6 2 9 0"/></svg></span><span class="nav-copy"><b>Objectif 17</b><small>Simuler ma note</small></span><span class="nav-arrow">↗</span></button>
-      </nav>
-      <div class="side-bottom">
-        <button class="profile-mini"><span class="profile-orbit"><b>Y</b></span><div><b>Yassine</b><small>Sciences Maths A</small></div><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
-      </div>
-    </aside>
-
-    <main id="main" tabindex="-1">
-      <header class="topbar">
-        <button class="mobile-brand brand" data-route="home"><img class="official-logo" src="assets/noqta-logo.png" alt="Noqta"></button>
-        <div class="crumb"><span>2e Bac</span><b>Sciences Maths A</b></div>
-        <div class="top-actions"><button class="icon-btn" aria-label="Recherche">⌕</button><button class="icon-btn notification" aria-label="Notifications">♢</button><button class="avatar">YM</button></div>
       </header>
-
-      <section class="page active" id="home" data-page="home">
-        <div class="hero-grid">
-          <div class="greeting"><span class="eyebrow">BONSOIR YASSINE</span><h1>Ton objectif se<br><em>rapproche.</em></h1><p>Chaque session compte. Celle d’aujourd’hui a été ajustée selon tes dernières erreurs.</p><button class="primary" data-route="today">Commencer ma session <span>→</span></button></div>
-          <div class="countdown-card"><span class="spark">✦</span><small>AVANT LE BAC</small><strong>J−94</strong><div class="date-line"><span></span>Objectif : juin 2027</div><div class="mini-note"><span>Objectif</span><b>17<small>/20</small></b></div></div>
-        </div>
-        <div class="metric-row">
-          <article class="metric lime"><span>Niveau estimé</span><strong>13,8<small>/20</small></strong><p>↗ +1,4 ce mois</p></article>
-          <article class="metric violet"><span>Programme couvert</span><strong>68<small>%</small></strong><div class="bar"><i style="width:68%"></i></div></article>
-          <article class="metric mint"><span>Maîtrise globale</span><strong>61<small>%</small></strong><div class="bar"><i style="width:61%"></i></div></article>
-        </div>
-        <section class="today-card">
-          <div class="section-title"><div><span class="eyebrow">TON PLAN AUJOURD’HUI</span><h2>1 h 40 pour avancer</h2></div><span class="plan-status">4 étapes · personnalisé</span></div>
-          <div class="plan-list">
-            <button class="plan-item current" data-toast="Session Mathématiques lancée"><span class="step">01</span><div><b>Suites numériques</b><small>Mathématiques · Comprendre</small></div><span class="duration">35 min</span><i>→</i></button>
-            <button class="plan-item"><span class="step">02</span><div><b>Mécanique</b><small>Physique · Maîtriser</small></div><span class="duration">30 min</span><i>→</i></button>
-            <button class="plan-item"><span class="step">03</span><div><b>Exercice Bac</b><small>Mathématiques · Niveau national</small></div><span class="duration">25 min</span><i>→</i></button>
-            <button class="plan-item"><span class="step">04</span><div><b>Flash Review</b><small>4 notions à consolider</small></div><span class="duration">10 min</span><i>→</i></button>
+      <main class="l-main" id="welcome">
+        <section class="l-hero" aria-labelledby="landing-title">
+          <div class="l-kicker">
+            <span>2e BAC MAROCAIN · UN NOUVEAU POINT DE DÉPART</span
+            ><span lang="ar" dir="rtl">كل نقطة كتفرق</span>
+          </div>
+          <div class="hero-composition">
+            <div class="hero-copy">
+              <div class="hero-overline">
+                <span class="tiny-orbit" aria-hidden="true"></span>Du « pourquoi
+                ? » au « j’ai compris ».
+              </div>
+              <h1 id="landing-title">Le déclic.<br /><em>Et la suite.</em></h1>
+              <p>
+                Cours, exercices corrigés et annales du Bac marocain, organisés
+                selon ta filière.
+              </p>
+              <div class="hero-actions">
+                <button class="l-button" data-enter>
+                  Choisir mon parcours <span aria-hidden="true">↗</span></button
+                ><a class="underlink" href="#ressources"
+                  >Découvrir les ressources <span aria-hidden="true">↓</span></a
+                >
+              </div>
+              <small>Compte sécurisé · Progression synchronisée</small>
+            </div>
+            <figure class="hero-art" data-parallax>
+              <img
+                id="heroArtwork"
+                src="assets/declic.webp"
+                width="1254"
+                height="1254"
+                decoding="async"
+                fetchpriority="high"
+                alt="Un ruban lilas traverse un cadre vert et devient un escalier : une idée qui se transforme en progression."
+              />
+              <figcaption>
+                <span>LA PETITE ÉTINCELLE</span><em>qui change la suite.</em>
+              </figcaption>
+              <span class="art-stamp" aria-hidden="true"
+                >Bac<br /><em>& toi.</em></span
+              >
+            </figure>
+          </div>
+          <div class="hero-bottom">
+            <span
+              >Moins de par cœur.<br /><b>Plus de liens qui se créent.</b></span
+            >
+            <div class="subject-ribbon" aria-label="Sciences">
+              <span>ƒ(x) <b>Maths</b></span
+              ><span>Δ <b>Physique</b></span
+              ><span>∞ <b>Curiosité</b></span>
+            </div>
+            <a href="#approche" class="scroll-link"
+              >Le chemin commence ici <span aria-hidden="true">↓</span></a
+            >
           </div>
         </section>
-        <section class="road-card">
-          <div><span class="eyebrow">YOUR ROAD TO 16</span><h2>Tu as déjà gagné <em>0,6 point</em></h2><p>Continue à ce rythme : ta trajectoire rejoint ton objectif.</p></div>
-          <div class="road-chart" aria-label="Progression estimée vers 16 sur 20"><svg viewBox="0 0 600 170" role="img"><defs><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8ff6a" stop-opacity=".45"/><stop offset="1" stop-color="#d8ff6a" stop-opacity="0"/></linearGradient></defs><path d="M20 145 C120 140 135 110 220 115 S330 78 395 82 S490 42 575 28 L575 165 L20 165Z" fill="url(#fill)"/><path d="M20 145 C120 140 135 110 220 115 S330 78 395 82 S490 42 575 28" fill="none" stroke="#b5ea25" stroke-width="5" stroke-linecap="round"/><circle cx="20" cy="145" r="7"/><circle cx="220" cy="115" r="7"/><circle cx="395" cy="82" r="7"/><circle cx="575" cy="28" r="9" fill="#d8ff6a" stroke="#101714" stroke-width="4"/></svg><div class="chart-labels"><span>13,2<small>Départ</small></span><span>13,8<small>Aujourd’hui</small></span><span>14,7<small>Projection</small></span><span>16,0<small>Objectif</small></span></div></div>
+
+        <section
+          class="program-section l-reveal"
+          id="approche"
+          aria-labelledby="program-title"
+        >
+          <div class="program-heading">
+            <div lang="ar" dir="rtl">
+              <span class="moroccan-label"
+                ><b>الشعبة ديالك</b><i>كل مسار عندو طريقو</i></span
+              >
+              <h2 id="program-title">
+                من الشعبة ديالك<br /><em>للنقطة اللي باغي.</em>
+              </h2>
+            </div>
+            <p lang="ar" dir="rtl">
+              نقطة كترتّب ليك البرنامج على حساب الشعبة ديالك: كتشوف المواد اللي
+              كاتخصك، ومن بعد كتلقى كل درس، تمرين وامتحان فبلاصتو.
+            </p>
+          </div>
+          <figure
+            class="bac-bookshelf"
+            aria-label="Bibliothèque Noqta organisée du choix de la filière jusqu’aux annales du Bac"
+          >
+            <img
+              src="noqta-bookshelf.png"
+              alt="Bibliothèque sombre remplie de livres scolaires colorés"
+            />
+            <div class="shelf-title" lang="ar" dir="rtl">
+              <span>مكتبة الباك</span>
+              <h3>ما كتقلّبش على الدرس.<br /><em>هو اللي كيلقاك.</em></h3>
+            </div>
+            <div class="shelf-row shelf-tracks" lang="ar" dir="rtl">
+              <span class="row-number">01</span><b>الشعبة ديالك</b>
+              <div><i>SM</i><i>PC</i><i>SVT</i></div>
+            </div>
+            <div class="shelf-row shelf-subjects" lang="ar" dir="rtl">
+              <span class="row-number">02</span><b>المواد ديالك</b>
+              <div>
+                <i>الرياضيات</i><i>الفيزياء</i><i>علوم الحياة والأرض</i>
+              </div>
+            </div>
+            <div class="shelf-row shelf-tools" lang="ar" dir="rtl">
+              <span class="row-number">03</span><b>باش توجد للباك</b>
+              <div>
+                <i>الدروس</i><i>التمارين</i><i>الوطنيات</i><i>التصحيح</i>
+              </div>
+            </div>
+            <figcaption lang="ar" dir="rtl">
+              <span>كل رف كيتحل على حساب المسار ديالك.</span
+              ><b>من الشعبة… حتى للنقطة.</b><i aria-hidden="true">ن</i>
+            </figcaption>
+          </figure>
         </section>
-      </section>
 
-      <section class="page" id="today" data-page="today">
-        <div class="page-head"><div><span class="eyebrow">MERCREDI 24 SEPTEMBRE</span><h1>Ta session du jour.</h1><p>Construite à partir de ton objectif, de tes lacunes et de ton rythme.</p></div><div class="focus-ring"><b>1h40</b><span>focus</span></div></div>
-        <div class="session-layout"><div class="session-stack"><article class="session-feature"><span class="chip">À FAIRE MAINTENANT</span><h2>Suites numériques</h2><p>Comprendre la convergence puis résoudre 3 questions progressives.</p><div class="session-meta"><span>◷ 35 min</span><span>◆ +18 XP</span><span>Cadre : Analyse</span></div><button class="primary" data-toast="Cours ouvert — Suites numériques">Démarrer <span>→</span></button></article><div class="plan-list compact"><button class="plan-item"><span class="step">02</span><div><b>Mécanique</b><small>30 min · Maîtriser</small></div><i>→</i></button><button class="plan-item"><span class="step">03</span><div><b>Exercice Bac</b><small>25 min · Niveau national</small></div><i>→</i></button><button class="plan-item"><span class="step">04</span><div><b>Flash Review</b><small>10 min · 4 notions</small></div><i>→</i></button></div></div><aside class="insight-card"><span class="eyebrow">POURQUOI CE PLAN ?</span><h3>Les suites peuvent te rapporter <em>+0,4 point</em>.</h3><p>Tu connais le cours, mais tes réponses perdent des points dans la justification.</p><div class="skill-line"><span>Rédiger</span><div class="bar"><i style="width:48%"></i></div><b>48%</b></div><button class="text-btn" data-route="progress">Voir mon diagnostic →</button></aside></div>
-      </section>
+        <section
+          class="resources-section l-reveal"
+          id="ressources"
+          aria-labelledby="resources-title"
+        >
+          <div class="resources-heading">
+            <div>
+              <span class="l-eyebrow">02 — TOUT POUR PRÉPARER TON BAC</span>
+              <h2 id="resources-title">
+                Tout est là.<br /><em>À toi d’avancer.</em>
+              </h2>
+            </div>
+            <p>
+              Noqta rassemble les ressources utiles du programme marocain dans
+              un seul espace, classées par filière, matière et chapitre.
+            </p>
+          </div>
+          <div class="resources-grid">
+            <article class="resource-card resource-featured">
+              <span class="resource-number">01</span>
+              <div class="resource-icon icon-course" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path
+                    class="icon-fill"
+                    d="M11 17c8-4 15-3 21 3v31c-6-6-13-7-21-3z"
+                  />
+                  <path
+                    d="M53 17c-8-4-15-3-21 3v31c6-6 13-7 21-3zM32 20v31M17 27c4-1 7 0 10 2M17 34c4-1 7 0 10 2"
+                  />
+                  <circle cx="49" cy="12" r="5" />
+                </svg>
+              </div>
+              <span class="resource-label">COMPRENDRE</span>
+              <h3>Des cours clairs,<br />chapitre par chapitre.</h3>
+              <p>
+                Des explications structurées, des résumés et les notions
+                essentielles pour reprendre un chapitre à ton rythme.
+              </p>
+              <button class="resource-link" data-enter>
+                Explorer les cours <span aria-hidden="true">↗</span>
+              </button>
+            </article>
+            <article class="resource-card">
+              <span class="resource-number">02</span>
+              <div class="resource-icon icon-exercise" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path class="icon-fill" d="M15 11h31v42H15z" />
+                  <path d="M23 22h15M23 31h11M23 40h8M42 37l4 4 8-10" />
+                  <circle cx="46" cy="16" r="8" />
+                </svg>
+              </div>
+              <span class="resource-label">S’ENTRAÎNER</span>
+              <h3>Exercices et<br />corrigés détaillés.</h3>
+              <p>
+                Des exercices progressifs avec une méthode expliquée étape par
+                étape, pas seulement la réponse finale.
+              </p>
+              <button class="resource-link" data-enter>
+                Voir les exercices <span aria-hidden="true">↗</span>
+              </button>
+            </article>
+            <article class="resource-card">
+              <span class="resource-number">03</span>
+              <div class="resource-icon icon-annales" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path class="icon-back" d="M12 15h29v37H12z" />
+                  <path class="icon-fill" d="M20 9h31v39H20z" />
+                  <path
+                    d="M27 20h16M27 28h12M27 36h7M37 38l4 4 9-11M12 21H8v37h29v-5"
+                  />
+                  <circle cx="47" cy="13" r="3" />
+                </svg>
+              </div>
+              <span class="resource-label">SE PRÉPARER</span>
+              <h3>Annales du Bac<br />avec leurs corrigés.</h3>
+              <p>
+                Retrouve les sujets des années précédentes, travaille en
+                conditions réelles puis consulte la correction.
+              </p>
+              <button class="resource-link" data-enter>
+                Parcourir les annales <span aria-hidden="true">↗</span>
+              </button>
+            </article>
+            <article class="resource-card resource-accent">
+              <span class="resource-number">04</span>
+              <div class="resource-icon icon-track" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path class="icon-fill" d="M32 10 45 23 32 36 19 23z" />
+                  <path
+                    d="M32 36v17M32 43H18v10M32 43h14v10M13 53h10M41 53h10"
+                  />
+                  <circle cx="32" cy="23" r="4" />
+                  <circle cx="13" cy="53" r="4" />
+                  <circle cx="51" cy="53" r="4" />
+                </svg>
+              </div>
+              <span class="resource-label">SE REPÉRER</span>
+              <h3>Un parcours adapté<br />à ta filière.</h3>
+              <p>
+                Sciences Maths, Sciences Physiques ou SVT : accède directement
+                aux matières et contenus qui te concernent.
+              </p>
+              <button class="resource-link" data-enter>
+                Choisir ma filière <span aria-hidden="true">↗</span>
+              </button>
+            </article>
+          </div>
+          <div class="resources-strip" aria-label="Ressources proposées">
+            <span>Cours</span><i>•</i><span>Résumés</span><i>•</i
+            ><span>Exercices corrigés</span><i>•</i><span>Annales</span><i>•</i
+            ><span>Quiz</span>
+          </div>
+        </section>
 
-      <section class="page" id="learn" data-page="learn">
-        <div class="page-head"><div><span class="eyebrow">APPRENDRE</span><h1>Le programme, sans le bruit.</h1><p>Tout est organisé selon ta filière et relié au cadre de référence.</p></div><button class="outline">68% couvert</button></div>
-        <div class="subject-tabs"><button class="active">Mathématiques</button><button>Physique</button><button>Philosophie</button><button>Anglais</button></div>
-        <div class="chapter-grid"><article class="chapter hero-chapter"><div><span class="chip">EN COURS</span><h2>Suites numériques</h2><p>Limites, monotonie, convergence et raisonnement par récurrence.</p></div><div class="chapter-score"><b>78%</b><small>maîtrisé</small></div><button class="primary" data-toast="Chapitre ouvert">Continuer →</button></article><article class="chapter"><span class="chapter-no">02</span><h3>Limites & continuité</h3><div class="bar"><i style="width:86%"></i></div><p><b>86%</b> maîtrisé · 8 notions</p></article><article class="chapter warning"><span class="chapter-no">03</span><h3>Calcul intégral</h3><div class="bar"><i style="width:54%"></i></div><p><b>54%</b> maîtrisé · Priorité</p></article><article class="chapter"><span class="chapter-no">04</span><h3>Nombres complexes</h3><div class="bar"><i style="width:72%"></i></div><p><b>72%</b> maîtrisé · 6 notions</p></article><article class="chapter danger"><span class="chapter-no">05</span><h3>Probabilités</h3><div class="bar"><i style="width:43%"></i></div><p><b>43%</b> maîtrisé · À renforcer</p></article></div>
-      </section>
+        <section
+          class="pricing-section l-reveal"
+          id="tarifs"
+          aria-labelledby="pricing-title"
+        >
+          <div class="pricing-heading">
+            <span class="l-eyebrow"
+              >04 — CHOISIS TON NIVEAU D’ACCOMPAGNEMENT</span
+            >
+            <h2 id="pricing-title">
+              Le même objectif.<br /><em>Trois façons d’y arriver.</em>
+            </h2>
+            <p>
+              Commence avec deux matières, révise tout le programme ou avance
+              avec un accompagnement rapproché.
+            </p>
+          </div>
+          <div class="pricing-grid">
+            <article class="price-card essential">
+              <div class="plan-top">
+                <div class="plan-icon" aria-hidden="true">
+                  <svg viewBox="0 0 72 72">
+                    <path
+                      class="plan-fill"
+                      d="M13 18c10-5 18-3 23 3v39c-6-6-14-8-23-3z"
+                    />
+                    <path
+                      d="M59 18c-10-5-18-3-23 3v39c6-6 14-8 23-3zM36 21v39M20 30h9M20 39h9M43 30h9M43 39h9"
+                    />
+                    <circle cx="17" cy="14" r="5" />
+                    <circle cx="55" cy="14" r="5" />
+                  </svg>
+                </div>
+                <span class="plan-index">01</span>
+              </div>
+              <span class="offer-state">PRÉPARATION CIBLÉE</span>
+              <h3>Noqta<br /><em>Essentiel</em></h3>
+              <div class="plan-promise">
+                <b>2</b><span>matières<br />de ton choix</span>
+              </div>
+              <p>
+                Concentre tes efforts sur les deux matières qui comptent le plus
+                pour toi.
+              </p>
+              <ul>
+                <li>Tous les cours des 2 matières choisies</li>
+                <li>Toutes leurs annales du Bac</li>
+                <li>Corrigés détaillés</li>
+                <li>Exercices et quiz associés</li>
+              </ul>
+              <button class="plan-button" data-enter>
+                Choisir Essentiel <span aria-hidden="true">↗</span>
+              </button>
+            </article>
+            <article class="price-card plus">
+              <div class="recommended-ribbon">LE CHOIX COMPLET</div>
+              <div class="plan-top">
+                <div class="plan-icon" aria-hidden="true">
+                  <svg viewBox="0 0 72 72">
+                    <circle class="plan-fill" cx="36" cy="35" r="23" />
+                    <circle cx="36" cy="35" r="6" />
+                    <path
+                      d="M36 29V15M31 38 19 46M41 38l12 8M18 17c4-5 9-8 15-9M54 17c-4-5-9-8-15-9M14 52c5 7 12 11 22 11s17-4 22-11"
+                    />
+                    <circle cx="36" cy="10" r="4" />
+                    <circle cx="17" cy="48" r="4" />
+                    <circle cx="55" cy="48" r="4" />
+                  </svg>
+                </div>
+                <span class="plan-index">02</span>
+              </div>
+              <span class="offer-state">PRÉPARATION COMPLÈTE</span>
+              <h3>Noqta<br /><em>Plus</em></h3>
+              <div class="plan-promise">
+                <b>∞</b><span>toutes les<br />matières</span>
+              </div>
+              <p>
+                Tout le programme et l’énergie d’une grande communauté d’élèves.
+              </p>
+              <ul>
+                <li>Tous les cours, toutes les matières</li>
+                <li>Toutes les annales et leurs corrigés</li>
+                <li>Exercices et quiz</li>
+                <li>Classe virtuelle générale</li>
+              </ul>
+              <button class="plan-button" data-enter>
+                Choisir Plus <span aria-hidden="true">↗</span>
+              </button>
+            </article>
+            <article class="price-card pro">
+              <div class="plan-top">
+                <div class="plan-icon" aria-hidden="true">
+                  <svg viewBox="0 0 72 72">
+                    <path class="plan-fill" d="M12 15h48v35H42l-6 8-6-8H12z" />
+                    <path
+                      d="M20 42c2-7 7-11 16-11s14 4 16 11M36 17a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM17 22h6M49 22h6"
+                    />
+                    <circle cx="17" cy="22" r="3" />
+                    <circle cx="55" cy="22" r="3" />
+                  </svg>
+                </div>
+                <span class="plan-index">03</span>
+              </div>
+              <span class="offer-state">ACCOMPAGNEMENT PREMIUM</span>
+              <h3>Noqta<br /><em>Pro</em></h3>
+              <div class="plan-promise">
+                <b>15</b><span>élèves max.<br />+ 1-to-1</span>
+              </div>
+              <p>
+                Un petit groupe pour participer davantage, complété par un suivi
+                individuel.
+              </p>
+              <ul>
+                <li>Tout ce qui est inclus dans Noqta Plus</li>
+                <li>Classe virtuelle de 15 élèves maximum</li>
+                <li>Sessions individuelles 1-to-1</li>
+                <li>Suivi pédagogique rapproché</li>
+              </ul>
+              <button class="plan-button" data-enter>
+                Choisir Pro <span aria-hidden="true">↗</span>
+              </button>
+            </article>
+          </div>
+          <p class="pricing-footnote">
+            Les tarifs de lancement et les modalités d’inscription seront
+            annoncés avant l’ouverture des abonnements.
+          </p>
+        </section>
 
-      <section class="page" id="annales" data-page="annales">
-        <div class="page-head"><div><span class="eyebrow">ANNALES</span><h1>Entraîne-toi sur le vrai format.</h1><p>Travaille un sujet entier ou question par question, sans réponse prématurée.</p></div><button class="outline" data-toast="Filtres ouverts">Filtrer ⌄</button></div>
-        <div class="dna-card"><div><span class="eyebrow">BAC DNA · STATISTIQUES HISTORIQUES</span><h2>Ce qui revient dans les annales.</h2><p>Analyse descriptive des sujets disponibles — aucune prédiction du prochain Bac.</p></div><div class="dna-stat"><strong>7<small>/10</small></strong><span>Intégrales présentes</span></div><div class="dna-tags"><span>Calcul direct</span><span>Aire</span><span>Primitive</span><span>Étude de fonction</span></div></div>
-        <div class="exam-list"><article><div class="exam-year">2025</div><div><span class="chip">SESSION NORMALE</span><h3>Mathématiques · Sciences Maths A</h3><p>4 h · 20 points · 5 exercices</p></div><div class="exam-actions"><button data-toast="Mode exercice par exercice">Découper</button><button class="dark" data-toast="Sujet 2025 ouvert">Ouvrir →</button></div></article><article><div class="exam-year">2024</div><div><span class="chip neutral">RATTRAPAGE</span><h3>Mathématiques · Sciences Maths A</h3><p>4 h · 20 points · 4 exercices</p></div><div class="exam-actions"><button data-toast="Correction intelligente ouverte">Correction IA</button><button class="dark" data-toast="Sujet 2024 ouvert">Ouvrir →</button></div></article></div>
-      </section>
+        <section class="l-faq l-reveal" id="questions">
+          <div>
+            <span class="l-eyebrow">05 — TOUT SIMPLEMENT</span>
+            <h2>Les bonnes<br /><em>questions.</em></h2>
+            <p>Ce qui existe, ce qui arrive.<br />On fait la différence.</p>
+          </div>
+          <div class="faq-list">
+            <details>
+              <summary>Qu’est-ce que je peux essayer maintenant ?</summary>
+              <p>
+                La configuration de ton parcours : profil, filière et matières.
+                Le parcours est conservé dans ton navigateur, sans compte en
+                ligne ni synchronisation entre appareils.
+              </p>
+            </details>
+            <details>
+              <summary>
+                Les cours et le professeur IA sont-ils disponibles ?
+              </summary>
+              <p>
+                La bibliothèque Maths et Physique-Chimie SM, le lecteur de
+                cours, la progression et les explications des professeurs sont
+                accessibles dans l’espace connecté. Les contenus sans source
+                vérifiée restent clairement signalés comme indisponibles.
+              </p>
+            </details>
+            <details>
+              <summary>Comment sera respecté le programme marocain ?</summary>
+              <p>
+                Les contenus et coefficients devront être associés au cadre de
+                référence de la filière et de l’année concernées, puis validés
+                avant publication. Ce prototype ne constitue pas une préparation
+                officiellement validée.
+              </p>
+            </details>
+            <details id="billing-faq">
+              <summary>Quelle formule Noqta choisir ?</summary>
+              <p>
+                Essentiel couvre deux matières au choix. Plus ouvre toutes les
+                matières et la classe virtuelle générale. Pro ajoute une classe
+                virtuelle limitée à 15 élèves et des sessions individuelles
+                1-to-1. Le portefeuille en jetons sert aux explications
+                individuelles ; une commande n’est créditée qu’après
+                confirmation effective du règlement.
+              </p>
+            </details>
+            <details>
+              <summary>Puis-je déjà rejoindre ma classe ?</summary>
+              <p>
+                Non. Les champs établissement et classe sont un brouillon
+                temporaire. Les groupes, invitations et outils de gestion
+                professeur nécessitent encore une connexion au LMS et des
+                contrôles d’accès.
+              </p>
+            </details>
+          </div>
+        </section>
+        <section class="l-closing l-reveal">
+          <span class="closing-kicker" lang="ar" dir="rtl"
+            >نقطة بداية جديدة</span
+          >
+          <h2>Et si tout partait<br /><em>d’un déclic ?</em></h2>
+          <button class="l-button" data-enter>
+            Trouver mon point de départ <span aria-hidden="true">↗</span>
+          </button>
+          <p>2e Bac marocain. Ta filière. Ta façon d’avancer.</p>
+          <span class="closing-word" aria-hidden="true">noqta.</span>
+        </section>
+      </main>
+      <footer class="l-footer">
+        <a class="l-logo" href="#welcome"
+          ><img
+            class="official-logo"
+            src="assets/noqta-logo.png"
+            alt="Noqta" /></a
+        ><span>Chaque point compte.</span>
+        <nav aria-label="Pied de page">
+          <a href="#ressources">Ressources</a><a href="#tarifs">Offres</a
+          ><a href="#questions">Questions</a>
+        </nav>
+        <small>PROTOTYPE · CONÇU POUR LE BAC MAROCAIN</small>
+      </footer>
+    </div>
+    <section
+      class="auth-shell"
+      id="authShell"
+      aria-label="Connexion à Noqta"
+      hidden
+    >
+      <button
+        class="auth-close"
+        type="button"
+        data-auth-close
+        aria-label="Fermer"
+      >
+        ×
+      </button>
+      <div class="auth-brand">
+        <img src="assets/noqta-logo.png" alt="Noqta" />
+      </div>
+      <div class="auth-card">
+        <div class="auth-copy">
+          <span class="eyebrow">TON ESPACE ESSENTIEL</span>
+          <h1>Deux matières.<br /><em>Toute ton attention.</em></h1>
+          <p>
+            Retrouve tes cours, tes annales et ta progression sur tous tes
+            appareils.
+          </p>
+        </div>
+        <form id="authForm" class="auth-form">
+          <div class="auth-tabs">
+            <button type="button" class="active" data-auth-mode="signin">
+              Connexion</button
+            ><button type="button" data-auth-mode="signup">
+              Créer un compte
+            </button>
+          </div>
+          <label class="signup-only" hidden
+            >Prénom et nom<input
+              id="authName"
+              autocomplete="name"
+              minlength="2"
+              placeholder="Yassine El Amrani"
+          /></label>
+          <label
+            >Adresse email<input
+              id="authEmail"
+              type="email"
+              autocomplete="email"
+              required
+              placeholder="prenom@email.com"
+          /></label>
+          <label
+            >Mot de passe<input
+              id="authPassword"
+              type="password"
+              autocomplete="current-password"
+              minlength="8"
+              required
+              placeholder="8 caractères minimum"
+          /></label>
+          <button class="auth-submit" type="submit">
+            Se connecter <span>→</span>
+          </button>
+          <button class="auth-forgot" type="button" data-forgot>
+            Mot de passe oublié ?
+          </button>
+          <p class="auth-message" id="authMessage" role="status"></p>
+        </form>
+      </div>
+    </section>
 
-      <section class="page" id="progress" data-page="progress">
-        <div class="page-head"><div><span class="eyebrow">MON BAC DIGITAL</span><h1>Ton niveau, notion par notion.</h1><p>Une estimation vivante, affinée après chaque activité.</p></div><div class="score-pill">13,8 <small>/20 estimé</small></div></div>
-        <div class="progress-grid"><section class="mastery-card"><h2>Mathématiques</h2><div class="mastery-list"><div><span>Suites</span><div class="bar"><i style="width:92%"></i></div><b>92%</b></div><div><span>Limites</span><div class="bar"><i style="width:86%"></i></div><b>86%</b></div><div><span>Dérivation</span><div class="bar"><i style="width:81%"></i></div><b>81%</b></div><div><span>Intégrales</span><div class="bar"><i style="width:54%"></i></div><b>54%</b></div><div><span>Complexes</span><div class="bar"><i style="width:72%"></i></div><b>72%</b></div><div><span>Probabilités</span><div class="bar"><i style="width:43%"></i></div><b>43%</b></div></div></section><section class="skills-card"><span class="eyebrow">CARTE DE COMPÉTENCES</span><h2>Tu sais calculer.<br><em>Travaille ta rédaction.</em></h2><div class="radar-bars"><div><span>Calculer</span><i style="--v:88%"></i><b>88</b></div><div><span>Raisonner</span><i style="--v:71%"></i><b>71</b></div><div><span>Modéliser</span><i style="--v:64%"></i><b>64</b></div><div class="low"><span>Rédiger</span><i style="--v:48%"></i><b>48</b></div></div></section></div>
-      </section>
+    <section
+      class="onboarding"
+      id="onboarding"
+      aria-label="Configuration de votre espace Noqta"
+    >
+      <header class="onboarding-top">
+        <button class="brand" aria-label="Noqta">
+          <img
+            class="official-logo"
+            src="assets/noqta-logo.png"
+            alt="Noqta"
+          /></button
+        ><span class="setup-step"
+          >CONFIGURATION · <b id="stepCount">1/4</b></span
+        >
+      </header>
+      <div class="setup-progress"><i id="setupProgress"></i></div>
+      <form class="onboarding-card" id="onboardingForm">
+        <section class="setup-panel active" data-step="1">
+          <span class="eyebrow">BIENVENUE SUR NOQTA</span>
+          <h1>Vous êtes ici pour<br /><em>apprendre ou transmettre ?</em></h1>
+          <p>
+            Votre réponse adapte entièrement l’espace, les outils et le
+            vocabulaire.
+          </p>
+          <div class="choice-grid role-grid">
+            <button type="button" class="setup-choice" data-role="student">
+              <span class="choice-art student-art">↗</span><b>Je suis élève</b
+              ><small
+                >Préparer mon Bac et atteindre ma note cible.</small
+              ></button
+            ><button type="button" class="setup-choice" data-role="teacher">
+              <span class="choice-art teacher-art">✦</span
+              ><b>Je suis professeur</b
+              ><small>Organiser mes matières et accompagner mes élèves.</small>
+            </button>
+          </div>
+        </section>
+        <section class="setup-panel" data-step="2">
+          <span class="eyebrow">VOTRE NIVEAU</span>
+          <h1>Quelle classe<br /><em>vous concerne ?</em></h1>
+          <p>
+            Noqta est actuellement conçu exclusivement pour l’examen national de
+            2e année Bac.
+          </p>
+          <div class="choice-grid">
+            <button
+              type="button"
+              class="setup-choice wide selected"
+              data-level="2bac"
+            >
+              <span class="level-mark">02</span><b>2e année Baccalauréat</b
+              ><small
+                >Programme national marocain · année scolaire à confirmer</small
+              >
+            </button>
+          </div>
+        </section>
+        <section class="setup-panel" data-step="3">
+          <span class="eyebrow">FILIÈRE SCIENTIFIQUE</span>
+          <h1>Choisissez votre<br /><em>cadre de travail.</em></h1>
+          <p>
+            Nomenclature vérifiée sur les publications officielles du ministère.
+          </p>
+          <div class="track-grid" id="trackGrid"></div>
+        </section>
+        <section class="setup-panel" data-step="4">
+          <span class="eyebrow">MATIÈRES</span>
+          <h1>Que souhaitez-vous<br /><em>travailler en priorité ?</em></h1>
+          <p>
+            Sélectionnez une ou plusieurs matières. Les coefficients et contenus
+            seront activés après validation du référentiel annuel.
+          </p>
+          <div class="subject-grid" id="subjectGrid"></div>
+          <div class="official-note">
+            <span>✓</span>
+            <div>
+              <b>Cadre de référence protégé</b
+              ><small
+                >Aucune donnée pédagogique non vérifiée ne sera présentée comme
+                officielle.</small
+              >
+            </div>
+          </div>
+        </section>
+        <section class="setup-panel" data-step="5">
+          <span class="eyebrow">ÉTABLISSEMENT & CLASSE</span>
+          <h1>Le même lycée.<br /><em>Le même élan.</em></h1>
+          <p>
+            Préparez les informations de votre classe. Cette étape est
+            facultative : la connexion aux établissements et aux groupes n’est
+            pas encore active.
+          </p>
+          <div class="school-fields">
+            <label
+              >Ville<input
+                id="schoolCity"
+                autocomplete="address-level2"
+                maxlength="100"
+                placeholder="Votre ville" /></label
+            ><label
+              >Établissement<input
+                id="schoolName"
+                autocomplete="off"
+                maxlength="160"
+                placeholder="Nom complet du lycée" /></label
+            ><label
+              >Classe<input
+                id="schoolClass"
+                autocomplete="off"
+                maxlength="80"
+                placeholder="Ex. 2 Bac SM A — 1"
+            /></label>
+          </div>
+          <div class="school-group-note">
+            <b>Retrouver ma classe · Sur invitation</b>
+            <p>
+              La création du groupe et le lien pour inviter vos camarades seront
+              activés après la connexion du LMS. Aucun élève n’est ajouté
+              automatiquement.
+            </p>
+            <small
+              >Ces trois champs sont un brouillon temporaire : ils ne sont ni
+              enregistrés, ni transmis.</small
+            >
+          </div>
+        </section>
+        <footer class="setup-actions">
+          <button type="button" class="setup-back" id="setupBack">Retour</button
+          ><button type="button" class="setup-next" id="setupNext" disabled>
+            Continuer <span>→</span>
+          </button>
+        </footer>
+      </form>
+    </section>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navigation principale">
+        <button class="brand" data-route="home" aria-label="Accueil Noqta">
+          <img class="official-logo" src="assets/noqta-logo.png" alt="Noqta" />
+        </button>
+        <nav class="desktop-nav">
+          <div class="nav-intro">
+            <span>PRÉPARATION 2027</span><b>Mon espace Bac</b>
+          </div>
+          <button class="nav-item active nav-overview" data-route="home">
+            <span class="nav-number">01</span
+            ><span class="nav-icon"
+              ><svg viewBox="0 0 24 24">
+                <path
+                  d="m5 8 4-4 4 4-4 4zM13 12l4-4 3 3-4 4zM5 16l3-3 5 5-3 3z"
+                />
+                <circle cx="17.5" cy="18.5" r="2.5" /></svg></span
+            ><span class="nav-copy"
+              ><b>Cockpit</b><small>Vue d’ensemble</small></span
+            ><span class="nav-arrow">↗</span>
+          </button>
+          <button class="nav-item nav-session" data-route="today">
+            <span class="nav-number">02</span
+            ><span class="nav-icon"
+              ><svg viewBox="0 0 24 24">
+                <path
+                  d="M4.5 12c0-4.5 3-7.5 7.5-7.5 3.8 0 6.8 2.3 7.5 5.8M17 7.5l2.7 2.8-3.7 1.2M19.5 14c-.7 3.4-3.5 5.5-7 5.5-2.4 0-4.3-.8-5.6-2.3M8 8.5 12 12l-2 4"
+                /></svg></span
+            ><span class="nav-copy"
+              ><b>Ma session</b><small>1 h 40 aujourd’hui</small></span
+            ><span class="nav-arrow">↗</span>
+          </button>
+          <button class="nav-item nav-learn" data-route="learn">
+            <span class="nav-number">03</span
+            ><span class="nav-icon"
+              ><svg viewBox="0 0 24 24">
+                <path d="M4 17c4.5-7 6.5-8 9-6s3.8 1.5 7-4" />
+                <circle cx="4" cy="17" r="2" />
+                <circle cx="13" cy="11" r="2" />
+                <circle cx="20" cy="7" r="2.6" />
+                <path d="M7 5c1.5 1 2.3 2.2 2.2 3.8" /></svg></span
+            ><span class="nav-copy"
+              ><b>Apprendre</b><small>68 % du programme</small></span
+            ><span class="nav-arrow">↗</span>
+          </button>
+          <button class="nav-item nav-annales" data-route="annales">
+            <span class="nav-number">04</span
+            ><span class="nav-icon"
+              ><svg viewBox="0 0 24 24">
+                <path
+                  d="M6 5.5c4-2.7 8-2.7 12 0v13c-4-2.7-8-2.7-12 0zM9 9c2-.8 4-.8 6 0M9 13c2-.8 4-.8 6 0m1.5-10L18 5.5 20.5 7"
+                /></svg></span
+            ><span class="nav-copy"
+              ><b>Annales Bac</b><small>7 sujets réalisés</small></span
+            ><span class="nav-arrow">↗</span>
+          </button>
+          <button class="nav-item nav-level" data-route="progress">
+            <span class="nav-number">05</span
+            ><span class="nav-icon"
+              ><svg viewBox="0 0 24 24">
+                <path d="M5 19c2-7 4-11 7-11 2.5 0 3 3 7-4m-4 0 4-.5.5 4" />
+                <circle cx="5" cy="19" r="2" />
+                <path d="M9 18h8" /></svg></span
+            ><span class="nav-copy"
+              ><b>Mon niveau</b><small>13,8 / 20 estimé</small></span
+            ><span class="nav-arrow">↗</span>
+          </button>
+          <button class="nav-item nav-goal" data-route="score">
+            <span class="nav-number">06</span
+            ><span class="nav-icon"
+              ><svg viewBox="0 0 24 24">
+                <path d="M4 18c4-1 5-4 7-7s4-5 9-5" />
+                <circle cx="4" cy="18" r="2" />
+                <path d="m16 3 4 3-3 4M10 18c3 2 6 2 9 0" /></svg></span
+            ><span class="nav-copy"
+              ><b>Objectif 17</b><small>Simuler ma note</small></span
+            ><span class="nav-arrow">↗</span>
+          </button>
+        </nav>
+        <div class="side-bottom">
+          <button class="profile-mini">
+            <span class="profile-orbit"><b>Y</b></span>
+            <div><b>Yassine</b><small>Sciences Maths A</small></div>
+            <svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" /></svg>
+          </button>
+        </div>
+      </aside>
 
-      <section class="page" id="score" data-page="score">
-        <div class="page-head"><div><span class="eyebrow">BAC SCORE SIMULATOR</span><h1>Teste ton chemin vers 16.</h1><p>Projection indicative. Les coefficients doivent être validés dans le référentiel annuel.</p></div><div class="score-pill accent"><span>Moyenne</span><b id="average">14,80</b><small>/20</small></div></div>
-        <div class="simulator"><div class="score-inputs"><label>Mathématiques <span>coef. à valider</span><input type="range" min="0" max="20" step=".5" value="16" data-subject="Mathématiques"><output>16</output></label><label>Physique <span>coef. à valider</span><input type="range" min="0" max="20" step=".5" value="14" data-subject="Physique"><output>14</output></label><label>Philosophie <span>coef. à valider</span><input type="range" min="0" max="20" step=".5" value="13" data-subject="Philosophie"><output>13</output></label><label>Anglais <span>coef. à valider</span><input type="range" min="0" max="20" step=".5" value="16" data-subject="Anglais"><output>16</output></label></div><aside class="target-card"><span class="eyebrow">POUR ATTEINDRE 16/20</span><h2>Il te manque <em id="gap">1,20 point</em>.</h2><p>Le meilleur levier selon tes résultats actuels :</p><div class="recommend"><b>Mathématiques</b><span>16 → 18</span></div><div class="recommend"><b>Physique</b><span>14 → 15,5</span></div><small>Simulation pédagogique, non officielle.</small></aside></div>
-      </section>
+      <main id="main" tabindex="-1">
+        <header class="topbar">
+          <button class="mobile-brand brand" data-route="home">
+            <img
+              class="official-logo"
+              src="assets/noqta-logo.png"
+              alt="Noqta"
+            />
+          </button>
+          <div class="crumb"><span>2e Bac</span><b>Sciences Maths A</b></div>
+          <div class="top-actions">
+            <button class="icon-btn" aria-label="Recherche">⌕</button
+            ><button class="icon-btn notification" aria-label="Notifications">
+              ♢</button
+            ><button class="avatar">YM</button>
+          </div>
+        </header>
 
-    </main>
+        <section class="page active" id="home" data-page="home">
+          <div class="hero-grid">
+            <div class="greeting">
+              <span class="eyebrow">BONSOIR YASSINE</span>
+              <h1>Ton objectif se<br /><em>rapproche.</em></h1>
+              <p>
+                Chaque session compte. Celle d’aujourd’hui a été ajustée selon
+                tes dernières erreurs.
+              </p>
+              <button class="primary" data-route="today">
+                Commencer ma session <span>→</span>
+              </button>
+            </div>
+            <div class="countdown-card">
+              <span class="spark">✦</span><small>AVANT LE BAC</small
+              ><strong>J−94</strong>
+              <div class="date-line"><span></span>Objectif : juin 2027</div>
+              <div class="mini-note">
+                <span>Objectif</span><b>17<small>/20</small></b>
+              </div>
+            </div>
+          </div>
+          <div class="metric-row">
+            <article class="metric lime">
+              <span>Niveau estimé</span><strong>13,8<small>/20</small></strong>
+              <p>↗ +1,4 ce mois</p>
+            </article>
+            <article class="metric violet">
+              <span>Programme couvert</span><strong>68<small>%</small></strong>
+              <div class="bar"><i style="width: 68%"></i></div>
+            </article>
+            <article class="metric mint">
+              <span>Maîtrise globale</span><strong>61<small>%</small></strong>
+              <div class="bar"><i style="width: 61%"></i></div>
+            </article>
+          </div>
+          <section class="today-card">
+            <div class="section-title">
+              <div>
+                <span class="eyebrow">TON PLAN AUJOURD’HUI</span>
+                <h2>1 h 40 pour avancer</h2>
+              </div>
+              <span class="plan-status">4 étapes · personnalisé</span>
+            </div>
+            <div class="plan-list">
+              <button
+                class="plan-item current"
+                data-toast="Session Mathématiques lancée"
+              >
+                <span class="step">01</span>
+                <div>
+                  <b>Suites numériques</b
+                  ><small>Mathématiques · Comprendre</small>
+                </div>
+                <span class="duration">35 min</span><i>→</i>
+              </button>
+              <button class="plan-item">
+                <span class="step">02</span>
+                <div><b>Mécanique</b><small>Physique · Maîtriser</small></div>
+                <span class="duration">30 min</span><i>→</i>
+              </button>
+              <button class="plan-item">
+                <span class="step">03</span>
+                <div>
+                  <b>Exercice Bac</b
+                  ><small>Mathématiques · Niveau national</small>
+                </div>
+                <span class="duration">25 min</span><i>→</i>
+              </button>
+              <button class="plan-item">
+                <span class="step">04</span>
+                <div>
+                  <b>Flash Review</b><small>4 notions à consolider</small>
+                </div>
+                <span class="duration">10 min</span><i>→</i>
+              </button>
+            </div>
+          </section>
+          <section class="road-card">
+            <div>
+              <span class="eyebrow">YOUR ROAD TO 16</span>
+              <h2>Tu as déjà gagné <em>0,6 point</em></h2>
+              <p>Continue à ce rythme : ta trajectoire rejoint ton objectif.</p>
+            </div>
+            <div
+              class="road-chart"
+              aria-label="Progression estimée vers 16 sur 20"
+            >
+              <svg viewBox="0 0 600 170" role="img">
+                <defs>
+                  <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#d8ff6a" stop-opacity=".45" />
+                    <stop offset="1" stop-color="#d8ff6a" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M20 145 C120 140 135 110 220 115 S330 78 395 82 S490 42 575 28 L575 165 L20 165Z"
+                  fill="url(#fill)"
+                />
+                <path
+                  d="M20 145 C120 140 135 110 220 115 S330 78 395 82 S490 42 575 28"
+                  fill="none"
+                  stroke="#b5ea25"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                />
+                <circle cx="20" cy="145" r="7" />
+                <circle cx="220" cy="115" r="7" />
+                <circle cx="395" cy="82" r="7" />
+                <circle
+                  cx="575"
+                  cy="28"
+                  r="9"
+                  fill="#d8ff6a"
+                  stroke="#101714"
+                  stroke-width="4"
+                />
+              </svg>
+              <div class="chart-labels">
+                <span>13,2<small>Départ</small></span
+                ><span>13,8<small>Aujourd’hui</small></span
+                ><span>14,7<small>Projection</small></span
+                ><span>16,0<small>Objectif</small></span>
+              </div>
+            </div>
+          </section>
+        </section>
 
-    <nav class="mobile-nav" aria-label="Navigation mobile"><button class="active" data-route="home"><span><svg viewBox="0 0 24 24"><path d="m5 8 4-4 4 4-4 4zM13 12l4-4 3 3-4 4zM5 16l3-3 5 5-3 3z"/><circle cx="17.5" cy="18.5" r="2.5"/></svg></span>Cockpit</button><button data-route="today"><span><svg viewBox="0 0 24 24"><path d="M4.5 12c0-4.5 3-7.5 7.5-7.5 3.8 0 6.8 2.3 7.5 5.8M17 7.5l2.7 2.8-3.7 1.2M19.5 14c-.7 3.4-3.5 5.5-7 5.5-2.4 0-4.3-.8-5.6-2.3M8 8.5 12 12l-2 4"/></svg></span>Session</button><button data-route="learn"><span><svg viewBox="0 0 24 24"><path d="M4 17c4.5-7 6.5-8 9-6s3.8 1.5 7-4"/><circle cx="4" cy="17" r="2"/><circle cx="13" cy="11" r="2"/><circle cx="20" cy="7" r="2.6"/></svg></span>Cours</button><button data-route="annales"><span><svg viewBox="0 0 24 24"><path d="M6 5.5c4-2.7 8-2.7 12 0v13c-4-2.7-8-2.7-12 0zM9 9c2-.8 4-.8 6 0"/></svg></span>Annales</button><button data-route="progress"><span><svg viewBox="0 0 24 24"><path d="M5 19c2-7 4-11 7-11 2.5 0 3 3 7-4M15 4l4-.5.5 4"/><circle cx="5" cy="19" r="2"/></svg></span>Niveau</button></nav>
-  </div>
-  <div class="toast" role="status" aria-live="polite"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
-  <script src="landing.js"></script>
-  <script src="app.js"></script>
-</body>
+        <section class="page" id="today" data-page="today">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow">MERCREDI 24 SEPTEMBRE</span>
+              <h1>Ta session du jour.</h1>
+              <p>
+                Construite à partir de ton objectif, de tes lacunes et de ton
+                rythme.
+              </p>
+            </div>
+            <div class="focus-ring"><b>1h40</b><span>focus</span></div>
+          </div>
+          <div class="session-layout">
+            <div class="session-stack">
+              <article class="session-feature">
+                <span class="chip">À FAIRE MAINTENANT</span>
+                <h2>Suites numériques</h2>
+                <p>
+                  Comprendre la convergence puis résoudre 3 questions
+                  progressives.
+                </p>
+                <div class="session-meta">
+                  <span>◷ 35 min</span><span>◆ +18 XP</span
+                  ><span>Cadre : Analyse</span>
+                </div>
+                <button
+                  class="primary"
+                  data-toast="Cours ouvert — Suites numériques"
+                >
+                  Démarrer <span>→</span>
+                </button>
+              </article>
+              <div class="plan-list compact">
+                <button class="plan-item">
+                  <span class="step">02</span>
+                  <div><b>Mécanique</b><small>30 min · Maîtriser</small></div>
+                  <i>→</i></button
+                ><button class="plan-item">
+                  <span class="step">03</span>
+                  <div>
+                    <b>Exercice Bac</b><small>25 min · Niveau national</small>
+                  </div>
+                  <i>→</i></button
+                ><button class="plan-item">
+                  <span class="step">04</span>
+                  <div>
+                    <b>Flash Review</b><small>10 min · 4 notions</small>
+                  </div>
+                  <i>→</i>
+                </button>
+              </div>
+            </div>
+            <aside class="insight-card">
+              <span class="eyebrow">POURQUOI CE PLAN ?</span>
+              <h3>Les suites peuvent te rapporter <em>+0,4 point</em>.</h3>
+              <p>
+                Tu connais le cours, mais tes réponses perdent des points dans
+                la justification.
+              </p>
+              <div class="skill-line">
+                <span>Rédiger</span>
+                <div class="bar"><i style="width: 48%"></i></div>
+                <b>48%</b>
+              </div>
+              <button class="text-btn" data-route="progress">
+                Voir mon diagnostic →
+              </button>
+            </aside>
+          </div>
+        </section>
+
+        <section class="page" id="learn" data-page="learn">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow">APPRENDRE</span>
+              <h1>Le programme, sans le bruit.</h1>
+              <p>
+                Tout est organisé selon ta filière et relié au cadre de
+                référence.
+              </p>
+            </div>
+            <button class="outline">68% couvert</button>
+          </div>
+          <div class="subject-tabs">
+            <button class="active">Mathématiques</button
+            ><button>Physique</button><button>Philosophie</button
+            ><button>Anglais</button>
+          </div>
+          <div class="chapter-grid">
+            <article class="chapter hero-chapter">
+              <div>
+                <span class="chip">EN COURS</span>
+                <h2>Suites numériques</h2>
+                <p>
+                  Limites, monotonie, convergence et raisonnement par
+                  récurrence.
+                </p>
+              </div>
+              <div class="chapter-score"><b>78%</b><small>maîtrisé</small></div>
+              <button class="primary" data-toast="Chapitre ouvert">
+                Continuer →
+              </button>
+            </article>
+            <article class="chapter">
+              <span class="chapter-no">02</span>
+              <h3>Limites & continuité</h3>
+              <div class="bar"><i style="width: 86%"></i></div>
+              <p><b>86%</b> maîtrisé · 8 notions</p>
+            </article>
+            <article class="chapter warning">
+              <span class="chapter-no">03</span>
+              <h3>Calcul intégral</h3>
+              <div class="bar"><i style="width: 54%"></i></div>
+              <p><b>54%</b> maîtrisé · Priorité</p>
+            </article>
+            <article class="chapter">
+              <span class="chapter-no">04</span>
+              <h3>Nombres complexes</h3>
+              <div class="bar"><i style="width: 72%"></i></div>
+              <p><b>72%</b> maîtrisé · 6 notions</p>
+            </article>
+            <article class="chapter danger">
+              <span class="chapter-no">05</span>
+              <h3>Probabilités</h3>
+              <div class="bar"><i style="width: 43%"></i></div>
+              <p><b>43%</b> maîtrisé · À renforcer</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="page" id="annales" data-page="annales">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow">ANNALES</span>
+              <h1>Entraîne-toi sur le vrai format.</h1>
+              <p>
+                Travaille un sujet entier ou question par question, sans réponse
+                prématurée.
+              </p>
+            </div>
+            <button class="outline" data-toast="Filtres ouverts">
+              Filtrer ⌄
+            </button>
+          </div>
+          <div class="dna-card">
+            <div>
+              <span class="eyebrow">BAC DNA · STATISTIQUES HISTORIQUES</span>
+              <h2>Ce qui revient dans les annales.</h2>
+              <p>
+                Analyse descriptive des sujets disponibles — aucune prédiction
+                du prochain Bac.
+              </p>
+            </div>
+            <div class="dna-stat">
+              <strong>7<small>/10</small></strong
+              ><span>Intégrales présentes</span>
+            </div>
+            <div class="dna-tags">
+              <span>Calcul direct</span><span>Aire</span><span>Primitive</span
+              ><span>Étude de fonction</span>
+            </div>
+          </div>
+          <div class="exam-list">
+            <article>
+              <div class="exam-year">2025</div>
+              <div>
+                <span class="chip">SESSION NORMALE</span>
+                <h3>Mathématiques · Sciences Maths A</h3>
+                <p>4 h · 20 points · 5 exercices</p>
+              </div>
+              <div class="exam-actions">
+                <button data-toast="Mode exercice par exercice">Découper</button
+                ><button class="dark" data-toast="Sujet 2025 ouvert">
+                  Ouvrir →
+                </button>
+              </div>
+            </article>
+            <article>
+              <div class="exam-year">2024</div>
+              <div>
+                <span class="chip neutral">RATTRAPAGE</span>
+                <h3>Mathématiques · Sciences Maths A</h3>
+                <p>4 h · 20 points · 4 exercices</p>
+              </div>
+              <div class="exam-actions">
+                <button data-toast="Correction intelligente ouverte">
+                  Correction IA</button
+                ><button class="dark" data-toast="Sujet 2024 ouvert">
+                  Ouvrir →
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="page" id="progress" data-page="progress">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow">MON BAC DIGITAL</span>
+              <h1>Ton niveau, notion par notion.</h1>
+              <p>Une estimation vivante, affinée après chaque activité.</p>
+            </div>
+            <div class="score-pill">13,8 <small>/20 estimé</small></div>
+          </div>
+          <div class="progress-grid">
+            <section class="mastery-card">
+              <h2>Mathématiques</h2>
+              <div class="mastery-list">
+                <div>
+                  <span>Suites</span>
+                  <div class="bar"><i style="width: 92%"></i></div>
+                  <b>92%</b>
+                </div>
+                <div>
+                  <span>Limites</span>
+                  <div class="bar"><i style="width: 86%"></i></div>
+                  <b>86%</b>
+                </div>
+                <div>
+                  <span>Dérivation</span>
+                  <div class="bar"><i style="width: 81%"></i></div>
+                  <b>81%</b>
+                </div>
+                <div>
+                  <span>Intégrales</span>
+                  <div class="bar"><i style="width: 54%"></i></div>
+                  <b>54%</b>
+                </div>
+                <div>
+                  <span>Complexes</span>
+                  <div class="bar"><i style="width: 72%"></i></div>
+                  <b>72%</b>
+                </div>
+                <div>
+                  <span>Probabilités</span>
+                  <div class="bar"><i style="width: 43%"></i></div>
+                  <b>43%</b>
+                </div>
+              </div>
+            </section>
+            <section class="skills-card">
+              <span class="eyebrow">CARTE DE COMPÉTENCES</span>
+              <h2>Tu sais calculer.<br /><em>Travaille ta rédaction.</em></h2>
+              <div class="radar-bars">
+                <div>
+                  <span>Calculer</span><i style="--v: 88%"></i><b>88</b>
+                </div>
+                <div>
+                  <span>Raisonner</span><i style="--v: 71%"></i><b>71</b>
+                </div>
+                <div>
+                  <span>Modéliser</span><i style="--v: 64%"></i><b>64</b>
+                </div>
+                <div class="low">
+                  <span>Rédiger</span><i style="--v: 48%"></i><b>48</b>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="page" id="score" data-page="score">
+          <div class="page-head">
+            <div>
+              <span class="eyebrow">BAC SCORE SIMULATOR</span>
+              <h1>Teste ton chemin vers 16.</h1>
+              <p>
+                Projection indicative. Les coefficients doivent être validés
+                dans le référentiel annuel.
+              </p>
+            </div>
+            <div class="score-pill accent">
+              <span>Moyenne</span><b id="average">14,80</b><small>/20</small>
+            </div>
+          </div>
+          <div class="simulator">
+            <div class="score-inputs">
+              <label
+                >Mathématiques <span>coef. à valider</span
+                ><input
+                  type="range"
+                  min="0"
+                  max="20"
+                  step=".5"
+                  value="16"
+                  data-subject="Mathématiques"
+                /><output>16</output></label
+              ><label
+                >Physique <span>coef. à valider</span
+                ><input
+                  type="range"
+                  min="0"
+                  max="20"
+                  step=".5"
+                  value="14"
+                  data-subject="Physique"
+                /><output>14</output></label
+              ><label
+                >Philosophie <span>coef. à valider</span
+                ><input
+                  type="range"
+                  min="0"
+                  max="20"
+                  step=".5"
+                  value="13"
+                  data-subject="Philosophie"
+                /><output>13</output></label
+              ><label
+                >Anglais <span>coef. à valider</span
+                ><input
+                  type="range"
+                  min="0"
+                  max="20"
+                  step=".5"
+                  value="16"
+                  data-subject="Anglais"
+                /><output>16</output></label
+              >
+            </div>
+            <aside class="target-card">
+              <span class="eyebrow">POUR ATTEINDRE 16/20</span>
+              <h2>Il te manque <em id="gap">1,20 point</em>.</h2>
+              <p>Le meilleur levier selon tes résultats actuels :</p>
+              <div class="recommend">
+                <b>Mathématiques</b><span>16 → 18</span>
+              </div>
+              <div class="recommend"><b>Physique</b><span>14 → 15,5</span></div>
+              <small>Simulation pédagogique, non officielle.</small>
+            </aside>
+          </div>
+        </section>
+      </main>
+
+      <nav class="mobile-nav" aria-label="Navigation mobile">
+        <button class="active" data-route="home">
+          <span
+            ><svg viewBox="0 0 24 24">
+              <path
+                d="m5 8 4-4 4 4-4 4zM13 12l4-4 3 3-4 4zM5 16l3-3 5 5-3 3z"
+              />
+              <circle cx="17.5" cy="18.5" r="2.5" /></svg></span
+          >Cockpit</button
+        ><button data-route="today">
+          <span
+            ><svg viewBox="0 0 24 24">
+              <path
+                d="M4.5 12c0-4.5 3-7.5 7.5-7.5 3.8 0 6.8 2.3 7.5 5.8M17 7.5l2.7 2.8-3.7 1.2M19.5 14c-.7 3.4-3.5 5.5-7 5.5-2.4 0-4.3-.8-5.6-2.3M8 8.5 12 12l-2 4"
+              /></svg></span
+          >Session</button
+        ><button data-route="learn">
+          <span
+            ><svg viewBox="0 0 24 24">
+              <path d="M4 17c4.5-7 6.5-8 9-6s3.8 1.5 7-4" />
+              <circle cx="4" cy="17" r="2" />
+              <circle cx="13" cy="11" r="2" />
+              <circle cx="20" cy="7" r="2.6" /></svg></span
+          >Cours</button
+        ><button data-route="annales">
+          <span
+            ><svg viewBox="0 0 24 24">
+              <path
+                d="M6 5.5c4-2.7 8-2.7 12 0v13c-4-2.7-8-2.7-12 0zM9 9c2-.8 4-.8 6 0"
+              /></svg></span
+          >Annales</button
+        ><button data-route="progress">
+          <span
+            ><svg viewBox="0 0 24 24">
+              <path d="M5 19c2-7 4-11 7-11 2.5 0 3 3 7-4M15 4l4-.5.5 4" />
+              <circle cx="5" cy="19" r="2" /></svg></span
+          >Niveau
+        </button>
+      </nav>
+    </div>
+    <div class="toast" role="status" aria-live="polite"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="landing.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>

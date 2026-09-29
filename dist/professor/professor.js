@@ -84,6 +84,7 @@
         walletBalance = w?.balance || 0;
         purchases = new Set(bought.map((x) => x.offer_id));
         mountWalletButton();
+        mountPurchasesButton();
         if (profile?.role === "admin") {
           const adminButton = document.createElement("button");
           adminButton.className = "admin-entry";
@@ -95,7 +96,7 @@
       const { data: o = [] } = await db
         .from("teacher_offers")
         .select(
-          "id,title,description,method,language,token_price,duration_minutes,subject_id,teacher_id,teacher_profiles(display_name,verification_status),chapters(title)",
+          "id,title,description,method,language,token_price,duration_minutes,subject_id,teacher_id,video_path,teacher_profiles(display_name,verification_status),chapters(title)",
         )
         .eq("status", "published")
         .order("created_at", { ascending: false });
@@ -188,6 +189,7 @@
       profile = p;
       await refreshWallet();
       mountWalletButton();
+      mountPurchasesButton();
       closeModal();
       next();
     };
@@ -444,6 +446,59 @@
     button.innerHTML = `<span>●</span> ${walletBalance.toLocaleString("fr-MA")} jetons`;
     button.onclick = openWallet;
   }
+  function mountPurchasesButton() {
+    if (!session || document.querySelector("#purchasesButton")) return;
+    const button = document.createElement("button");
+    button.id = "purchasesButton";
+    button.className = "admin-entry";
+    button.textContent = "Mes achats";
+    button.onclick = openPurchases;
+    document.querySelector(".market-header nav").prepend(button);
+  }
+  async function openPurchases() {
+    const { data = [] } = await db
+      .from("teacher_offer_purchases")
+      .select(
+        "id,created_at,tokens_paid,offer_id,teacher_offers(title,video_path,duration_minutes,teacher_profiles(display_name),chapters(title))",
+      )
+      .eq("buyer_id", session.user.id)
+      .order("created_at", { ascending: false });
+    openModal(
+      `<div class="studio-shell"><span class="kicker">MA VIDÉOTHÈQUE</span><h2>Mes explications achetées.</h2><div class="purchase-library">${data.map((p) => `<article><div><small>${esc(p.teacher_offers?.chapters?.title)}</small><b>${esc(p.teacher_offers?.title)}</b><span>${esc(p.teacher_offers?.teacher_profiles?.display_name)} · ${p.teacher_offers?.duration_minutes} min</span></div><button data-play-purchase="${p.offer_id}" data-video-path="${esc(p.teacher_offers?.video_path || "")}">Regarder ▶</button></article>`).join("") || "<p>Tu n’as encore acheté aucune explication.</p>"}</div></div>`,
+    );
+    document
+      .querySelectorAll("[data-play-purchase]")
+      .forEach(
+        (b) =>
+          (b.onclick = () =>
+            playPurchasedVideo(b.dataset.playPurchase, b.dataset.videoPath)),
+      );
+  }
+  async function playPurchasedVideo(offerId, path) {
+    if (!path) return toast("La vidéo n’est pas encore disponible.");
+    const { data, error } = await db.storage
+      .from("teacher-videos")
+      .createSignedUrl(path, 3600);
+    if (error || !data?.signedUrl)
+      return toast(error?.message || "Vidéo indisponible.");
+    openModal(
+      `<div class="video-reader"><video controls autoplay playsinline src="${esc(data.signedUrl)}"></video><p>Ce lien privé expire automatiquement dans une heure.</p></div>`,
+    );
+    const video = document.querySelector(".video-reader video");
+    let lastSaved = -1;
+    video.ontimeupdate = () => {
+      const seconds = Math.round(video.currentTime);
+      if (seconds - lastSaved >= 15) {
+        lastSaved = seconds;
+        db.from("teacher_watch_history").upsert({
+          user_id: session.user.id,
+          offer_id: offerId,
+          watched_seconds: seconds,
+          last_watched_at: new Date().toISOString(),
+        });
+      }
+    };
+  }
   async function purchaseOffer(offer) {
     if (!session) return requireAuth(() => purchaseOffer(offer));
     if (purchases.has(offer.id))
@@ -470,7 +525,9 @@
       await Promise.all([
         db
           .from("payment_orders")
-          .select("id,amount_mad,tokens,method,status,created_at")
+          .select(
+            "id,amount_mad,tokens,method,status,provider_reference,created_at,paid_at",
+          )
           .eq("user_id", session.user.id)
           .order("created_at", { ascending: false })
           .limit(8),
@@ -482,7 +539,7 @@
           .limit(8),
       ]);
     openModal(
-      `<div class="wallet-shell"><span class="kicker">PORTEFEUILLE NOQTA</span><div class="wallet-balance"><small>Solde disponible</small><strong>${walletBalance.toLocaleString("fr-MA")}</strong><span>jetons</span></div><div class="token-pack"><div><span class="token-picto">✦</span><div><b>Pack Pro</b><small>2 000 jetons · 10 jetons = 1 MAD</small></div></div><strong>200 MAD</strong></div><h3>Choisir le mode de règlement</h3><div class="payment-methods"><button data-pay="card"><span>▣</span><b>Carte bancaire</b><small>Passerelle sécurisée</small></button><button data-pay="wafacash"><span>W</span><b>Wafacash</b><small>Paiement en agence</small></button><button data-pay="barid"><span>B</span><b>Barid Cash</b><small>Paiement en agence</small></button><button data-pay="transfer"><span>⇄</span><b>Virement</b><small>Validation manuelle</small></button></div><p class="payment-disclaimer">Une commande ne crédite jamais le solde avant confirmation du paiement.</p><h3>Historique</h3><div class="wallet-history">${orders.map((o) => `<article><div><b>Recharge ${o.tokens.toLocaleString("fr-MA")} jetons</b><small>${esc(o.method)} · ${new Date(o.created_at).toLocaleDateString("fr-MA")}</small></div><span class="pay-status ${o.status}">${esc(o.status)}</span></article>`).join("") || transactions.map((t) => `<article><div><b>${esc(t.description)}</b><small>${new Date(t.created_at).toLocaleDateString("fr-MA")}</small></div><strong class="${t.amount > 0 ? "positive" : ""}">${t.amount > 0 ? "+" : ""}${t.amount}</strong></article>`).join("") || "<p>Aucun mouvement pour le moment.</p>"}</div></div>`,
+      `<div class="wallet-shell"><span class="kicker">PORTEFEUILLE NOQTA</span><div class="wallet-balance"><small>Solde disponible</small><strong>${walletBalance.toLocaleString("fr-MA")}</strong><span>jetons</span></div><div class="token-pack"><div><span class="token-picto">✦</span><div><b>Pack Pro</b><small>2 000 jetons · 10 jetons = 1 MAD</small></div></div><strong>200 MAD</strong></div><h3>Choisir le mode de règlement</h3><div class="payment-methods"><button data-pay="card"><span>▣</span><b>Carte bancaire</b><small>Passerelle sécurisée</small></button><button data-pay="wafacash"><span>W</span><b>Wafacash</b><small>Paiement en agence</small></button><button data-pay="barid"><span>B</span><b>Barid Cash</b><small>Paiement en agence</small></button><button data-pay="transfer"><span>⇄</span><b>Virement</b><small>Validation manuelle</small></button></div><p class="payment-disclaimer">Une commande ne crédite jamais le solde avant confirmation du paiement.</p>${profile?.role === "teacher" ? '<button class="withdraw-entry">Demander un retrait professeur →</button>' : ""}<h3>Historique</h3><div class="wallet-history">${orders.map((o) => `<article><div><b>Recharge ${o.tokens.toLocaleString("fr-MA")} jetons</b><small>${esc(o.method)} · ${new Date(o.created_at).toLocaleDateString("fr-MA")}</small></div><div>${o.status === "paid" ? `<button data-receipt="${o.id}">Reçu</button>` : `<button data-cancel-order="${o.id}">Annuler</button>`}<span class="pay-status ${o.status}">${esc(o.status)}</span></div></article>`).join("") || transactions.map((t) => `<article><div><b>${esc(t.description)}</b><small>${new Date(t.created_at).toLocaleDateString("fr-MA")}</small></div><strong class="${t.amount > 0 ? "positive" : ""}">${t.amount > 0 ? "+" : ""}${t.amount}</strong></article>`).join("") || "<p>Aucun mouvement pour le moment.</p>"}</div></div>`,
     );
     document
       .querySelectorAll("[data-pay]")
@@ -490,6 +547,49 @@
         (button) =>
           (button.onclick = () => createPaymentOrder(button.dataset.pay)),
       );
+    document.querySelectorAll("[data-cancel-order]").forEach(
+      (b) =>
+        (b.onclick = async () => {
+          const { error } = await db.rpc("cancel_payment_order", {
+            p_order: b.dataset.cancelOrder,
+          });
+          if (error) return toast(error.message);
+          toast("Commande annulée.");
+          openWallet();
+        }),
+    );
+    document.querySelectorAll("[data-receipt]").forEach(
+      (b) =>
+        (b.onclick = () => {
+          const o = orders.find((x) => x.id === b.dataset.receipt);
+          const win = open("", "_blank");
+          win.document.write(
+            `<title>Reçu Noqta</title><main style="font:16px Arial;max-width:650px;margin:50px auto"><h1>noqta.</h1><h2>Reçu de paiement</h2><p>Référence : ${esc(o.provider_reference || o.id)}</p><p>Montant : ${o.amount_mad} MAD</p><p>Crédit : ${o.tokens} jetons</p><p>Date : ${new Date(o.paid_at).toLocaleString("fr-MA")}</p><hr><small>Reçu généré depuis une commande confirmée.</small></main>`,
+          );
+          win.print();
+        }),
+    );
+    document
+      .querySelector(".withdraw-entry")
+      ?.addEventListener("click", openWithdrawal);
+  }
+  function openWithdrawal() {
+    openModal(
+      `<div class="studio-intro"><span class="kicker">RETRAIT PROFESSEUR</span><h2>Transformer tes jetons en MAD.</h2><form id="withdrawForm" class="studio-form"><label>Jetons<input name="tokens" type="number" min="500" step="10" max="${walletBalance}" required></label><label>Méthode<select name="method"><option value="bank_transfer">Virement bancaire</option><option value="cashplus">Cash Plus</option></select></label><label class="full">RIB ou informations de retrait<textarea name="account" required minlength="10"></textarea></label><button class="studio-primary full">Envoyer la demande →</button></form></div>`,
+    );
+    document.querySelector("#withdrawForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const f = new FormData(e.currentTarget),
+        { error } = await db.rpc("request_teacher_withdrawal", {
+          p_tokens: +f.get("tokens"),
+          p_method: f.get("method"),
+          p_account: f.get("account"),
+        });
+      if (error) return toast(error.message);
+      await refreshWallet();
+      closeModal();
+      toast("Demande envoyée.");
+    };
   }
   async function createPaymentOrder(method) {
     const status =

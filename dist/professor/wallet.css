@@ -173,3 +173,48 @@
     font-size: 40px;
   }
 }
+.purchase-library {
+  display: grid;
+  gap: 10px;
+  margin-top: 25px;
+}
+.purchase-library article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 18px;
+}
+.purchase-library article div {
+  display: grid;
+  gap: 4px;
+}
+.purchase-library small,
+.purchase-library span {
+  color: #777;
+}
+.purchase-library button {
+  border: 0;
+  border-radius: 99px;
+  background: #171918;
+  color: #fff;
+  padding: 12px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.video-reader {
+  padding: 12px;
+}
+.video-reader video {
+  display: block;
+  width: min(100%, 1000px);
+  max-height: 75vh;
+  background: #000;
+  border-radius: 18px;
+}
+.video-reader p {
+  color: #666;
+  font-size: 12px;
+}

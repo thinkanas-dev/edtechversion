@@ -17,6 +17,18 @@
     city: "",
     school: "",
   };
+  const escapeHtml = (value) =>
+    String(value ?? "").replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
 
   function setSurface(name) {
     document.body.classList.toggle("landing-active", name === "landing");
@@ -243,14 +255,12 @@
     const { error } = await db.from("profiles").upsert(payload);
     if (error) return showToast(error.message);
     await db.from("user_subjects").delete().eq("user_id", session.user.id);
-    const { error: subjectError } = await db
-      .from("user_subjects")
-      .insert(
-        state.subjects.map((subject_id) => ({
-          user_id: session.user.id,
-          subject_id,
-        })),
-      );
+    const { error: subjectError } = await db.from("user_subjects").insert(
+      state.subjects.map((subject_id) => ({
+        user_id: session.user.id,
+        subject_id,
+      })),
+    );
     if (subjectError) return showToast(subjectError.message);
     await hydrateApp(payload);
     setSurface("app");
@@ -339,7 +349,7 @@
           db
             .from("chapters")
             .select(
-              "id,title,summary,subject_id,source_name,course_url,exercise_url,annales_url,lessons(id,title,duration_minutes)",
+              "id,title,summary,subject_id,source_name,course_url,exercise_url,annales_url,lessons(id,title,content,duration_minutes)",
             )
             .in("subject_id", ids)
             .order("position"),
@@ -361,12 +371,20 @@
               .filter((c) => !active || c.subject_id === active)
               .map(
                 (c, index) =>
-                  `<article class="chapter library-book"><div class="book-spine"><span>${String(index + 1).padStart(2, "0")}</span><small>${subjectName[c.subject_id] || ""}</small></div><div class="book-body"><h3>${c.title}</h3><p>${c.summary || "Chapitre du programme national."}</p><small class="chapter-source">Source pédagogique · ${c.source_name || "Noqta"}</small><div class="resource-actions"><button class="resource-action" ${c.course_url ? `data-resource-url="${c.course_url}"` : "disabled"}>Cours</button><button class="resource-action" ${c.course_url ? `data-resource-url="${c.course_url}"` : "disabled"}>Contenu</button><button class="resource-action" ${c.exercise_url ? `data-resource-url="${c.exercise_url}"` : "disabled"}>Exercices</button><button class="resource-action" disabled title="En préparation">Examen blanc</button><button class="resource-action" ${c.annales_url ? `data-resource-url="${c.annales_url}"` : 'data-route="annales"'}>Annales</button></div></div></article>`,
+                  `<article class="chapter library-book"><div class="book-spine"><span>${String(index + 1).padStart(2, "0")}</span><small>${subjectName[c.subject_id] || ""}</small></div><div class="book-body"><h3>${c.title}</h3><p>${c.summary || "Chapitre du programme national."}</p><small class="chapter-source">Source pédagogique · ${c.source_name || "Noqta"}</small><div class="resource-actions"><button class="resource-action" data-open-chapter="${c.id}">Ouvrir le cours</button><button class="resource-action" ${c.exercise_url ? `data-resource-url="${c.exercise_url}"` : "disabled"}>Exercices</button><button class="resource-action" disabled title="En préparation">Examen blanc</button><button class="resource-action" ${c.annales_url ? `data-resource-url="${c.annales_url}"` : 'data-route="annales"'}>Annales</button></div></div></article>`,
               )
               .join("") ||
             '<div class="empty-library"><h2>Aucun cours publié pour cette matière.</h2></div>';
       };
       function bindLibrary() {
+        document.querySelectorAll("[data-open-chapter]").forEach((button) =>
+          button.addEventListener("click", () =>
+            openChapter(
+              chapters.find((c) => c.id === button.dataset.openChapter),
+              subjectName,
+            ),
+          ),
+        );
         document
           .querySelectorAll("[data-resource-url]")
           .forEach((button) =>
@@ -385,6 +403,77 @@
               document.querySelector(".nav-annales")?.click(),
             ),
           );
+      }
+      async function openChapter(chapter, labels) {
+        if (!chapter) return;
+        const lesson = chapter.lessons?.[0];
+        const [{ data: progress }, { data: bookmark }] = await Promise.all([
+          lesson
+            ? db
+                .from("lesson_progress")
+                .select("progress,completed")
+                .eq("user_id", session.user.id)
+                .eq("lesson_id", lesson.id)
+                .maybeSingle()
+            : Promise.resolve({ data: null }),
+          db
+            .from("chapter_bookmarks")
+            .select("chapter_id")
+            .eq("user_id", session.user.id)
+            .eq("chapter_id", chapter.id)
+            .maybeSingle(),
+        ]);
+        let reader = document.querySelector("#courseReader");
+        if (!reader) {
+          reader = document.createElement("div");
+          reader.id = "courseReader";
+          document.body.append(reader);
+        }
+        const paragraphs = (lesson?.content || chapter.summary)
+          .split("\n")
+          .filter(Boolean);
+        reader.innerHTML = `<div class="reader-backdrop" data-close-reader></div><article class="reader-panel"><header><button data-close-reader>← Bibliothèque</button><span>${escapeHtml(labels[chapter.subject_id])} · ${escapeHtml(chapter.source_name || "Noqta")}</span><button data-bookmark class="bookmark ${bookmark ? "saved" : ""}">${bookmark ? "★ Enregistré" : "☆ Enregistrer"}</button></header><div class="reader-progress"><i style="width:${progress?.progress || 0}%"></i></div><main><span class="eyebrow">CHAPITRE</span><h1>${escapeHtml(chapter.title)}</h1><p class="reader-lead">${escapeHtml(chapter.summary)}</p>${paragraphs.map((p, i) => `<section><small>${String(i + 1).padStart(2, "0")}</small><p>${escapeHtml(p)}</p></section>`).join("")}<div class="reader-links">${chapter.course_url ? `<a href="${chapter.course_url}" target="_blank" rel="noopener">Ressource complète vérifiée ↗</a>` : ""}${chapter.exercise_url ? `<a href="${chapter.exercise_url}" target="_blank" rel="noopener">Exercices de la source ↗</a>` : ""}</div><button class="primary reader-complete">${progress?.completed ? "Chapitre terminé ✓" : "Marquer comme terminé"}</button></main></article>`;
+        reader.classList.add("open");
+        document.body.style.overflow = "hidden";
+        reader.querySelectorAll("[data-close-reader]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              reader.classList.remove("open");
+              document.body.style.overflow = "";
+            }),
+        );
+        reader.querySelector("[data-bookmark]").onclick = async (e) => {
+          if (e.currentTarget.classList.contains("saved")) {
+            await db
+              .from("chapter_bookmarks")
+              .delete()
+              .eq("user_id", session.user.id)
+              .eq("chapter_id", chapter.id);
+            e.currentTarget.classList.remove("saved");
+            e.currentTarget.textContent = "☆ Enregistrer";
+          } else {
+            await db
+              .from("chapter_bookmarks")
+              .insert({ user_id: session.user.id, chapter_id: chapter.id });
+            e.currentTarget.classList.add("saved");
+            e.currentTarget.textContent = "★ Enregistré";
+          }
+        };
+        reader.querySelector(".reader-complete").onclick = async (e) => {
+          if (!lesson) return showToast("Leçon en préparation.");
+          await db
+            .from("lesson_progress")
+            .upsert({
+              user_id: session.user.id,
+              lesson_id: lesson.id,
+              progress: 100,
+              completed: true,
+              updated_at: new Date().toISOString(),
+            });
+          e.currentTarget.textContent = "Chapitre terminé ✓";
+          reader.querySelector(".reader-progress i").style.width = "100%";
+          showToast("Progression enregistrée.");
+        };
       }
       paint(ids[0]);
       bindLibrary();

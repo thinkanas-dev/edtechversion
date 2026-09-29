@@ -1,0 +1,137 @@
+#courseReader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+}
+#courseReader.open {
+  display: block;
+}
+.reader-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 13, 12, 0.62);
+  backdrop-filter: blur(8px);
+}
+.reader-panel {
+  position: absolute;
+  inset: 18px;
+  background: #f8f8f4;
+  border: 1px solid #111;
+  border-radius: 26px;
+  overflow: auto;
+}
+.reader-panel > header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(248, 248, 244, 0.94);
+  border-bottom: 1px solid #d8d8d1;
+  backdrop-filter: blur(12px);
+}
+.reader-panel header button {
+  border: 0;
+  background: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+.reader-panel header span {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.reader-panel .bookmark {
+  justify-self: end;
+}
+.reader-panel .bookmark.saved {
+  color: #4e7500;
+}
+.reader-progress {
+  position: sticky;
+  top: 57px;
+  height: 4px;
+  background: #ddd;
+  z-index: 3;
+}
+.reader-progress i {
+  display: block;
+  height: 100%;
+  background: #a7ef31;
+  transition: 0.3s;
+}
+.reader-panel main {
+  max-width: 850px;
+  margin: auto;
+  padding: 70px 30px 100px;
+}
+.reader-panel h1 {
+  font: 800 clamp(42px, 7vw, 78px) Manrope;
+  margin: 18px 0;
+}
+.reader-lead {
+  font-size: 20px;
+  color: #666;
+  line-height: 1.55;
+}
+.reader-panel main section {
+  display: grid;
+  grid-template-columns: 45px 1fr;
+  gap: 18px;
+  padding: 24px 0;
+  border-top: 1px solid #ddd;
+}
+.reader-panel main section small {
+  font-weight: 800;
+  color: #7a7a72;
+}
+.reader-panel main section p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.reader-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 30px 0;
+}
+.reader-links a {
+  padding: 12px 15px;
+  border: 1px solid #111;
+  border-radius: 99px;
+  color: #111;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+}
+.reader-complete {
+  margin-top: 25px;
+}
+@media (max-width: 700px) {
+  .reader-panel {
+    inset: 0;
+    border-radius: 0;
+  }
+  .reader-panel > header {
+    grid-template-columns: 1fr auto;
+  }
+  .reader-panel header > span {
+    display: none;
+  }
+  .reader-panel main {
+    padding: 45px 20px 80px;
+  }
+  .reader-panel h1 {
+    font-size: 43px;
+  }
+  .reader-panel main section {
+    grid-template-columns: 30px 1fr;
+  }
+  .reader-panel main section p {
+    font-size: 15px;
+  }
+}
