@@ -1,8 +1,226 @@
-<!doctype html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Noqta Professeurs — Trouve l’explication qui te parle</title><meta name="description" content="Découvre les méthodes d’explication des professeurs Noqta par matière, chapitre et budget en jetons."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=Noto+Sans+Arabic:wght@500;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet"><link rel="icon" href="../favicon.svg"><link rel="stylesheet" href="professor.css"></head><body>
-<header class="market-header"><a href="/" class="market-logo"><img src="../assets/noqta-logo.png" alt="Noqta"></a><form class="market-search" id="marketSearch"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg><input id="searchInput" type="search" placeholder="Quel chapitre veux-tu enfin comprendre ?"><button>Rechercher</button></form><nav><a href="#how">Comment ça marche</a><a href="/#tarifs">Mes jetons</a><a href="/" class="my-space">Mon espace ↗</a></nav></header>
-<div class="category-rail" aria-label="Catégories"><button class="category active" data-subject="all"><span class="cat-icon all-icon"><svg viewBox="0 0 56 56"><path d="M9 16c8-5 14-3 19 2v28c-5-5-11-6-19-3zM47 16c-8-5-14-3-19 2v28c5-5 11-6 19-3zM28 18v28"/><path d="m20 10 3 5 6 1-4 4 1 6-6-3-5 3 1-6-4-4 6-1z"/></svg></span><b>Pour toi</b></button><button class="category" data-subject="math"><span class="cat-icon math-icon"><svg viewBox="0 0 56 56"><path d="M8 15h40v29H8zM15 23h14M15 31h8M36 21l9 12M45 21 36 33"/><circle cx="18" cy="39" r="3"/></svg></span><b>Mathématiques</b></button><button class="category" data-subject="physics"><span class="cat-icon physics-icon"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="4"/><ellipse cx="28" cy="28" rx="21" ry="8"/><ellipse cx="28" cy="28" rx="21" ry="8" transform="rotate(60 28 28)"/><ellipse cx="28" cy="28" rx="21" ry="8" transform="rotate(120 28 28)"/></svg></span><b>Physique-Chimie</b></button><button class="category" data-subject="svt"><span class="cat-icon svt-icon"><svg viewBox="0 0 56 56"><path d="M13 44c4-19 15-29 31-33-1 19-11 30-31 33Z"/><path d="M17 40c8-9 15-15 23-23M27 31l-9-1M34 24l1-8"/></svg></span><b>SVT</b></button><button class="category" data-subject="philo"><span class="cat-icon philo-icon"><svg viewBox="0 0 56 56"><path d="M17 13h22v8c0 6-5 11-11 11S17 27 17 21zM28 32v11M18 44h20"/><path d="M11 17h6M39 17h6M12 17c0 7 3 10 8 11M44 17c0 7-3 10-8 11"/></svg></span><b>Philosophie</b></button><button class="category" data-subject="languages"><span class="cat-icon lang-icon"><svg viewBox="0 0 56 56"><path d="M9 13h23v25H19l-7 6v-6H9zM28 20h19v24H35l-6 5v-5"/><path d="M15 22h11M15 29h8M34 29h8M34 36h6"/></svg></span><b>Langues</b></button></div>
-<main><section class="market-hero"><div><span class="kicker">NOQTA · EXPLIQUÉ PAR DES HUMAINS</span><h1>La même leçon.<br><em>Pas la même façon.</em></h1><p>Regarde 10 à 15 minutes. Choisis la voix, le rythme et la méthode qui font enfin « clic ».</p></div><div class="hero-token"><div class="token-orbit"><svg viewBox="0 0 92 92"><path d="M18 24c12-7 21-4 28 4v48c-7-8-16-10-28-5zM74 24c-12-7-21-4-28 4v48c7-8 16-10 28-5zM46 28v48"/><circle cx="70" cy="19" r="8"/></svg></div><span>ÉCHANGE SIMPLE</span><b>10 jetons = 1 MAD</b><small>Noqta Pro · 2 000 jetons pour 200 MAD</small></div></section>
-<section class="market-layout"><aside class="filters"><div class="filter-title"><b>Affiner</b><button id="resetFilters">Tout effacer</button></div><fieldset><legend>Matière</legend><label><input type="radio" name="subject" value="all" checked> Toutes</label><label><input type="radio" name="subject" value="math"> Mathématiques</label><label><input type="radio" name="subject" value="physics"> Physique-Chimie</label><label><input type="radio" name="subject" value="svt"> SVT</label><label><input type="radio" name="subject" value="philo"> Philosophie</label><label><input type="radio" name="subject" value="languages"> Langues</label></fieldset><fieldset><legend>Façon d’expliquer</legend><label><input type="checkbox" value="visual"> Schémas & visualisation</label><label><input type="checkbox" value="steps"> Pas à pas</label><label><input type="checkbox" value="bac"> Méthode Bac</label><label><input type="checkbox" value="darija"> Français + الدارجة</label></fieldset><fieldset><legend>Budget par vidéo</legend><div class="token-range"><input id="tokenRange" type="range" min="50" max="500" value="500"><output id="tokenOutput">≤ 500 jetons</output></div></fieldset><div class="pro-wallet"><span>PORTEFEUILLE PRO</span><b>2 000 <small>jetons</small></b><i>≈ 200 MAD</i></div></aside>
-<div class="results"><div class="results-head"><div><span id="resultCount">6 emplacements</span><h2>Choisis la méthode qui te parle.</h2></div><select aria-label="Trier"><option>Les plus pertinents</option><option>Moins de jetons</option><option>Durée la plus courte</option></select></div><div class="teacher-grid" id="teacherGrid"></div></div></section>
-<section class="teacher-call" id="how"><div class="call-picto"><svg viewBox="0 0 90 90"><path d="M12 18h66v45H52L44 75l-8-12H12z"/><path d="M28 51c2-12 8-19 17-19s15 7 17 19M45 19a12 12 0 1 1 0 24 12 12 0 0 1 0-24"/><circle cx="19" cy="27" r="4"/><circle cx="71" cy="27" r="4"/></svg></div><div><span class="kicker">TU ES PROFESSEUR ?</span><h2>Ta façon d’expliquer<br>peut débloquer quelqu’un.</h2><p>Prépare une vidéo de 10 à 15 minutes, indique le chapitre et fixe ton prix en jetons.</p></div><button>Proposer une explication <span>↗</span></button></section></main>
-<footer><img src="../assets/noqta-logo.png" alt="Noqta"><p>Chaque élève mérite l’explication qui lui parle.</p><a href="/">Retour à Noqta</a></footer><script src="professor.js"></script></body></html>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Noqta Professeurs — Trouve l’explication qui te parle</title>
+    <meta
+      name="description"
+      content="Découvre les méthodes d’explication des professeurs Noqta par matière, chapitre et budget en jetons."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=Noto+Sans+Arabic:wght@500;700&family=Playfair+Display:ital,wght@1,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="../favicon.svg" />
+    <link rel="stylesheet" href="professor.css" />
+    <link rel="stylesheet" href="studio.css" />
+    <link rel="stylesheet" href="moderation.css" />
+  </head>
+  <body>
+    <header class="market-header">
+      <a href="/" class="market-logo"
+        ><img src="../assets/noqta-logo.png" alt="Noqta"
+      /></a>
+      <form class="market-search" id="marketSearch">
+        <svg viewBox="0 0 24 24">
+          <circle cx="10.5" cy="10.5" r="5.5" />
+          <path d="m15 15 5 5" /></svg
+        ><input
+          id="searchInput"
+          type="search"
+          placeholder="Quel chapitre veux-tu enfin comprendre ?"
+        /><button>Rechercher</button>
+      </form>
+      <nav>
+        <a href="#how">Comment ça marche</a><a href="/#tarifs">Mes jetons</a
+        ><a href="/" class="my-space">Mon espace ↗</a>
+      </nav>
+    </header>
+    <div class="category-rail" aria-label="Catégories">
+      <button class="category active" data-subject="all">
+        <span class="cat-icon all-icon"
+          ><svg viewBox="0 0 56 56">
+            <path
+              d="M9 16c8-5 14-3 19 2v28c-5-5-11-6-19-3zM47 16c-8-5-14-3-19 2v28c5-5 11-6 19-3zM28 18v28"
+            />
+            <path d="m20 10 3 5 6 1-4 4 1 6-6-3-5 3 1-6-4-4 6-1z" /></svg></span
+        ><b>Pour toi</b></button
+      ><button class="category" data-subject="math">
+        <span class="cat-icon math-icon"
+          ><svg viewBox="0 0 56 56">
+            <path d="M8 15h40v29H8zM15 23h14M15 31h8M36 21l9 12M45 21 36 33" />
+            <circle cx="18" cy="39" r="3" /></svg></span
+        ><b>Mathématiques</b></button
+      ><button class="category" data-subject="physics">
+        <span class="cat-icon physics-icon"
+          ><svg viewBox="0 0 56 56">
+            <circle cx="28" cy="28" r="4" />
+            <ellipse cx="28" cy="28" rx="21" ry="8" />
+            <ellipse
+              cx="28"
+              cy="28"
+              rx="21"
+              ry="8"
+              transform="rotate(60 28 28)"
+            />
+            <ellipse
+              cx="28"
+              cy="28"
+              rx="21"
+              ry="8"
+              transform="rotate(120 28 28)"
+            /></svg></span
+        ><b>Physique-Chimie</b></button
+      ><button class="category" data-subject="svt">
+        <span class="cat-icon svt-icon"
+          ><svg viewBox="0 0 56 56">
+            <path d="M13 44c4-19 15-29 31-33-1 19-11 30-31 33Z" />
+            <path d="M17 40c8-9 15-15 23-23M27 31l-9-1M34 24l1-8" /></svg></span
+        ><b>SVT</b></button
+      ><button class="category" data-subject="philo">
+        <span class="cat-icon philo-icon"
+          ><svg viewBox="0 0 56 56">
+            <path
+              d="M17 13h22v8c0 6-5 11-11 11S17 27 17 21zM28 32v11M18 44h20"
+            />
+            <path
+              d="M11 17h6M39 17h6M12 17c0 7 3 10 8 11M44 17c0 7-3 10-8 11"
+            /></svg></span
+        ><b>Philosophie</b></button
+      ><button class="category" data-subject="languages">
+        <span class="cat-icon lang-icon"
+          ><svg viewBox="0 0 56 56">
+            <path d="M9 13h23v25H19l-7 6v-6H9zM28 20h19v24H35l-6 5v-5" />
+            <path d="M15 22h11M15 29h8M34 29h8M34 36h6" /></svg></span
+        ><b>Langues</b>
+      </button>
+    </div>
+    <main>
+      <section class="market-hero">
+        <div>
+          <span class="kicker">NOQTA · EXPLIQUÉ PAR DES HUMAINS</span>
+          <h1>La même leçon.<br /><em>Pas la même façon.</em></h1>
+          <p>
+            Regarde 10 à 15 minutes. Choisis la voix, le rythme et la méthode
+            qui font enfin « clic ».
+          </p>
+        </div>
+        <div class="hero-token">
+          <div class="token-orbit">
+            <svg viewBox="0 0 92 92">
+              <path
+                d="M18 24c12-7 21-4 28 4v48c-7-8-16-10-28-5zM74 24c-12-7-21-4-28 4v48c7-8 16-10 28-5zM46 28v48"
+              />
+              <circle cx="70" cy="19" r="8" />
+            </svg>
+          </div>
+          <span>ÉCHANGE SIMPLE</span><b>10 jetons = 1 MAD</b
+          ><small>Noqta Pro · 2 000 jetons pour 200 MAD</small>
+        </div>
+      </section>
+      <section class="market-layout">
+        <aside class="filters">
+          <div class="filter-title">
+            <b>Affiner</b><button id="resetFilters">Tout effacer</button>
+          </div>
+          <fieldset>
+            <legend>Matière</legend>
+            <label
+              ><input type="radio" name="subject" value="all" checked />
+              Toutes</label
+            ><label
+              ><input type="radio" name="subject" value="math" />
+              Mathématiques</label
+            ><label
+              ><input type="radio" name="subject" value="physics" />
+              Physique-Chimie</label
+            ><label><input type="radio" name="subject" value="svt" /> SVT</label
+            ><label
+              ><input type="radio" name="subject" value="philo" />
+              Philosophie</label
+            ><label
+              ><input type="radio" name="subject" value="languages" />
+              Langues</label
+            >
+          </fieldset>
+          <fieldset>
+            <legend>Façon d’expliquer</legend>
+            <label
+              ><input type="checkbox" value="visual" /> Schémas &
+              visualisation</label
+            ><label><input type="checkbox" value="steps" /> Pas à pas</label
+            ><label><input type="checkbox" value="bac" /> Méthode Bac</label
+            ><label
+              ><input type="checkbox" value="darija" /> Français +
+              الدارجة</label
+            >
+          </fieldset>
+          <fieldset>
+            <legend>Budget par vidéo</legend>
+            <div class="token-range">
+              <input
+                id="tokenRange"
+                type="range"
+                min="50"
+                max="500"
+                value="500"
+              /><output id="tokenOutput">≤ 500 jetons</output>
+            </div>
+          </fieldset>
+          <div class="pro-wallet">
+            <span>PORTEFEUILLE PRO</span><b>2 000 <small>jetons</small></b
+            ><i>≈ 200 MAD</i>
+          </div>
+        </aside>
+        <div class="results">
+          <div class="results-head">
+            <div>
+              <span id="resultCount">6 emplacements</span>
+              <h2>Choisis la méthode qui te parle.</h2>
+            </div>
+            <select aria-label="Trier">
+              <option>Les plus pertinents</option>
+              <option>Moins de jetons</option>
+              <option>Durée la plus courte</option>
+            </select>
+          </div>
+          <div class="teacher-grid" id="teacherGrid"></div>
+        </div>
+      </section>
+      <section class="teacher-call" id="how">
+        <div class="call-picto">
+          <svg viewBox="0 0 90 90">
+            <path d="M12 18h66v45H52L44 75l-8-12H12z" />
+            <path
+              d="M28 51c2-12 8-19 17-19s15 7 17 19M45 19a12 12 0 1 1 0 24 12 12 0 0 1 0-24"
+            />
+            <circle cx="19" cy="27" r="4" />
+            <circle cx="71" cy="27" r="4" />
+          </svg>
+        </div>
+        <div>
+          <span class="kicker">TU ES PROFESSEUR ?</span>
+          <h2>Ta façon d’expliquer<br />peut débloquer quelqu’un.</h2>
+          <p>
+            Prépare une vidéo de 10 à 15 minutes, indique le chapitre et fixe
+            ton prix en jetons.
+          </p>
+        </div>
+        <button>Proposer une explication <span>↗</span></button>
+      </section>
+    </main>
+    <footer>
+      <img src="../assets/noqta-logo.png" alt="Noqta" />
+      <p>Chaque élève mérite l’explication qui lui parle.</p>
+      <a href="/">Retour à Noqta</a>
+    </footer>
+    <div id="marketModal" class="market-modal" hidden></div>
+    <div id="marketToast" class="market-toast" role="status"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../supabase-config.js"></script>
+    <script src="professor.js"></script>
+  </body>
+</html>

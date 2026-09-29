@@ -1,14 +1,432 @@
-const slots=[
-{subject:'math',chapter:'Limites et continuité',title:'Voir une limite avant de la calculer',method:'visual',tone:'lilac',tokens:120,symbol:'ƒ→∞'},
-{subject:'math',chapter:'Suites numériques',title:'La récurrence, sans sauter une seule étape',method:'steps',tone:'lime',tokens:100,symbol:'uₙ'},
-{subject:'physics',chapter:'Ondes mécaniques',title:'Regarder l’onde voyager, puis écrire les lois',method:'visual',tone:'blue',tokens:140,symbol:'〰'},
-{subject:'physics',chapter:'Lois de Newton',title:'Du schéma des forces à la réponse du Bac',method:'bac',tone:'peach',tokens:160,symbol:'ΣF'},
-{subject:'svt',chapter:'Génétique',title:'Du chromosome au caractère, comme une histoire',method:'visual',tone:'mint',tokens:130,symbol:'DNA'},
-{subject:'philo',chapter:'Méthodologie',title:'Construire une dissertation qui tient debout',method:'darija',tone:'rose',tokens:110,symbol:'؟'}
-];
-const subjectNames={math:'Mathématiques',physics:'Physique-Chimie',svt:'SVT',philo:'Philosophie',languages:'Langues'};let active='all';
-const grid=document.querySelector('#teacherGrid'),search=document.querySelector('#searchInput'),range=document.querySelector('#tokenRange');
-function card(item,index){return `<article class="teacher-card" data-subject="${item.subject}"><div class="video-slot ${item.tone}"><span class="preview-tag">VIDÉO À AJOUTER · 10–15 MIN</span><div class="visual-symbol">${item.symbol}</div><button class="play" aria-label="Aperçu indisponible"><svg viewBox="0 0 48 48"><path d="m19 14 17 10-17 10z"/></svg></button><small>APERÇU DE LA MÉTHODE</small></div><div class="teacher-meta"><div class="teacher-placeholder"><span>${String(index+1).padStart(2,'0')}</span><div><b>Profil professeur à publier</b><small>Identité vérifiée avant mise en ligne</small></div></div><button class="heart" aria-label="Ajouter aux favoris">♡</button></div><span class="subject-pill">${subjectNames[item.subject]}</span><h3>${item.title}</h3><p>${item.chapter}</p><div class="card-foot"><span>À partir de</span><b>${item.tokens} <small>jetons</small></b></div></article>`}
-function render(){const q=search.value.trim().toLowerCase(),max=+range.value;const shown=slots.filter(x=>(active==='all'||x.subject===active)&&x.tokens<=max&&(!q||`${x.title} ${x.chapter} ${subjectNames[x.subject]}`.toLowerCase().includes(q)));grid.innerHTML=shown.map(card).join('')||`<div class="empty-result"><b>Aucune explication dans ce rayon.</b><p>Essaie une autre matière ou un budget différent.</p></div>`;document.querySelector('#resultCount').textContent=`${shown.length} emplacement${shown.length>1?'s':''}`}
-function setSubject(value){active=value;document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.subject===value));const radio=document.querySelector(`input[name="subject"][value="${value}"]`);if(radio)radio.checked=true;render()}
-document.querySelectorAll('.category').forEach(x=>x.addEventListener('click',()=>setSubject(x.dataset.subject)));document.querySelectorAll('input[name="subject"]').forEach(x=>x.addEventListener('change',()=>setSubject(x.value)));document.querySelector('#marketSearch').addEventListener('submit',e=>{e.preventDefault();render()});search.addEventListener('input',render);range.addEventListener('input',()=>{document.querySelector('#tokenOutput').textContent=`≤ ${range.value} jetons`;render()});document.querySelector('#resetFilters').addEventListener('click',()=>{search.value='';range.value=500;document.querySelector('#tokenOutput').textContent='≤ 500 jetons';setSubject('all')});render();
+(() => {
+  const cfg = window.NOQTA_SUPABASE,
+    db =
+      cfg && window.supabase
+        ? window.supabase.createClient(cfg.url, cfg.key)
+        : null;
+  const names = {
+      math: "Mathématiques",
+      physics: "Physique-Chimie",
+      svt: "SVT",
+      philosophy: "Philosophie",
+      english: "Anglais",
+      arabic: "Arabe",
+    },
+    tones = {
+      math: "lilac",
+      physics: "blue",
+      svt: "mint",
+      philosophy: "peach",
+      english: "rose",
+      arabic: "lime",
+    };
+  let offers = [],
+    active = "all",
+    session = null,
+    profile = null,
+    favorites = new Set();
+  const grid = document.querySelector("#teacherGrid"),
+    search = document.querySelector("#searchInput"),
+    range = document.querySelector("#tokenRange"),
+    modal = document.querySelector("#marketModal");
+  const esc = (v) =>
+    String(v ?? "").replace(
+      /[&<>'"]/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          "'": "&#39;",
+          '"': "&quot;",
+        })[c],
+    );
+  function toast(m) {
+    const n = document.querySelector("#marketToast");
+    n.textContent = m;
+    n.classList.add("show");
+    setTimeout(() => n.classList.remove("show"), 2800);
+  }
+  async function init() {
+    if (db) {
+      const { data } = await db.auth.getSession();
+      session = data.session;
+      if (session) {
+        const [{ data: p }, { data: f = [] }] = await Promise.all([
+          db
+            .from("profiles")
+            .select("*")
+            .eq("id", session.user.id)
+            .maybeSingle(),
+          db
+            .from("teacher_offer_favorites")
+            .select("offer_id")
+            .eq("user_id", session.user.id),
+        ]);
+        profile = p;
+        favorites = new Set(f.map((x) => x.offer_id));
+        if (profile?.role === "admin") {
+          const adminButton = document.createElement("button");
+          adminButton.className = "admin-entry";
+          adminButton.textContent = "Modération";
+          adminButton.onclick = openModeration;
+          document.querySelector(".market-header nav").prepend(adminButton);
+        }
+      }
+      const { data: o = [] } = await db
+        .from("teacher_offers")
+        .select(
+          "id,title,description,method,language,token_price,duration_minutes,subject_id,teacher_id,teacher_profiles(display_name,verification_status),chapters(title)",
+        )
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
+      offers = o;
+    }
+    bind();
+    render();
+  }
+  const symbol = (s) =>
+    s === "math"
+      ? "ƒ→∞"
+      : s === "physics"
+        ? "ΣF"
+        : s === "svt"
+          ? "DNA"
+          : s === "philosophy"
+            ? "؟"
+            : s === "arabic"
+              ? "ض"
+              : "A+";
+  function card(x) {
+    const t = x.teacher_profiles || {},
+      fav = favorites.has(x.id);
+    return `<article class="teacher-card"><button class="video-slot ${tones[x.subject_id] || "lilac"}" data-offer="${x.id}"><span class="preview-tag">APERÇU · ${x.duration_minutes} MIN</span><div class="visual-symbol">${symbol(x.subject_id)}</div><span class="play"><svg viewBox="0 0 48 48"><path d="m19 14 17 10-17 10z"/></svg></span><small>VOIR SA FAÇON D’EXPLIQUER</small></button><div class="teacher-meta"><div class="teacher-placeholder"><span>${esc((t.display_name || "P")[0])}</span><div><b>${esc(t.display_name || "Professeur Noqta")}</b><small>✓ Profil vérifié</small></div></div><button class="heart ${fav ? "saved" : ""}" data-favorite="${x.id}">${fav ? "♥" : "♡"}</button></div><span class="subject-pill">${esc(names[x.subject_id] || x.subject_id)}</span><h3>${esc(x.title)}</h3><p>${esc(x.chapters?.title)}</p><div class="card-foot"><span>À partir de</span><b>${x.token_price} <small>jetons</small></b></div></article>`;
+  }
+  function render() {
+    const q = search.value.trim().toLowerCase(),
+      max = +range.value,
+      shown = offers.filter(
+        (x) =>
+          (active === "all" ||
+            x.subject_id === active ||
+            (active === "languages" &&
+              ["english", "arabic"].includes(x.subject_id))) &&
+          x.token_price <= max &&
+          (!q ||
+            `${x.title} ${x.chapters?.title} ${names[x.subject_id]}`
+              .toLowerCase()
+              .includes(q)),
+      );
+    grid.innerHTML =
+      shown.map(card).join("") ||
+      '<div class="empty-result"><b>Les premières explications arrivent bientôt.</b><p>Aucune offre publiée ne correspond encore à ces critères.</p></div>';
+    document.querySelector("#resultCount").textContent =
+      `${shown.length} explication${shown.length > 1 ? "s" : ""}`;
+  }
+  function setSubject(v) {
+    active = v;
+    document
+      .querySelectorAll(".category")
+      .forEach((x) =>
+        x.classList.toggle(
+          "active",
+          (x.dataset.subject === "philo" ? "philosophy" : x.dataset.subject) ===
+            v,
+        ),
+      );
+    render();
+  }
+  function openModal(html) {
+    modal.innerHTML = `<div class="modal-backdrop" data-close></div><section class="modal-panel"><button class="modal-close" data-close>×</button>${html}</section>`;
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+  function closeModal() {
+    modal.hidden = true;
+    modal.innerHTML = "";
+    document.body.style.overflow = "";
+  }
+  function requireAuth(next) {
+    if (session) return next();
+    openModal(
+      `<div class="studio-intro"><span class="kicker">ESPACE PROFESSEUR</span><h2>Connecte-toi pour publier.</h2><p>Utilise le même compte que ton espace Noqta.</p><form id="marketAuth" class="studio-form"><label class="full">Email<input id="marketEmail" type="email" required></label><label class="full">Mot de passe<input id="marketPassword" type="password" minlength="8" required></label><button class="studio-primary full">Se connecter →</button><p id="marketAuthMessage" class="full"></p></form></div>`,
+    );
+    document.querySelector("#marketAuth").onsubmit = async (e) => {
+      e.preventDefault();
+      const { data, error } = await db.auth.signInWithPassword({
+        email: document.querySelector("#marketEmail").value,
+        password: document.querySelector("#marketPassword").value,
+      });
+      if (error)
+        return (document.querySelector("#marketAuthMessage").textContent =
+          error.message);
+      session = data.session;
+      const { data: p } = await db
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .maybeSingle();
+      profile = p;
+      closeModal();
+      next();
+    };
+  }
+  async function openStudio() {
+    if (!db) return toast("Connexion indisponible.");
+    const { data: t } = await db
+      .from("teacher_profiles")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+    t ? offerStudio(t) : profileForm();
+  }
+  async function openModeration() {
+    const [{ data: pendingOffers = [] }, { data: pendingTeachers = [] }] =
+      await Promise.all([
+        db
+          .from("teacher_offers")
+          .select(
+            "id,title,token_price,teacher_profiles(display_name),subjects(name_fr),chapters(title)",
+          )
+          .eq("status", "pending")
+          .order("created_at"),
+        db
+          .from("teacher_profiles")
+          .select("user_id,display_name,bio,city,experience_years,languages")
+          .eq("verification_status", "pending")
+          .order("created_at"),
+      ]);
+    openModal(
+      `<div class="studio-shell moderation"><span class="kicker">NOQTA · MODÉRATION</span><h2>File de validation.</h2><h3>Professeurs (${pendingTeachers.length})</h3><div class="moderation-list">${pendingTeachers.map((t) => `<article><div><b>${esc(t.display_name)}</b><small>${esc(t.city)} · ${t.experience_years} an(s) · ${esc(t.languages.join(", "))}</small><p>${esc(t.bio)}</p></div><div><button data-teacher-action="rejected" data-teacher-id="${t.user_id}">Refuser</button><button class="approve" data-teacher-action="verified" data-teacher-id="${t.user_id}">Vérifier</button></div></article>`).join("") || "<p>Aucun profil en attente.</p>"}</div><h3>Explications (${pendingOffers.length})</h3><div class="moderation-list">${pendingOffers.map((o) => `<article><div><b>${esc(o.title)}</b><small>${esc(o.teacher_profiles?.display_name)} · ${esc(o.subjects?.name_fr)} · ${esc(o.chapters?.title)} · ${o.token_price} jetons</small></div><div><button data-offer-action="rejected" data-offer-id="${o.id}">Refuser</button><button class="approve" data-offer-action="published" data-offer-id="${o.id}">Publier</button></div></article>`).join("") || "<p>Aucune offre en attente.</p>"}</div></div>`,
+    );
+    document.querySelectorAll("[data-teacher-action]").forEach(
+      (b) =>
+        (b.onclick = async () => {
+          await db
+            .from("teacher_profiles")
+            .update({
+              verification_status: b.dataset.teacherAction,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("user_id", b.dataset.teacherId);
+          toast("Profil mis à jour.");
+          openModeration();
+        }),
+    );
+    document.querySelectorAll("[data-offer-action]").forEach(
+      (b) =>
+        (b.onclick = async () => {
+          await db
+            .from("teacher_offers")
+            .update({
+              status: b.dataset.offerAction,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", b.dataset.offerId);
+          toast("Offre mise à jour.");
+          openModeration();
+        }),
+    );
+  }
+  function profileForm() {
+    openModal(
+      `<div class="studio-intro"><span class="kicker">ÉTAPE 1 · PROFIL</span><h2>Présente la personne derrière l’explication.</h2><form id="profileForm" class="studio-form"><label>Nom affiché<input name="display_name" required value="${esc(profile?.full_name || "")}"></label><label>Ville<input name="city" required></label><label>Années d’expérience<input name="experience_years" type="number" min="0" max="60" value="0" required></label><label class="full">Biographie<textarea name="bio" minlength="30" maxlength="500" required></textarea></label><fieldset class="full"><legend>Langues</legend><label><input type="checkbox" name="languages" value="Français" checked> Français</label><label><input type="checkbox" name="languages" value="العربية"> العربية</label><label><input type="checkbox" name="languages" value="الدارجة"> الدارجة</label></fieldset><button class="studio-primary full">Créer mon profil →</button></form></div>`,
+    );
+    document.querySelector("#profileForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const f = new FormData(e.currentTarget),
+        payload = {
+          user_id: session.user.id,
+          display_name: f.get("display_name"),
+          city: f.get("city"),
+          experience_years: +f.get("experience_years"),
+          bio: f.get("bio"),
+          languages: f.getAll("languages"),
+        };
+      const { data, error } = await db
+        .from("teacher_profiles")
+        .upsert(payload)
+        .select()
+        .single();
+      if (error) return toast(error.message);
+      await db
+        .from("profiles")
+        .update({ role: "teacher" })
+        .eq("id", session.user.id);
+      offerStudio(data);
+    };
+  }
+  async function offerStudio(t) {
+    const [{ data: subjects = [] }, { data: mine = [] }] = await Promise.all([
+      db.from("subjects").select("*").order("sort_order"),
+      db
+        .from("teacher_offers")
+        .select("*,chapters(title),subjects(name_fr)")
+        .eq("teacher_id", session.user.id)
+        .order("created_at", { ascending: false }),
+    ]);
+    openModal(
+      `<div class="studio-shell"><header><div><span class="kicker">STUDIO PROFESSEUR</span><h2>Bonjour ${esc(t.display_name)}.</h2><p>Crée, sauvegarde puis envoie ton explication à Noqta.</p></div><span class="verification ${t.verification_status}">${t.verification_status === "verified" ? "✓ Vérifié" : "◷ Vérification en cours"}</span></header><div class="studio-tabs"><button class="active" data-tab="create">Nouvelle explication</button><button data-tab="offers">Mes offres (${mine.length})</button></div><section data-panel="create"><form id="offerForm" class="studio-form"><label>Matière<select name="subject_id" id="offerSubject" required><option value="">Choisir</option>${subjects.map((s) => `<option value="${s.id}">${esc(s.name_fr)}</option>`).join("")}</select></label><label>Chapitre<select name="chapter_id" id="offerChapter" required disabled><option>Choisir la matière</option></select></label><label class="full">Titre<input name="title" minlength="12" maxlength="100" required placeholder="Comprendre les limites avec trois dessins"></label><label class="full">Ce que l’élève va comprendre<textarea name="description" minlength="30" maxlength="800" required></textarea></label><label>Méthode<select name="method"><option value="visual">Schémas & visualisation</option><option value="steps">Pas à pas</option><option value="bac">Méthode Bac</option><option value="darija">Français + الدارجة</option></select></label><label>Langue<select name="language">${t.languages.map((l) => `<option>${esc(l)}</option>`)}</select></label><label>Durée<input name="duration_minutes" type="number" min="10" max="15" value="10" required><small>10 à 15 minutes</small></label><label>Prix<input name="token_price" type="number" min="50" max="500" step="10" value="100" required><small>10 jetons = 1 MAD</small></label><label class="video-upload full"><span>↑</span><b>Ajouter la vidéo</b><small>MP4, WebM ou MOV · 250 Mo max.</small><input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required></label><div class="studio-actions full"><button type="submit" value="draft">Brouillon</button><button class="studio-primary" type="submit" value="pending">Envoyer à Noqta →</button></div><p id="offerMessage" class="full"></p></form></section><section data-panel="offers" hidden><div class="my-offers">${mine.map((o) => `<article><span class="offer-status ${o.status}">${o.status}</span><div><b>${esc(o.title)}</b><small>${esc(o.subjects?.name_fr)} · ${esc(o.chapters?.title)}</small></div><strong>${o.token_price} jetons</strong></article>`).join("") || "<p>Aucune offre.</p>"}</div></section></div>`,
+    );
+    bindStudio();
+  }
+  function bindStudio() {
+    document.querySelectorAll("[data-tab]").forEach(
+      (b) =>
+        (b.onclick = () => {
+          document
+            .querySelectorAll("[data-tab]")
+            .forEach((x) => x.classList.toggle("active", x === b));
+          document
+            .querySelectorAll("[data-panel]")
+            .forEach((x) => (x.hidden = x.dataset.panel !== b.dataset.tab));
+        }),
+    );
+    const subjectSelect = document.querySelector("#offerSubject");
+    const chapterSelect = document.querySelector("#offerChapter");
+    subjectSelect.onchange = async () => {
+      chapterSelect.disabled = true;
+      const { data = [] } = await db
+        .from("chapters")
+        .select("id,title")
+        .eq("subject_id", subjectSelect.value)
+        .order("position");
+      chapterSelect.innerHTML =
+        '<option value="">Choisir</option>' +
+        data
+          .map((c) => `<option value="${c.id}">${esc(c.title)}</option>`)
+          .join("");
+      chapterSelect.disabled = false;
+    };
+    document.querySelector("#offerForm").onsubmit = submitOffer;
+  }
+  async function submitOffer(e) {
+    e.preventDefault();
+    const button = e.submitter,
+      intent = button.value,
+      f = new FormData(e.currentTarget),
+      file = f.get("video");
+    if (file.size > 262144000)
+      return (document.querySelector("#offerMessage").textContent =
+        "Vidéo trop lourde.");
+    button.disabled = true;
+    document.querySelector("#offerMessage").textContent = "Création…";
+    const payload = {
+      teacher_id: session.user.id,
+      subject_id: f.get("subject_id"),
+      chapter_id: f.get("chapter_id"),
+      title: f.get("title"),
+      description: f.get("description"),
+      method: f.get("method"),
+      language: f.get("language"),
+      duration_minutes: +f.get("duration_minutes"),
+      token_price: +f.get("token_price"),
+      status: "draft",
+    };
+    const { data: o, error } = await db
+      .from("teacher_offers")
+      .insert(payload)
+      .select()
+      .single();
+    if (error) {
+      button.disabled = false;
+      return (document.querySelector("#offerMessage").textContent =
+        error.message);
+    }
+    const path = `${session.user.id}/${o.id}/video.${file.name.split(".").pop()}`;
+    document.querySelector("#offerMessage").textContent = "Envoi de la vidéo…";
+    const { error: u } = await db.storage
+      .from("teacher-videos")
+      .upload(path, file, { contentType: file.type });
+    if (u)
+      return (document.querySelector("#offerMessage").textContent = u.message);
+    await db
+      .from("teacher_offers")
+      .update({
+        video_path: path,
+        status: intent,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", o.id);
+    toast(intent === "pending" ? "Envoyée à Noqta." : "Brouillon enregistré.");
+    closeModal();
+  }
+  function detail(id) {
+    const x = offers.find((o) => o.id === id);
+    if (!x) return;
+    openModal(
+      `<div class="offer-detail"><div class="detail-video ${tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>▶ Aperçu vidéo</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Durée</dt><dd>${x.duration_minutes} min</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl><div class="detail-price"><b>${x.token_price} jetons</b><button disabled>Acheter →</button></div></div></div>`,
+    );
+    if (session)
+      db.from("teacher_watch_history").upsert({
+        user_id: session.user.id,
+        offer_id: id,
+        watched_seconds: 0,
+        last_watched_at: new Date().toISOString(),
+      });
+  }
+  async function favorite(id) {
+    if (!session) return requireAuth(() => favorite(id));
+    if (favorites.has(id)) {
+      await db
+        .from("teacher_offer_favorites")
+        .delete()
+        .eq("user_id", session.user.id)
+        .eq("offer_id", id);
+      favorites.delete(id);
+    } else {
+      await db
+        .from("teacher_offer_favorites")
+        .insert({ user_id: session.user.id, offer_id: id });
+      favorites.add(id);
+    }
+    render();
+  }
+  function bind() {
+    document
+      .querySelectorAll(".category")
+      .forEach(
+        (x) =>
+          (x.onclick = () =>
+            setSubject(
+              x.dataset.subject === "philo" ? "philosophy" : x.dataset.subject,
+            )),
+      );
+    document
+      .querySelectorAll('input[name="subject"]')
+      .forEach(
+        (x) =>
+          (x.onchange = () =>
+            setSubject(x.value === "philo" ? "philosophy" : x.value)),
+      );
+    document.querySelector("#marketSearch").onsubmit = (e) => {
+      e.preventDefault();
+      render();
+    };
+    search.oninput = render;
+    range.oninput = () => {
+      document.querySelector("#tokenOutput").textContent =
+        `≤ ${range.value} jetons`;
+      render();
+    };
+    document.querySelector("#resetFilters").onclick = () => {
+      search.value = "";
+      range.value = 500;
+      document.querySelector("#tokenOutput").textContent = "≤ 500 jetons";
+      setSubject("all");
+    };
+    document.querySelector(".teacher-call button").onclick = () =>
+      requireAuth(openStudio);
+    document.onclick = (e) => {
+      if (e.target.closest("[data-close]")) closeModal();
+      const o = e.target.closest("[data-offer]");
+      if (o) detail(o.dataset.offer);
+      const f = e.target.closest("[data-favorite]");
+      if (f) {
+        e.stopPropagation();
+        favorite(f.dataset.favorite);
+      }
+    };
+  }
+  init();
+})();
