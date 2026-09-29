@@ -313,8 +313,17 @@
         .join("");
     const ids = chosen.map((x) => x.subject_id);
     document
-      .querySelectorAll(".nav-session,.nav-level,.nav-goal")
+      .querySelectorAll(".nav-session,.nav-goal")
       .forEach((x) => (x.hidden = true));
+    const navVideos = document.querySelector(".nav-level");
+    if (navVideos) {
+      navVideos.hidden = false;
+      navVideos.removeAttribute("data-route");
+      navVideos.dataset.videos = "true";
+      navVideos.innerHTML =
+        '<span class="nav-number">04</span><span class="nav-icon"><svg viewBox="0 0 32 32"><path d="M5 7h22v18H5zM13 12l8 4-8 4z"/></svg></span><span class="nav-copy"><b>Mes vidéos</b><small>Explications achetées</small></span><span class="nav-arrow">↗</span>';
+      navVideos.onclick = () => (location.href = "/professor/#purchases");
+    }
     const navHome = document.querySelector(".nav-overview");
     if (navHome)
       navHome.innerHTML = `<span class="nav-number">01</span><span class="nav-icon"><svg viewBox="0 0 32 32"><path d="M5 9.5 16 4l11 5.5v16L16 29 5 25.5zM16 4v25M5 9.5l11 5.2 11-5.2M10 18l6 2.8 6-2.8"/></svg></span><span class="nav-copy"><b>Mon bureau</b><small>La vue essentielle</small></span><span class="nav-arrow">↗</span>`;
@@ -461,15 +470,13 @@
         };
         reader.querySelector(".reader-complete").onclick = async (e) => {
           if (!lesson) return showToast("Leçon en préparation.");
-          await db
-            .from("lesson_progress")
-            .upsert({
-              user_id: session.user.id,
-              lesson_id: lesson.id,
-              progress: 100,
-              completed: true,
-              updated_at: new Date().toISOString(),
-            });
+          await db.from("lesson_progress").upsert({
+            user_id: session.user.id,
+            lesson_id: lesson.id,
+            progress: 100,
+            completed: true,
+            updated_at: new Date().toISOString(),
+          });
           e.currentTarget.textContent = "Chapitre terminé ✓";
           reader.querySelector(".reader-progress i").style.width = "100%";
           showToast("Progression enregistrée.");

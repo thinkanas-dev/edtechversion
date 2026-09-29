@@ -28,6 +28,7 @@
     purchases = new Set(),
     walletBalance = 0,
     selectedMethods = new Set(),
+    selectedLanguages = new Set(),
     sortMode = "relevant";
   const launchOffers = [
     {
@@ -235,7 +236,7 @@
       const { data: o = [] } = await db
         .from("teacher_offers")
         .select(
-          "id,title,description,method,language,token_price,duration_minutes,subject_id,teacher_id,video_path,teacher_profiles(display_name,verification_status),chapters(title)",
+          "id,title,description,method,language,token_price,duration_minutes,subject_id,teacher_id,video_path,teacher_profiles(display_name,verification_status,bio,public_story,teaching_signature,achievements,credentials,experience_years,photo_path),teacher_offer_reviews(rating),chapters(title)",
         )
         .eq("status", "published")
         .order("created_at", { ascending: false });
@@ -243,6 +244,7 @@
     }
     bind();
     render();
+    if (location.hash === "#purchases" && session) openPurchases();
   }
   const symbol = (s) =>
     s === "math"
@@ -258,8 +260,14 @@
               : "A+";
   function card(x) {
     const t = x.teacher_profiles || {},
-      fav = favorites.has(x.id);
-    return `<article class="teacher-card ${x.demo ? "launch-card" : ""}"><button class="video-slot ${x.tone || tones[x.subject_id] || "lilac"}" data-offer="${x.id}"><span class="preview-tag">${x.demo ? "APERÇU DU CATALOGUE" : "APERÇU"} · ${x.duration_minutes} MIN</span><div class="visual-symbol">${symbol(x.subject_id)}</div><span class="play"><svg viewBox="0 0 48 48"><path d="m19 14 17 10-17 10z"/></svg></span><small>VOIR SA FAÇON D’EXPLIQUER</small></button><div class="teacher-meta"><button class="teacher-placeholder" data-offer="${x.id}"><span>${esc((t.display_name || "P")[0])}</span><div><b>${esc(t.display_name || "Professeur Noqta")}</b><small>${x.demo ? "Profil de lancement" : "✓ Profil vérifié"}</small></div></button><button class="heart ${fav ? "saved" : ""}" ${x.demo ? "disabled" : `data-favorite="${x.id}"`}>${fav ? "♥" : "♡"}</button></div><span class="subject-pill">${esc(names[x.subject_id] || x.subject_id)}</span><h3>${esc(x.title)}</h3><p>${esc(x.chapters?.title)}</p><div class="card-foot"><span>${x.demo ? "Tarif indicatif" : "À partir de"}</span><b>${x.token_price} <small>jetons</small></b></div></article>`;
+      fav = favorites.has(x.id),
+      ratings = x.teacher_offer_reviews || [],
+      average = ratings.length
+        ? (
+            ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length
+          ).toFixed(1)
+        : null;
+    return `<article class="teacher-card ${x.demo ? "launch-card" : ""}"><button class="video-slot ${x.tone || tones[x.subject_id] || "lilac"}" data-offer="${x.id}"><span class="preview-tag">${x.demo ? "APERÇU DU CATALOGUE" : "APERÇU"} · ${x.duration_minutes} MIN</span><div class="visual-symbol">${symbol(x.subject_id)}</div><span class="play"><svg viewBox="0 0 48 48"><path d="m19 14 17 10-17 10z"/></svg></span><small>VOIR SA FAÇON D’EXPLIQUER</small></button><div class="teacher-meta"><button class="teacher-placeholder" data-offer="${x.id}"><span>${esc((t.display_name || "P")[0])}</span><div><b>${esc(t.display_name || "Professeur Noqta")}</b><small>${average ? `★ ${average} · ${ratings.length} avis` : x.demo ? "Profil de lancement" : "✓ Profil vérifié"}</small></div></button><button class="heart ${fav ? "saved" : ""}" ${x.demo ? "disabled" : `data-favorite="${x.id}"`}>${fav ? "♥" : "♡"}</button></div><span class="subject-pill">${esc(names[x.subject_id] || x.subject_id)}</span><h3>${esc(x.title)}</h3><p>${esc(x.chapters?.title)}</p><div class="card-foot"><span>${x.demo ? "Tarif indicatif" : "À partir de"}</span><b>${x.token_price} <small>jetons</small></b></div></article>`;
   }
   function waitingGallery() {
     const frames = [
@@ -296,6 +304,14 @@
               ["english", "arabic"].includes(x.subject_id))) &&
           x.token_price <= max &&
           (!selectedMethods.size || selectedMethods.has(x.method)) &&
+          (!selectedLanguages.size ||
+            [...selectedLanguages].some((lang) =>
+              lang === "fr"
+                ? /français/i.test(x.language)
+                : lang === "darija"
+                  ? /الدارجة|darija/i.test(x.language)
+                  : /العربية|arabe/i.test(x.language),
+            )) &&
           (!q ||
             `${x.title} ${x.chapters?.title} ${names[x.subject_id]}`
               .toLowerCase()
@@ -376,6 +392,8 @@
       { data: pendingOffers = [] },
       { data: pendingTeachers = [] },
       { data: pendingPayments = [] },
+      { data: pendingWithdrawals = [] },
+      { data: recentPurchases = [] },
     ] = await Promise.all([
       db
         .from("teacher_offers")
@@ -394,9 +412,23 @@
         .select("id,user_id,amount_mad,tokens,method,status,created_at")
         .in("status", ["pending", "awaiting_cash", "awaiting_transfer"])
         .order("created_at"),
+      db
+        .from("withdrawal_requests")
+        .select(
+          "id,teacher_id,tokens,amount_mad,method,status,created_at,teacher_profiles(display_name)",
+        )
+        .in("status", ["pending", "approved"])
+        .order("created_at"),
+      db
+        .from("teacher_offer_purchases")
+        .select(
+          "id,tokens_paid,created_at,teacher_offers(title),purchase_refunds(id)",
+        )
+        .order("created_at", { ascending: false })
+        .limit(10),
     ]);
     openModal(
-      `<div class="studio-shell moderation"><span class="kicker">NOQTA · MODÉRATION</span><h2>File de validation.</h2><h3>Professeurs (${pendingTeachers.length})</h3><div class="moderation-list">${pendingTeachers.map((t) => `<article><div><b>${esc(t.display_name)}</b><small>${esc(t.city)} · ${t.experience_years} an(s) · ${esc(t.languages.join(", "))}</small><p>${esc(t.bio)}</p></div><div><button data-teacher-action="rejected" data-teacher-id="${t.user_id}">Refuser</button><button class="approve" data-teacher-action="verified" data-teacher-id="${t.user_id}">Vérifier</button></div></article>`).join("") || "<p>Aucun profil en attente.</p>"}</div><h3>Explications (${pendingOffers.length})</h3><div class="moderation-list">${pendingOffers.map((o) => `<article><div><b>${esc(o.title)}</b><small>${esc(o.teacher_profiles?.display_name)} · ${esc(o.subjects?.name_fr)} · ${esc(o.chapters?.title)} · ${o.token_price} jetons</small></div><div><button data-offer-action="rejected" data-offer-id="${o.id}">Refuser</button><button class="approve" data-offer-action="published" data-offer-id="${o.id}">Publier</button></div></article>`).join("") || "<p>Aucune offre en attente.</p>"}</div><h3>Paiements (${pendingPayments.length})</h3><div class="moderation-list">${pendingPayments.map((o) => `<article><div><b>${o.amount_mad} MAD · ${o.tokens} jetons</b><small>${esc(o.method)} · réf. ${o.id}</small></div><div><button class="approve" data-confirm-payment="${o.id}">Confirmer après vérification</button></div></article>`).join("") || "<p>Aucun paiement à vérifier.</p>"}</div></div>`,
+      `<div class="studio-shell moderation"><span class="kicker">NOQTA · MODÉRATION</span><h2>File de validation.</h2><h3>Professeurs (${pendingTeachers.length})</h3><div class="moderation-list">${pendingTeachers.map((t) => `<article><div><b>${esc(t.display_name)}</b><small>${esc(t.city)} · ${t.experience_years} an(s) · ${esc(t.languages.join(", "))}</small><p>${esc(t.bio)}</p></div><div><button data-teacher-action="rejected" data-teacher-id="${t.user_id}">Refuser</button><button class="approve" data-teacher-action="verified" data-teacher-id="${t.user_id}">Vérifier</button></div></article>`).join("") || "<p>Aucun profil en attente.</p>"}</div><h3>Explications (${pendingOffers.length})</h3><div class="moderation-list">${pendingOffers.map((o) => `<article><div><b>${esc(o.title)}</b><small>${esc(o.teacher_profiles?.display_name)} · ${esc(o.subjects?.name_fr)} · ${esc(o.chapters?.title)} · ${o.token_price} jetons</small></div><div><button data-offer-action="rejected" data-offer-id="${o.id}">Refuser</button><button class="approve" data-offer-action="published" data-offer-id="${o.id}">Publier</button></div></article>`).join("") || "<p>Aucune offre en attente.</p>"}</div><h3>Paiements (${pendingPayments.length})</h3><div class="moderation-list">${pendingPayments.map((o) => `<article><div><b>${o.amount_mad} MAD · ${o.tokens} jetons</b><small>${esc(o.method)} · réf. ${o.id}</small></div><div><button class="approve" data-confirm-payment="${o.id}">Confirmer après vérification</button></div></article>`).join("") || "<p>Aucun paiement à vérifier.</p>"}</div><h3>Retraits (${pendingWithdrawals.length})</h3><div class="moderation-list">${pendingWithdrawals.map((w) => `<article><div><b>${esc(w.teacher_profiles?.display_name)} · ${w.amount_mad} MAD</b><small>${w.tokens} jetons · ${esc(w.method)} · ${esc(w.status)}</small></div><div><button data-withdraw="rejected" data-withdraw-id="${w.id}">Refuser</button><button class="approve" data-withdraw="${w.status === "approved" ? "paid" : "approved"}" data-withdraw-id="${w.id}">${w.status === "approved" ? "Marquer payé" : "Approuver"}</button></div></article>`).join("") || "<p>Aucun retrait.</p>"}</div><h3>Achats récents</h3><div class="moderation-list">${recentPurchases.map((p) => `<article><div><b>${esc(p.teacher_offers?.title)}</b><small>${p.tokens_paid} jetons · ${new Date(p.created_at).toLocaleDateString("fr-MA")}</small></div><div><button ${p.purchase_refunds?.length ? "disabled" : `data-refund="${p.id}"`}>${p.purchase_refunds?.length ? "Remboursé" : "Rembourser"}</button></div></article>`).join("") || "<p>Aucun achat.</p>"}</div></div>`,
     );
     document.querySelectorAll("[data-teacher-action]").forEach(
       (b) =>
@@ -415,10 +447,16 @@
     document.querySelectorAll("[data-offer-action]").forEach(
       (b) =>
         (b.onclick = async () => {
+          const rejectionReason =
+            b.dataset.offerAction === "rejected"
+              ? window.prompt("Motif précis du refus :")
+              : null;
+          if (b.dataset.offerAction === "rejected" && !rejectionReason) return;
           await db
             .from("teacher_offers")
             .update({
               status: b.dataset.offerAction,
+              rejection_reason: rejectionReason,
               updated_at: new Date().toISOString(),
             })
             .eq("id", b.dataset.offerId);
@@ -446,10 +484,36 @@
           openModeration();
         }),
     );
+    document.querySelectorAll("[data-withdraw]").forEach(
+      (b) =>
+        (b.onclick = async () => {
+          const { error } = await db.rpc("process_teacher_withdrawal", {
+            p_request: b.dataset.withdrawId,
+            p_status: b.dataset.withdraw,
+          });
+          if (error) return toast(error.message);
+          toast("Retrait mis à jour.");
+          openModeration();
+        }),
+    );
+    document.querySelectorAll("[data-refund]").forEach(
+      (b) =>
+        (b.onclick = async () => {
+          const reason = prompt("Motif du remboursement :");
+          if (!reason) return;
+          const { error } = await db.rpc("refund_teacher_purchase", {
+            p_purchase: b.dataset.refund,
+            p_reason: reason,
+          });
+          if (error) return toast(error.message);
+          toast("Achat remboursé.");
+          openModeration();
+        }),
+    );
   }
   function profileForm() {
     openModal(
-      `<div class="studio-intro"><span class="kicker">ÉTAPE 1 · PROFIL</span><h2>Présente la personne derrière l’explication.</h2><form id="profileForm" class="studio-form"><label>Nom affiché<input name="display_name" required value="${esc(profile?.full_name || "")}"></label><label>Ville<input name="city" required></label><label>Années d’expérience<input name="experience_years" type="number" min="0" max="60" value="0" required></label><label class="full">Biographie<textarea name="bio" minlength="30" maxlength="500" required></textarea></label><fieldset class="full"><legend>Langues</legend><label><input type="checkbox" name="languages" value="Français" checked> Français</label><label><input type="checkbox" name="languages" value="العربية"> العربية</label><label><input type="checkbox" name="languages" value="الدارجة"> الدارجة</label></fieldset><button class="studio-primary full">Créer mon profil →</button></form></div>`,
+      `<div class="studio-intro"><span class="kicker">ÉTAPE 1 · PROFIL</span><h2>Présente la personne derrière l’explication.</h2><form id="profileForm" class="studio-form"><label>Nom affiché<input name="display_name" required value="${esc(profile?.full_name || "")}"></label><label>Ville<input name="city" required></label><label>Années d’expérience<input name="experience_years" type="number" min="0" max="60" value="0" required></label><label class="full">Biographie<textarea name="bio" minlength="30" maxlength="500" required></textarea></label><label class="full">Ton histoire<textarea name="public_story" minlength="30" maxlength="800" required placeholder="Pourquoi et comment tu enseignes..."></textarea></label><label>Formation et diplômes<textarea name="credentials" minlength="10" maxlength="400" required></textarea></label><label>Réussites pédagogiques<textarea name="achievements" minlength="10" maxlength="400" required></textarea></label><label class="full">Signature de méthode<input name="teaching_signature" minlength="8" maxlength="120" required placeholder="Observer → comprendre → résoudre"></label><fieldset class="full"><legend>Langues</legend><label><input type="checkbox" name="languages" value="Français" checked> Français</label><label><input type="checkbox" name="languages" value="العربية"> العربية</label><label><input type="checkbox" name="languages" value="الدارجة"> الدارجة</label></fieldset><button class="studio-primary full">Créer mon profil →</button></form></div>`,
     );
     document.querySelector("#profileForm").onsubmit = async (e) => {
       e.preventDefault();
@@ -460,6 +524,10 @@
           city: f.get("city"),
           experience_years: +f.get("experience_years"),
           bio: f.get("bio"),
+          public_story: f.get("public_story"),
+          credentials: f.get("credentials"),
+          achievements: f.get("achievements"),
+          teaching_signature: f.get("teaching_signature"),
           languages: f.getAll("languages"),
         };
       const { data, error } = await db
@@ -574,7 +642,7 @@
     const x = [...offers, ...launchOffers].find((o) => o.id === id);
     if (!x) return;
     openModal(
-      `<div class="offer-detail"><div class="detail-video ${x.tone || tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>${x.demo ? "▶ Cadre de la future vidéo" : "▶ Aperçu vidéo"}</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Expérience</dt><dd>${esc(x.teacher_profiles?.experience || `${x.duration_minutes} min`)}</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl>${x.demo ? `<div class="teacher-story"><span>SON HISTOIRE</span><p>${esc(x.teacher_profiles.story)}</p><span>SA RÉUSSITE</span><p>${esc(x.teacher_profiles.success)}</p><blockquote>« ${esc(x.teacher_profiles.signature)} »</blockquote></div>` : ""}<div class="detail-price"><b>${x.token_price} jetons</b><button class="studio-primary" ${x.demo ? "disabled" : `data-buy="${x.id}"`}>${x.demo ? "Vidéo bientôt disponible" : purchases.has(x.id) ? "Déjà acheté ✓" : "Acheter →"}</button></div><small class="secure-note">${x.demo ? "Aperçu éditorial : aucune fausse vidéo ni faux achat." : "Paiement en jetons · débit atomique · aucun double achat."}</small></div></div>`,
+      `<div class="offer-detail"><div class="detail-video ${x.tone || tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>${x.demo ? "▶ Cadre de la future vidéo" : "▶ Aperçu vidéo"}</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Expérience</dt><dd>${esc(x.teacher_profiles?.experience || `${x.teacher_profiles?.experience_years || 0} ans`)}</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl>${x.demo || x.teacher_profiles?.public_story ? `<div class="teacher-story"><span>SON HISTOIRE</span><p>${esc(x.teacher_profiles.story || x.teacher_profiles.public_story || x.teacher_profiles.bio)}</p><span>SES RÉUSSITES</span><p>${esc(x.teacher_profiles.success || x.teacher_profiles.achievements || "Profil vérifié par Noqta.")}</p><span>FORMATION</span><p>${esc(x.teacher_profiles.credentials || "Informations vérifiées lors de la modération.")}</p><blockquote>« ${esc(x.teacher_profiles.signature || x.teacher_profiles.teaching_signature || "Comprendre avant de mémoriser")} »</blockquote></div>` : ""}<div class="detail-price"><b>${x.token_price} jetons</b><button class="studio-primary" ${x.demo ? "disabled" : `data-buy="${x.id}"`}>${x.demo ? "Vidéo bientôt disponible" : purchases.has(x.id) ? "Déjà acheté ✓" : "Acheter →"}</button></div><small class="secure-note">${x.demo ? "Aperçu éditorial : aucune fausse vidéo ni faux achat." : "Paiement en jetons · débit atomique · aucun double achat."}</small></div></div>`,
     );
     document
       .querySelector("[data-buy]")
@@ -629,12 +697,12 @@
     const { data = [] } = await db
       .from("teacher_offer_purchases")
       .select(
-        "id,created_at,tokens_paid,offer_id,teacher_offers(title,video_path,duration_minutes,teacher_profiles(display_name),chapters(title))",
+        "id,created_at,tokens_paid,offer_id,teacher_offer_reviews(id,rating),teacher_offers(title,video_path,duration_minutes,teacher_profiles(display_name),chapters(title))",
       )
       .eq("buyer_id", session.user.id)
       .order("created_at", { ascending: false });
     openModal(
-      `<div class="studio-shell"><span class="kicker">MA VIDÉOTHÈQUE</span><h2>Mes explications achetées.</h2><div class="purchase-library">${data.map((p) => `<article><div><small>${esc(p.teacher_offers?.chapters?.title)}</small><b>${esc(p.teacher_offers?.title)}</b><span>${esc(p.teacher_offers?.teacher_profiles?.display_name)} · ${p.teacher_offers?.duration_minutes} min</span></div><button data-play-purchase="${p.offer_id}" data-video-path="${esc(p.teacher_offers?.video_path || "")}">Regarder ▶</button></article>`).join("") || "<p>Tu n’as encore acheté aucune explication.</p>"}</div></div>`,
+      `<div class="studio-shell"><span class="kicker">MA VIDÉOTHÈQUE</span><h2>Mes explications achetées.</h2><div class="purchase-library">${data.map((p) => `<article><div><small>${esc(p.teacher_offers?.chapters?.title)}</small><b>${esc(p.teacher_offers?.title)}</b><span>${esc(p.teacher_offers?.teacher_profiles?.display_name)} · ${p.teacher_offers?.duration_minutes} min</span></div><div class="purchase-actions"><button data-play-purchase="${p.offer_id}" data-video-path="${esc(p.teacher_offers?.video_path || "")}">Regarder ▶</button><button ${p.teacher_offer_reviews?.length ? "disabled" : `data-review-purchase="${p.id}"`}>${p.teacher_offer_reviews?.length ? `Noté ${p.teacher_offer_reviews[0].rating}/5` : "Donner mon avis"}</button></div></article>`).join("") || "<p>Tu n’as encore acheté aucune explication.</p>"}</div></div>`,
     );
     document
       .querySelectorAll("[data-play-purchase]")
@@ -643,6 +711,26 @@
           (b.onclick = () =>
             playPurchasedVideo(b.dataset.playPurchase, b.dataset.videoPath)),
       );
+    document
+      .querySelectorAll("[data-review-purchase]")
+      .forEach((b) => (b.onclick = () => openReview(b.dataset.reviewPurchase)));
+  }
+  function openReview(purchaseId) {
+    openModal(
+      `<div class="studio-intro"><span class="kicker">AVIS VÉRIFIÉ</span><h2>Comment cette explication t’a aidé ?</h2><form id="reviewForm" class="studio-form"><label>Note<select name="rating"><option value="5">5 — Excellent</option><option value="4">4 — Très utile</option><option value="3">3 — Correct</option><option value="2">2 — À améliorer</option><option value="1">1 — Décevant</option></select></label><label class="full">Ton avis<textarea name="body" minlength="10" maxlength="500" required></textarea></label><button class="studio-primary full">Publier mon avis →</button></form></div>`,
+    );
+    document.querySelector("#reviewForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const f = new FormData(e.currentTarget),
+        { error } = await db.rpc("submit_teacher_review", {
+          p_purchase: purchaseId,
+          p_rating: +f.get("rating"),
+          p_body: f.get("body"),
+        });
+      if (error) return toast(error.message);
+      closeModal();
+      toast("Avis vérifié publié.");
+    };
   }
   async function playPurchasedVideo(offerId, path) {
     if (!path) return toast("La vidéo n’est pas encore disponible.");
@@ -830,12 +918,21 @@
         `≤ ${range.value} jetons`;
       render();
     };
-    document.querySelectorAll('.filters input[type="checkbox"]').forEach(
+    document.querySelectorAll('.filters input[name="method"]').forEach(
       (box) =>
         (box.onchange = () => {
           box.checked
             ? selectedMethods.add(box.value)
             : selectedMethods.delete(box.value);
+          render();
+        }),
+    );
+    document.querySelectorAll('.filters input[name="language"]').forEach(
+      (box) =>
+        (box.onchange = () => {
+          box.checked
+            ? selectedLanguages.add(box.value)
+            : selectedLanguages.delete(box.value);
           render();
         }),
     );
@@ -853,6 +950,7 @@
       search.value = "";
       range.value = 500;
       selectedMethods.clear();
+      selectedLanguages.clear();
       document
         .querySelectorAll('.filters input[type="checkbox"]')
         .forEach((box) => (box.checked = false));
