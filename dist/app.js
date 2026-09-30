@@ -289,7 +289,17 @@
       : initials;
     const topActions = document.querySelector(".top-actions");
     if (topActions)
-      topActions.innerHTML = `<button class="top-action search-action" type="button" data-route="learn"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg><span>Rechercher un cours</span></button><button class="top-profile" type="button" data-route="settings" aria-label="Ouvrir mes paramètres"><span>${avatarMarkup}</span><div><small>MON COMPTE</small><b>${first}</b></div><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>`;
+      topActions.innerHTML = `<button class="top-action search-action" type="button" data-route="learn"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg><span>Rechercher un cours</span></button><button class="top-profile" type="button" data-route="settings" aria-label="Ouvrir mes paramètres"><span>${avatarMarkup}</span><div><small>MON COMPTE</small><b>${first}</b></div><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button><button class="quick-logout" type="button" aria-label="Se déconnecter"><svg viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10"/></svg><span>Déconnexion</span></button>`;
+    topActions
+      ?.querySelector(".quick-logout")
+      ?.addEventListener("click", async () => {
+        const button = topActions.querySelector(".quick-logout");
+        button.disabled = true;
+        button.querySelector("span").textContent = "Déconnexion…";
+        await db.auth.signOut();
+        session = null;
+        setSurface("landing");
+      });
     document
       .querySelectorAll(".profile-mini>div>b")
       .forEach((x) => (x.textContent = profile.full_name || first));
