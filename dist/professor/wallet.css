@@ -2,7 +2,8 @@
   border: 1px solid #d7d7d1;
   background: #f6ffd7;
   border-radius: 999px;
-  padding: 10px 14px;
+  height: 40px;
+  padding: 0 12px;
   font: 700 12px Manrope;
   white-space: nowrap;
 }

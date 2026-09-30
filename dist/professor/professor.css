@@ -8,6 +8,27 @@
   --peach: #ffd1aa;
   --muted: #73766f;
 }
+@media (max-width: 760px) {
+  .signed-in .market-header {
+    grid-template-columns: 1fr auto;
+  }
+  .signed-in .market-header nav {
+    grid-column: 1/-1;
+    grid-row: 3;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 2px 0 5px;
+  }
+  .signed-in .logout-entry {
+    position: static;
+    width: 40px;
+    height: 40px;
+    box-shadow: none;
+  }
+  .signed-in .wallet-entry {
+    flex: 0 0 auto;
+  }
+}
 * {
   box-sizing: border-box;
 }
@@ -79,6 +100,37 @@ select {
   align-items: center;
   gap: 19px;
 }
+.signed-in .market-header nav {
+  gap: 7px;
+}
+.signed-in .market-header nav > a {
+  display: none;
+}
+.account-tool {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.account-tool:hover {
+  background: var(--lime);
+  border-color: var(--ink);
+}
+.account-tool svg,
+.logout-entry svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .market-header nav a {
   color: inherit;
   text-decoration: none;
@@ -96,10 +148,15 @@ select {
   background: #171918;
   color: #fff;
   border-radius: 99px;
-  padding: 10px 14px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   font: 700 10px Manrope;
   cursor: pointer;
   white-space: nowrap;
+}
+.logout-entry > span {
+  display: none;
 }
 .logout-entry span {
   color: var(--lime);
@@ -915,5 +972,26 @@ footer a {
   }
   .video-slot {
     height: 235px;
+  }
+}
+@media (max-width: 760px) {
+  .signed-in .market-header {
+    grid-template-columns: 1fr auto;
+  }
+  .signed-in .market-header nav {
+    grid-column: 1/-1;
+    grid-row: 3;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 2px 0 5px;
+  }
+  .signed-in .logout-entry {
+    position: static;
+    width: 40px;
+    height: 40px;
+    box-shadow: none;
+  }
+  .signed-in .wallet-entry {
+    flex: 0 0 auto;
   }
 }

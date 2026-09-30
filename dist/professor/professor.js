@@ -195,6 +195,7 @@
       const { data } = await db.auth.getSession();
       session = data.session;
       if (session) {
+        document.body.classList.add("signed-in");
         const [
           { data: p },
           { data: f = [] },
@@ -820,15 +821,13 @@
     document.querySelector("#teacherRequestForm").onsubmit = async (e) => {
       e.preventDefault();
       const f = new FormData(e.currentTarget),
-        { error } = await db
-          .from("teacher_requests")
-          .insert({
-            student_id: session.user.id,
-            teacher_id: offer.teacher_id,
-            offer_id: offer.id,
-            request_type: f.get("type"),
-            message: f.get("message"),
-          });
+        { error } = await db.from("teacher_requests").insert({
+          student_id: session.user.id,
+          teacher_id: offer.teacher_id,
+          offer_id: offer.id,
+          request_type: f.get("type"),
+          message: f.get("message"),
+        });
       if (error) return toast(error.message);
       closeModal();
       toast("Demande envoyée au professeur.");
@@ -867,8 +866,11 @@
     if (!session || document.querySelector("#purchasesButton")) return;
     const button = document.createElement("button");
     button.id = "purchasesButton";
-    button.className = "admin-entry";
-    button.textContent = "Mes achats";
+    button.className = "account-tool";
+    button.title = "Mes achats";
+    button.setAttribute("aria-label", "Mes achats");
+    button.innerHTML =
+      '<svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 7V4h10v3M8 11h8M8 15h5"/></svg>';
     button.onclick = openPurchases;
     document.querySelector(".market-header nav").prepend(button);
   }
@@ -876,8 +878,11 @@
     if (!session || document.querySelector("#notificationsButton")) return;
     const button = document.createElement("button");
     button.id = "notificationsButton";
-    button.className = "admin-entry";
-    button.textContent = "Notifications";
+    button.className = "account-tool";
+    button.title = "Notifications";
+    button.setAttribute("aria-label", "Notifications");
+    button.innerHTML =
+      '<svg viewBox="0 0 24 24"><path d="M6 17h12l-2-3V9a4 4 0 0 0-8 0v5zM10 20h4"/></svg>';
     button.onclick = openNotifications;
     document.querySelector(".market-header nav").prepend(button);
   }
@@ -902,8 +907,11 @@
     if (!session || document.querySelector("#favoritesButton")) return;
     const button = document.createElement("button");
     button.id = "favoritesButton";
-    button.className = "admin-entry";
-    button.textContent = "Favoris";
+    button.className = "account-tool";
+    button.title = "Favoris";
+    button.setAttribute("aria-label", "Favoris");
+    button.innerHTML =
+      '<svg viewBox="0 0 24 24"><path d="M12 20 4.5 13A5 5 0 0 1 12 6.5 5 5 0 0 1 19.5 13z"/></svg>';
     button.onclick = openFavorites;
     document.querySelector(".market-header nav").prepend(button);
   }
@@ -912,10 +920,13 @@
     const button = document.createElement("button");
     button.id = "logoutButton";
     button.className = "logout-entry";
-    button.innerHTML = "<span>↪</span> Déconnexion";
+    button.title = "Déconnexion";
+    button.setAttribute("aria-label", "Déconnexion");
+    button.innerHTML =
+      '<svg viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10"/></svg><span>Déconnexion</span>';
     button.onclick = async () => {
       button.disabled = true;
-      button.textContent = "Déconnexion…";
+      button.innerHTML = "<span>…</span>";
       await db.auth.signOut();
       location.href = "/";
     };
