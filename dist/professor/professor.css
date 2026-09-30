@@ -308,6 +308,14 @@ main {
   display: grid;
   gap: 12px;
 }
+.filters select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  padding: 11px;
+  font: 600 10px "DM Sans";
+}
 .filters legend {
   font-weight: 700;
   font-size: 12px;

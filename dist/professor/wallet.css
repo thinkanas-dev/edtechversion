@@ -218,3 +218,46 @@
   color: #666;
   font-size: 12px;
 }
+.public-profile-link {
+  display: inline-flex;
+  margin: 0 0 18px;
+  color: #171918;
+  font-weight: 800;
+  font-size: 12px;
+}
+.notification-list {
+  display: grid;
+  margin-top: 25px;
+}
+.notification-list article {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 4px;
+  border-top: 1px solid #ddd;
+}
+.notification-list article.unread {
+  border-left: 4px solid #a7ef31;
+  padding-left: 14px;
+}
+.notification-list p {
+  margin: 5px 0;
+  color: #666;
+}
+.notification-list small {
+  color: #888;
+}
+.notification-list a {
+  color: #171918;
+  font-weight: 700;
+  font-size: 11px;
+}
+.purchase-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.purchase-actions button:disabled {
+  opacity: 0.45;
+}

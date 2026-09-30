@@ -29,6 +29,7 @@
     walletBalance = 0,
     selectedMethods = new Set(),
     selectedLanguages = new Set(),
+    activeChapter = "all",
     sortMode = "relevant";
   const launchOffers = [
     {
@@ -225,6 +226,8 @@
         purchases = new Set(bought.map((x) => x.offer_id));
         mountWalletButton();
         mountPurchasesButton();
+        mountNotificationsButton();
+        mountFavoritesButton();
         if (profile?.role === "admin") {
           const adminButton = document.createElement("button");
           adminButton.className = "admin-entry";
@@ -243,6 +246,8 @@
       offers = o;
     }
     bind();
+    populateChapterFilter();
+    applyUrlFilters();
     render();
     if (location.hash === "#purchases" && session) openPurchases();
   }
@@ -304,6 +309,7 @@
               ["english", "arabic"].includes(x.subject_id))) &&
           x.token_price <= max &&
           (!selectedMethods.size || selectedMethods.has(x.method)) &&
+          (activeChapter === "all" || x.chapters?.title === activeChapter) &&
           (!selectedLanguages.size ||
             [...selectedLanguages].some((lang) =>
               lang === "fr"
@@ -326,6 +332,47 @@
       '<div class="empty-result"><b>Aucun résultat pour ces filtres.</b><p>Essaie une autre matière ou augmente le nombre de jetons.</p></div>';
     document.querySelector("#resultCount").textContent =
       `${shown.length} explication${shown.length > 1 ? "s" : ""}${offers.length ? "" : " · aperçu"}`;
+  }
+  function populateChapterFilter() {
+    const select = document.querySelector("#chapterFilter"),
+      source = offers.length ? offers : launchOffers,
+      titles = [
+        ...new Set(source.map((x) => x.chapters?.title).filter(Boolean)),
+      ].sort();
+    select.innerHTML =
+      '<option value="all">Tous les chapitres</option>' +
+      titles
+        .map((title) => `<option value="${esc(title)}">${esc(title)}</option>`)
+        .join("");
+    select.onchange = () => {
+      activeChapter = select.value;
+      render();
+    };
+  }
+  function applyUrlFilters() {
+    const params = new URLSearchParams(location.search),
+      subject = params.get("subject"),
+      method = params.get("method"),
+      offer = params.get("offer");
+    if (subject) {
+      active = subject;
+      document
+        .querySelectorAll('[name="subject"]')
+        .forEach((r) => (r.checked = r.value === subject));
+      document
+        .querySelectorAll(".category")
+        .forEach((c) =>
+          c.classList.toggle("active", c.dataset.subject === subject),
+        );
+    }
+    if (method) {
+      selectedMethods.add(method);
+      const box = document.querySelector(
+        `[name="method"][value="${CSS.escape(method)}"]`,
+      );
+      if (box) box.checked = true;
+    }
+    if (offer) setTimeout(() => detail(offer), 0);
   }
   function setSubject(v) {
     active = v;
@@ -513,7 +560,7 @@
   }
   function profileForm() {
     openModal(
-      `<div class="studio-intro"><span class="kicker">ÉTAPE 1 · PROFIL</span><h2>Présente la personne derrière l’explication.</h2><form id="profileForm" class="studio-form"><label>Nom affiché<input name="display_name" required value="${esc(profile?.full_name || "")}"></label><label>Ville<input name="city" required></label><label>Années d’expérience<input name="experience_years" type="number" min="0" max="60" value="0" required></label><label class="full">Biographie<textarea name="bio" minlength="30" maxlength="500" required></textarea></label><label class="full">Ton histoire<textarea name="public_story" minlength="30" maxlength="800" required placeholder="Pourquoi et comment tu enseignes..."></textarea></label><label>Formation et diplômes<textarea name="credentials" minlength="10" maxlength="400" required></textarea></label><label>Réussites pédagogiques<textarea name="achievements" minlength="10" maxlength="400" required></textarea></label><label class="full">Signature de méthode<input name="teaching_signature" minlength="8" maxlength="120" required placeholder="Observer → comprendre → résoudre"></label><fieldset class="full"><legend>Langues</legend><label><input type="checkbox" name="languages" value="Français" checked> Français</label><label><input type="checkbox" name="languages" value="العربية"> العربية</label><label><input type="checkbox" name="languages" value="الدارجة"> الدارجة</label></fieldset><button class="studio-primary full">Créer mon profil →</button></form></div>`,
+      `<div class="studio-intro"><span class="kicker">ÉTAPE 1 · PROFIL</span><h2>Présente la personne derrière l’explication.</h2><form id="profileForm" class="studio-form"><label class="video-upload full"><span>◎</span><b>Photo professionnelle</b><small>JPG, PNG ou WebP · 5 Mo max.</small><input name="photo" type="file" accept="image/jpeg,image/png,image/webp"></label><label>Nom affiché<input name="display_name" required value="${esc(profile?.full_name || "")}"></label><label>Ville<input name="city" required></label><label>Années d’expérience<input name="experience_years" type="number" min="0" max="60" value="0" required></label><label class="full">Biographie<textarea name="bio" minlength="30" maxlength="500" required></textarea></label><label class="full">Ton histoire<textarea name="public_story" minlength="30" maxlength="800" required placeholder="Pourquoi et comment tu enseignes..."></textarea></label><label>Formation et diplômes<textarea name="credentials" minlength="10" maxlength="400" required></textarea></label><label>Réussites pédagogiques<textarea name="achievements" minlength="10" maxlength="400" required></textarea></label><label class="full">Signature de méthode<input name="teaching_signature" minlength="8" maxlength="120" required placeholder="Observer → comprendre → résoudre"></label><fieldset class="full"><legend>Langues</legend><label><input type="checkbox" name="languages" value="Français" checked> Français</label><label><input type="checkbox" name="languages" value="العربية"> العربية</label><label><input type="checkbox" name="languages" value="الدارجة"> الدارجة</label></fieldset><button class="studio-primary full">Créer mon profil →</button></form></div>`,
     );
     document.querySelector("#profileForm").onsubmit = async (e) => {
       e.preventDefault();
@@ -536,6 +583,21 @@
         .select()
         .single();
       if (error) return toast(error.message);
+      const photo = f.get("photo");
+      if (photo?.size) {
+        if (photo.size > 5242880) return toast("Photo trop lourde.");
+        const ext = photo.name.split(".").pop(),
+          path = `${session.user.id}/profile.${ext}`;
+        const { error: uploadError } = await db.storage
+          .from("teacher-photos")
+          .upload(path, photo, { upsert: true, contentType: photo.type });
+        if (uploadError) return toast(uploadError.message);
+        await db
+          .from("teacher_profiles")
+          .update({ photo_path: path, updated_at: new Date().toISOString() })
+          .eq("user_id", session.user.id);
+        data.photo_path = path;
+      }
       await db
         .from("profiles")
         .update({ role: "teacher" })
@@ -642,7 +704,7 @@
     const x = [...offers, ...launchOffers].find((o) => o.id === id);
     if (!x) return;
     openModal(
-      `<div class="offer-detail"><div class="detail-video ${x.tone || tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>${x.demo ? "▶ Cadre de la future vidéo" : "▶ Aperçu vidéo"}</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Expérience</dt><dd>${esc(x.teacher_profiles?.experience || `${x.teacher_profiles?.experience_years || 0} ans`)}</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl>${x.demo || x.teacher_profiles?.public_story ? `<div class="teacher-story"><span>SON HISTOIRE</span><p>${esc(x.teacher_profiles.story || x.teacher_profiles.public_story || x.teacher_profiles.bio)}</p><span>SES RÉUSSITES</span><p>${esc(x.teacher_profiles.success || x.teacher_profiles.achievements || "Profil vérifié par Noqta.")}</p><span>FORMATION</span><p>${esc(x.teacher_profiles.credentials || "Informations vérifiées lors de la modération.")}</p><blockquote>« ${esc(x.teacher_profiles.signature || x.teacher_profiles.teaching_signature || "Comprendre avant de mémoriser")} »</blockquote></div>` : ""}<div class="detail-price"><b>${x.token_price} jetons</b><button class="studio-primary" ${x.demo ? "disabled" : `data-buy="${x.id}"`}>${x.demo ? "Vidéo bientôt disponible" : purchases.has(x.id) ? "Déjà acheté ✓" : "Acheter →"}</button></div><small class="secure-note">${x.demo ? "Aperçu éditorial : aucune fausse vidéo ni faux achat." : "Paiement en jetons · débit atomique · aucun double achat."}</small></div></div>`,
+      `<div class="offer-detail"><div class="detail-video ${x.tone || tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>${x.demo ? "▶ Cadre de la future vidéo" : "▶ Aperçu vidéo"}</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Expérience</dt><dd>${esc(x.teacher_profiles?.experience || `${x.teacher_profiles?.experience_years || 0} ans`)}</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl>${x.demo || x.teacher_profiles?.public_story ? `<div class="teacher-story"><span>SON HISTOIRE</span><p>${esc(x.teacher_profiles.story || x.teacher_profiles.public_story || x.teacher_profiles.bio)}</p><span>SES RÉUSSITES</span><p>${esc(x.teacher_profiles.success || x.teacher_profiles.achievements || "Profil vérifié par Noqta.")}</p><span>FORMATION</span><p>${esc(x.teacher_profiles.credentials || "Informations vérifiées lors de la modération.")}</p><blockquote>« ${esc(x.teacher_profiles.signature || x.teacher_profiles.teaching_signature || "Comprendre avant de mémoriser")} »</blockquote></div>` : ""}${x.demo ? "" : `<a class="public-profile-link" href="profile.html?id=${x.teacher_id}">Voir son profil et toutes ses vidéos ↗</a>`}<div class="detail-price"><b>${x.token_price} jetons</b><button class="studio-primary" ${x.demo ? "disabled" : `data-buy="${x.id}"`}>${x.demo ? "Vidéo bientôt disponible" : purchases.has(x.id) ? "Déjà acheté ✓" : "Acheter →"}</button></div><small class="secure-note">${x.demo ? "Aperçu éditorial : aucune fausse vidéo ni faux achat." : "Paiement en jetons · débit atomique · aucun double achat."}</small></div></div>`,
     );
     document
       .querySelector("[data-buy]")
@@ -692,6 +754,56 @@
     button.textContent = "Mes achats";
     button.onclick = openPurchases;
     document.querySelector(".market-header nav").prepend(button);
+  }
+  function mountNotificationsButton() {
+    if (!session || document.querySelector("#notificationsButton")) return;
+    const button = document.createElement("button");
+    button.id = "notificationsButton";
+    button.className = "admin-entry";
+    button.textContent = "Notifications";
+    button.onclick = openNotifications;
+    document.querySelector(".market-header nav").prepend(button);
+  }
+  async function openNotifications() {
+    const { data = [] } = await db
+      .from("notifications")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .order("created_at", { ascending: false })
+      .limit(30);
+    openModal(
+      `<div class="studio-shell"><span class="kicker">CENTRE NOQTA</span><h2>Notifications.</h2><div class="notification-list">${data.map((n) => `<article class="${n.read_at ? "" : "unread"}"><div><b>${esc(n.title)}</b><p>${esc(n.body)}</p><small>${new Date(n.created_at).toLocaleString("fr-MA")}</small></div>${n.link ? `<a href="${esc(n.link)}">Ouvrir ↗</a>` : ""}</article>`).join("") || "<p>Aucune notification.</p>"}</div></div>`,
+    );
+    const unread = data.filter((n) => !n.read_at).map((n) => n.id);
+    if (unread.length)
+      await db
+        .from("notifications")
+        .update({ read_at: new Date().toISOString() })
+        .in("id", unread);
+  }
+  function mountFavoritesButton() {
+    if (!session || document.querySelector("#favoritesButton")) return;
+    const button = document.createElement("button");
+    button.id = "favoritesButton";
+    button.className = "admin-entry";
+    button.textContent = "Favoris";
+    button.onclick = openFavorites;
+    document.querySelector(".market-header nav").prepend(button);
+  }
+  async function openFavorites() {
+    const { data = [] } = await db
+      .from("teacher_offer_favorites")
+      .select(
+        "offer_id,teacher_offers(id,title,token_price,duration_minutes,chapters(title),teacher_profiles(display_name))",
+      )
+      .eq("user_id", session.user.id)
+      .order("created_at", { ascending: false });
+    openModal(
+      `<div class="studio-shell"><span class="kicker">MES FAVORIS</span><h2>À revoir plus tard.</h2><div class="purchase-library">${data.map((f) => `<article><div><small>${esc(f.teacher_offers?.chapters?.title)}</small><b>${esc(f.teacher_offers?.title)}</b><span>${esc(f.teacher_offers?.teacher_profiles?.display_name)} · ${f.teacher_offers?.duration_minutes} min</span></div><button data-open-favorite="${f.offer_id}">Voir l’explication →</button></article>`).join("") || "<p>Aucun favori pour le moment.</p>"}</div></div>`,
+    );
+    document
+      .querySelectorAll("[data-open-favorite]")
+      .forEach((b) => (b.onclick = () => detail(b.dataset.openFavorite)));
   }
   async function openPurchases() {
     const { data = [] } = await db
@@ -951,6 +1063,8 @@
       range.value = 500;
       selectedMethods.clear();
       selectedLanguages.clear();
+      activeChapter = "all";
+      document.querySelector("#chapterFilter").value = "all";
       document
         .querySelectorAll('.filters input[type="checkbox"]')
         .forEach((box) => (box.checked = false));

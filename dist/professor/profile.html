@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Profil professeur · Noqta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Manrope:wght@600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="profile.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../supabase-config.js"></script>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo"
+        ><img src="../assets/noqta-logo.png" alt="Noqta" /></a
+      ><a href="/professor/">← Tous les professeurs</a>
+    </header>
+    <main id="teacherProfile">
+      <div class="loading">Chargement du profil…</div>
+    </main>
+    <script src="profile.js"></script>
+  </body>
+</html>

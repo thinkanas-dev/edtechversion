@@ -2,6 +2,115 @@
 html {
   scroll-behavior: smooth;
 }
+.landing-teacher-preview {
+  margin: 14px 5% 0;
+  display: grid;
+  grid-template-columns: 1.1fr repeat(3, 1fr);
+  gap: 10px;
+}
+.preview-intro,
+.preview-teacher {
+  min-height: 170px;
+  border: 1px solid var(--ink);
+  border-radius: 19px;
+  padding: 20px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.preview-intro {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+.preview-intro > span,
+.preview-teacher > small {
+  font: 800 8px Manrope;
+  letter-spacing: 0.14em;
+}
+.preview-intro > b {
+  font: 800 23px/1.05 Manrope;
+  margin: auto 0;
+}
+.preview-intro em {
+  font-family: "Playfair Display";
+}
+.preview-intro > a {
+  font-size: 10px;
+  font-weight: 700;
+  color: inherit;
+}
+.preview-teacher {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: 0.25s;
+}
+.preview-teacher:hover {
+  transform: translateY(-4px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.preview-violet {
+  background: var(--lilac);
+}
+.preview-blue {
+  background: #baddff;
+}
+.preview-lime {
+  background: var(--lime);
+}
+.preview-glyph {
+  font: 800 37px Manrope;
+  margin: auto 0;
+  text-align: right;
+}
+.preview-teacher strong {
+  font: 800 16px/1.15 Manrope;
+}
+.preview-teacher > span {
+  margin-top: 8px;
+  font-size: 9px;
+}
+@media (max-width: 950px) {
+  .landing-teacher-preview {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .preview-intro {
+    grid-column: 1/-1;
+    min-height: 130px;
+  }
+  .preview-intro > b {
+    margin: 14px 0;
+  }
+  .preview-intro > a {
+    align-self: flex-end;
+  }
+}
+@media (max-width: 700px) {
+  .landing-teacher-preview {
+    margin-inline: 22px;
+    display: flex;
+    overflow: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+  }
+  .preview-intro,
+  .preview-teacher {
+    min-width: 78vw;
+    scroll-snap-align: start;
+  }
+  .preview-intro {
+    min-height: 170px;
+  }
+  .preview-intro > a {
+    align-self: flex-start;
+  }
+}
+@media (max-width: 360px) {
+  .landing-teacher-preview {
+    margin-inline: 16px;
+  }
+}
 body.landing-active {
   margin: 0;
   background: #fff;
