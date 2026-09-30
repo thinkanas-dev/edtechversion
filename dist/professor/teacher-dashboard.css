@@ -160,6 +160,114 @@
   background: #171918;
   color: #fff;
 }
+.console-actions .secondary {
+  background: transparent;
+  color: #171918;
+  border: 1px solid #171918;
+}
+.request-schedule,
+.thread-schedule {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #dfff79;
+  color: #171918 !important;
+  font-size: 11px;
+  font-weight: 800;
+}
+.availability-form {
+  grid-template-columns: 1.4fr 1fr 1fr auto;
+  align-items: end;
+  margin: 24px 0;
+}
+.availability-list,
+.student-request-list {
+  display: grid;
+  gap: 10px;
+}
+.availability-list article,
+.student-request-list article {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  background: #fff;
+}
+.availability-list article div,
+.student-request-list article > div {
+  display: grid;
+  gap: 6px;
+}
+.availability-list button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #bbb;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+}
+.student-request-list article > div:last-child {
+  justify-items: end;
+  align-content: space-between;
+}
+.student-request-list button {
+  border: 0;
+  background: transparent;
+  font-weight: 800;
+  cursor: pointer;
+}
+.request-status {
+  padding: 6px 9px;
+  border-radius: 99px;
+  background: #eee;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.request-status.answered {
+  background: #dfff79;
+}
+.message-thread {
+  display: grid;
+  gap: 10px;
+  max-height: 48vh;
+  overflow: auto;
+  margin: 22px 0;
+  padding: 18px;
+  border-radius: 20px;
+  background: #f1f1ec;
+}
+.message {
+  max-width: 78%;
+  padding: 12px 15px;
+  border-radius: 16px 16px 16px 3px;
+  background: #fff;
+}
+.message.mine {
+  justify-self: end;
+  border-radius: 16px 16px 3px 16px;
+  background: #dfff79;
+}
+.message p {
+  margin: 5px 0 0;
+  white-space: pre-wrap;
+}
+.thread-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+.thread-form textarea {
+  min-height: 54px;
+  resize: vertical;
+  padding: 13px;
+  border: 1px solid #bbb;
+  border-radius: 14px;
+  font: inherit;
+}
 .compact-list article {
   display: flex;
   justify-content: space-between;
@@ -229,5 +337,15 @@
   }
   .request-actions {
     justify-content: flex-end;
+  }
+  .availability-form,
+  .thread-form {
+    grid-template-columns: 1fr;
+  }
+  .student-request-list article {
+    flex-direction: column;
+  }
+  .student-request-list article > div:last-child {
+    justify-items: start;
   }
 }

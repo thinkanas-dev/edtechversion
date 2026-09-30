@@ -230,6 +230,7 @@
         mountNotificationsButton();
         mountFavoritesButton();
         mountLogoutButton();
+        if (profile?.role !== "teacher") mountStudentRequestsButton();
         if (profile?.role === "admin") {
           const adminButton = document.createElement("button");
           adminButton.className = "admin-entry";
@@ -256,6 +257,7 @@
     applyUrlFilters();
     render();
     if (location.hash === "#purchases" && session) openPurchases();
+    if (location.hash === "#requests" && session) openStudentRequests();
   }
   async function renderTeacherDashboard() {
     document.body.classList.add("teacher-mode");
@@ -291,7 +293,7 @@
       db
         .from("teacher_requests")
         .select(
-          "id,request_type,message,status,teacher_reply,created_at,teacher_offers(title)",
+          "id,request_type,message,status,teacher_reply,scheduled_at,created_at,teacher_offers(title)",
         )
         .eq("teacher_id", session.user.id)
         .order("created_at", { ascending: false }),
@@ -320,29 +322,141 @@
           .join("") || "<p>Aucune vente.</p>"
       }</div>${withdrawals.length ? `<div class="withdraw-summary"><small>DERNIER RETRAIT</small><b>${withdrawals[0].amount_mad} MAD · ${esc(withdrawals[0].status)}</b></div>` : ""}</aside></div></section>`;
     document.querySelector("[data-open-studio]").onclick = () => openStudio();
+    const availabilityButton = document.createElement("button");
+    availabilityButton.className = "secondary";
+    availabilityButton.textContent = "Mes disponibilités";
+    availabilityButton.onclick = openAvailability;
+    document.querySelector(".console-actions").append(availabilityButton);
+    document.querySelectorAll(".request-list .request").forEach((card, index) => {
+      const request = requests[index];
+      if (request.scheduled_at) {
+        const schedule = document.createElement("p");
+        schedule.className = "request-schedule";
+        schedule.textContent = `Créneau · ${new Date(request.scheduled_at).toLocaleString("fr-MA")}`;
+        card.firstElementChild.append(schedule);
+      }
+      const thread = document.createElement("button");
+      thread.textContent = "Discussion";
+      thread.onclick = () => openRequestThread(request.id);
+      card.querySelector(".request-actions").append(thread);
+    });
     document.querySelectorAll("[data-request-action]").forEach(
       (b) =>
-        (b.onclick = async () => {
-          let reply = null,
-            status = b.dataset.requestAction;
-          if (status === "accepted") {
-            reply = prompt("Ta réponse ou proposition de créneau :");
-            if (!reply) return;
-            status = "answered";
-          }
+        (b.onclick = () =>
+          b.dataset.requestAction === "declined"
+            ? respondToRequest(b.dataset.requestId, true)
+            : respondToRequest(b.dataset.requestId)),
+    );
+  }
+  function respondToRequest(requestId, decline = false) {
+    openModal(
+      `<div class="studio-intro"><span class="kicker">RÉPONDRE À LA DEMANDE</span><h2>${decline ? "Préviens l’élève avec clarté." : "Propose la bonne suite."}</h2><form id="requestResponseForm" class="studio-form"><label class="full">Message<textarea name="reply" minlength="3" maxlength="1200" required placeholder="${decline ? "Explique brièvement pourquoi tu ne peux pas accepter…" : "Ta réponse, les points à préparer, le lien utile…"}"></textarea></label>${decline ? "" : '<label class="full">Créneau proposé (facultatif)<input type="datetime-local" name="scheduled_at"></label>'}<button class="studio-primary full">${decline ? "Refuser et prévenir" : "Envoyer la réponse"} →</button></form></div>`,
+    );
+    document.querySelector("#requestResponseForm").onsubmit = async (event) => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const reply = String(form.get("reply") || "").trim();
+      const scheduledAt = form.get("scheduled_at");
+      const { error } = await db
+        .from("teacher_requests")
+        .update({
+          status: decline ? "declined" : "answered",
+          teacher_reply: reply,
+          scheduled_at: scheduledAt
+            ? new Date(scheduledAt).toISOString()
+            : null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", requestId);
+      if (error) return toast(error.message);
+      await db.from("teacher_request_messages").insert({
+        request_id: requestId,
+        sender_id: session.user.id,
+        body: reply,
+      });
+      closeModal();
+      toast(decline ? "Demande refusée et élève prévenu." : "Réponse envoyée.");
+      renderTeacherDashboard();
+    };
+  }
+  async function openAvailability() {
+    const { data = [] } = await db
+      .from("teacher_availability")
+      .select("*")
+      .eq("teacher_id", session.user.id)
+      .order("weekday")
+      .order("start_time");
+    const days = [
+      "Dimanche",
+      "Lundi",
+      "Mardi",
+      "Mercredi",
+      "Jeudi",
+      "Vendredi",
+      "Samedi",
+    ];
+    openModal(
+      `<div class="studio-shell"><span class="kicker">MON AGENDA</span><h2>Quand peux-tu accompagner un élève ?</h2><p>Ces créneaux servent de repère avant de confirmer une session.</p><form id="availabilityForm" class="studio-form availability-form"><label>Jour<select name="weekday">${days.map((day, index) => `<option value="${index}">${day}</option>`).join("")}</select></label><label>Début<input type="time" name="start" required></label><label>Fin<input type="time" name="end" required></label><button class="studio-primary">Ajouter</button></form><div class="availability-list">${data.map((slot) => `<article><div><b>${days[slot.weekday]}</b><span>${slot.start_time.slice(0, 5)} — ${slot.end_time.slice(0, 5)}</span></div><button data-delete-slot="${slot.id}" aria-label="Supprimer">×</button></article>`).join("") || "<p>Aucun créneau enregistré.</p>"}</div></div>`,
+    );
+    document.querySelector("#availabilityForm").onsubmit = async (event) => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const { error } = await db.from("teacher_availability").insert({
+        teacher_id: session.user.id,
+        weekday: Number(form.get("weekday")),
+        start_time: form.get("start"),
+        end_time: form.get("end"),
+      });
+      if (error) return toast(error.message);
+      openAvailability();
+    };
+    document.querySelectorAll("[data-delete-slot]").forEach(
+      (button) =>
+        (button.onclick = async () => {
           const { error } = await db
-            .from("teacher_requests")
-            .update({
-              status,
-              teacher_reply: reply,
-              updated_at: new Date().toISOString(),
-            })
-            .eq("id", b.dataset.requestId);
+            .from("teacher_availability")
+            .delete()
+            .eq("id", button.dataset.deleteSlot);
           if (error) return toast(error.message);
-          toast("Demande mise à jour.");
-          renderTeacherDashboard();
+          openAvailability();
         }),
     );
+  }
+  async function openRequestThread(requestId) {
+    const [{ data: request, error }, { data: messages = [] }] =
+      await Promise.all([
+        db
+          .from("teacher_requests")
+          .select(
+            "id,message,teacher_reply,status,scheduled_at,student_id,teacher_id,teacher_offers(title)",
+          )
+          .eq("id", requestId)
+          .single(),
+        db
+          .from("teacher_request_messages")
+          .select("id,sender_id,body,created_at")
+          .eq("request_id", requestId)
+          .order("created_at"),
+      ]);
+    if (error || !request) return toast(error?.message || "Demande introuvable.");
+    openModal(
+      `<div class="studio-shell thread-shell"><span class="kicker">DISCUSSION</span><h2>${esc(request.teacher_offers?.title || "Demande au professeur")}</h2>${request.scheduled_at ? `<p class="thread-schedule">Créneau proposé · ${new Date(request.scheduled_at).toLocaleString("fr-MA")}</p>` : ""}<div class="message-thread"><article class="message ${request.student_id === session.user.id ? "mine" : ""}"><small>Demande initiale</small><p>${esc(request.message)}</p></article>${messages.map((message) => `<article class="message ${message.sender_id === session.user.id ? "mine" : ""}"><small>${message.sender_id === session.user.id ? "Moi" : "Interlocuteur"} · ${new Date(message.created_at).toLocaleString("fr-MA")}</small><p>${esc(message.body)}</p></article>`).join("")}</div><form id="threadForm" class="thread-form"><textarea name="body" maxlength="1200" required placeholder="Écrire un message…"></textarea><button class="studio-primary">Envoyer →</button></form></div>`,
+    );
+    const thread = document.querySelector(".message-thread");
+    thread.scrollTop = thread.scrollHeight;
+    document.querySelector("#threadForm").onsubmit = async (event) => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const { error: sendError } = await db
+        .from("teacher_request_messages")
+        .insert({
+          request_id: requestId,
+          sender_id: session.user.id,
+          body: String(form.get("body") || "").trim(),
+        });
+      if (sendError) return toast(sendError.message);
+      openRequestThread(requestId);
+    };
   }
   const symbol = (s) =>
     s === "math"
@@ -873,6 +987,46 @@
       '<svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 7V4h10v3M8 11h8M8 15h5"/></svg>';
     button.onclick = openPurchases;
     document.querySelector(".market-header nav").prepend(button);
+  }
+  function mountStudentRequestsButton() {
+    if (!session || document.querySelector("#studentRequestsButton")) return;
+    const button = document.createElement("button");
+    button.id = "studentRequestsButton";
+    button.className = "account-tool";
+    button.title = "Mes demandes";
+    button.setAttribute("aria-label", "Mes demandes");
+    button.innerHTML =
+      '<svg viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 3zM8 9h8M8 13h5"/></svg>';
+    button.onclick = openStudentRequests;
+    document.querySelector(".market-header nav").prepend(button);
+  }
+  async function openStudentRequests() {
+    const { data = [], error } = await db
+      .from("teacher_requests")
+      .select(
+        "id,teacher_id,request_type,message,status,teacher_reply,scheduled_at,created_at,teacher_offers(title)",
+      )
+      .eq("student_id", session.user.id)
+      .order("created_at", { ascending: false });
+    if (error) return toast(error.message);
+    const teacherIds = [...new Set(data.map((item) => item.teacher_id))];
+    const { data: teachers = [] } = teacherIds.length
+      ? await db
+          .from("teacher_profiles")
+          .select("user_id,display_name")
+          .in("user_id", teacherIds)
+      : { data: [] };
+    const teacherNames = Object.fromEntries(
+      teachers.map((teacher) => [teacher.user_id, teacher.display_name]),
+    );
+    openModal(
+      `<div class="studio-shell"><span class="kicker">MES DEMANDES</span><h2>Le suivi, sans perdre le fil.</h2><div class="student-request-list">${data.map((request) => `<article><div><small>${esc(teacherNames[request.teacher_id] || "Professeur Noqta")} · ${new Date(request.created_at).toLocaleDateString("fr-MA")}</small><b>${esc(request.teacher_offers?.title || "Demande générale")}</b><p>${esc(request.message)}</p>${request.scheduled_at ? `<span class="request-schedule">Créneau · ${new Date(request.scheduled_at).toLocaleString("fr-MA")}</span>` : ""}</div><div><span class="request-status ${request.status}">${esc(request.status)}</span><button data-student-thread="${request.id}">Ouvrir la discussion →</button></div></article>`).join("") || "<p>Tu n’as encore envoyé aucune demande.</p>"}</div></div>`,
+    );
+    document.querySelectorAll("[data-student-thread]").forEach(
+      (button) =>
+        (button.onclick = () =>
+          openRequestThread(button.dataset.studentThread)),
+    );
   }
   function mountNotificationsButton() {
     if (!session || document.querySelector("#notificationsButton")) return;
