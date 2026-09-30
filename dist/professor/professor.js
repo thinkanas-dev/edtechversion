@@ -228,6 +228,7 @@
         mountPurchasesButton();
         mountNotificationsButton();
         mountFavoritesButton();
+        mountLogoutButton();
         if (profile?.role === "admin") {
           const adminButton = document.createElement("button");
           adminButton.className = "admin-entry";
@@ -789,6 +790,20 @@
     button.textContent = "Favoris";
     button.onclick = openFavorites;
     document.querySelector(".market-header nav").prepend(button);
+  }
+  function mountLogoutButton() {
+    if (!session || document.querySelector("#logoutButton")) return;
+    const button = document.createElement("button");
+    button.id = "logoutButton";
+    button.className = "logout-entry";
+    button.innerHTML = "<span>↪</span> Déconnexion";
+    button.onclick = async () => {
+      button.disabled = true;
+      button.textContent = "Déconnexion…";
+      await db.auth.signOut();
+      location.href = "/";
+    };
+    document.querySelector(".market-header nav").append(button);
   }
   async function openFavorites() {
     const { data = [] } = await db

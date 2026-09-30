@@ -91,6 +91,26 @@ select {
   border-radius: 99px;
   padding: 10px 14px;
 }
+.logout-entry {
+  border: 1px solid #171918;
+  background: #171918;
+  color: #fff;
+  border-radius: 99px;
+  padding: 10px 14px;
+  font: 700 10px Manrope;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.logout-entry span {
+  color: var(--lime);
+  font-size: 14px;
+}
+.logout-entry:hover {
+  background: #303230;
+}
+.logout-entry:disabled {
+  opacity: 0.55;
+}
 .category-rail {
   min-height: 108px;
   background: #fff;
@@ -813,6 +833,22 @@ footer a {
   .market-header nav {
     grid-column: 2;
     grid-row: 1;
+  }
+  .logout-entry {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 90;
+    font-size: 0;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+  .logout-entry span {
+    font-size: 19px;
   }
   .category-rail {
     justify-content: flex-start;
