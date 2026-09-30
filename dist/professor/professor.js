@@ -806,22 +806,35 @@
       .forEach((b) => (b.onclick = () => detail(b.dataset.openFavorite)));
   }
   async function openPurchases() {
-    const { data = [] } = await db
-      .from("teacher_offer_purchases")
-      .select(
-        "id,created_at,tokens_paid,offer_id,teacher_offer_reviews(id,rating),teacher_offers(title,video_path,duration_minutes,teacher_profiles(display_name),chapters(title))",
-      )
-      .eq("buyer_id", session.user.id)
-      .order("created_at", { ascending: false });
+    const [{ data = [] }, { data: history = [] }] = await Promise.all([
+      db
+        .from("teacher_offer_purchases")
+        .select(
+          "id,created_at,tokens_paid,offer_id,teacher_offer_reviews(id,rating),teacher_offers(title,video_path,duration_minutes,teacher_profiles(display_name),chapters(title))",
+        )
+        .eq("buyer_id", session.user.id)
+        .order("created_at", { ascending: false }),
+      db
+        .from("teacher_watch_history")
+        .select("offer_id,watched_seconds")
+        .eq("user_id", session.user.id),
+    ]);
+    const resumeByOffer = Object.fromEntries(
+      history.map((h) => [h.offer_id, h.watched_seconds]),
+    );
     openModal(
-      `<div class="studio-shell"><span class="kicker">MA VIDÉOTHÈQUE</span><h2>Mes explications achetées.</h2><div class="purchase-library">${data.map((p) => `<article><div><small>${esc(p.teacher_offers?.chapters?.title)}</small><b>${esc(p.teacher_offers?.title)}</b><span>${esc(p.teacher_offers?.teacher_profiles?.display_name)} · ${p.teacher_offers?.duration_minutes} min</span></div><div class="purchase-actions"><button data-play-purchase="${p.offer_id}" data-video-path="${esc(p.teacher_offers?.video_path || "")}">Regarder ▶</button><button ${p.teacher_offer_reviews?.length ? "disabled" : `data-review-purchase="${p.id}"`}>${p.teacher_offer_reviews?.length ? `Noté ${p.teacher_offer_reviews[0].rating}/5` : "Donner mon avis"}</button></div></article>`).join("") || "<p>Tu n’as encore acheté aucune explication.</p>"}</div></div>`,
+      `<div class="studio-shell"><span class="kicker">MA VIDÉOTHÈQUE</span><h2>Mes explications achetées.</h2><div class="purchase-library">${data.map((p) => `<article><div><small>${esc(p.teacher_offers?.chapters?.title)}</small><b>${esc(p.teacher_offers?.title)}</b><span>${esc(p.teacher_offers?.teacher_profiles?.display_name)} · ${p.teacher_offers?.duration_minutes} min</span></div><div class="purchase-actions"><button data-play-purchase="${p.offer_id}" data-resume="${resumeByOffer[p.offer_id] || 0}" data-video-path="${esc(p.teacher_offers?.video_path || "")}">${resumeByOffer[p.offer_id] ? `Continuer à ${Math.floor(resumeByOffer[p.offer_id] / 60)}:${String(resumeByOffer[p.offer_id] % 60).padStart(2, "0")} ▶` : "Regarder ▶"}</button><button ${p.teacher_offer_reviews?.length ? "disabled" : `data-review-purchase="${p.id}"`}>${p.teacher_offer_reviews?.length ? `Noté ${p.teacher_offer_reviews[0].rating}/5` : "Donner mon avis"}</button></div></article>`).join("") || "<p>Tu n’as encore acheté aucune explication.</p>"}</div></div>`,
     );
     document
       .querySelectorAll("[data-play-purchase]")
       .forEach(
         (b) =>
           (b.onclick = () =>
-            playPurchasedVideo(b.dataset.playPurchase, b.dataset.videoPath)),
+            playPurchasedVideo(
+              b.dataset.playPurchase,
+              b.dataset.videoPath,
+              +b.dataset.resume,
+            )),
       );
     document
       .querySelectorAll("[data-review-purchase]")
@@ -844,7 +857,7 @@
       toast("Avis vérifié publié.");
     };
   }
-  async function playPurchasedVideo(offerId, path) {
+  async function playPurchasedVideo(offerId, path, resumeAt = 0) {
     if (!path) return toast("La vidéo n’est pas encore disponible.");
     const { data, error } = await db.storage
       .from("teacher-videos")
@@ -855,6 +868,10 @@
       `<div class="video-reader"><video controls autoplay playsinline src="${esc(data.signedUrl)}"></video><p>Ce lien privé expire automatiquement dans une heure.</p></div>`,
     );
     const video = document.querySelector(".video-reader video");
+    video.onloadedmetadata = () => {
+      if (resumeAt > 0 && resumeAt < video.duration - 5)
+        video.currentTime = resumeAt;
+    };
     let lastSaved = -1;
     video.ontimeupdate = () => {
       const seconds = Math.round(video.currentTime);
