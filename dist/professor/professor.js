@@ -236,6 +236,10 @@
           adminButton.onclick = openModeration;
           document.querySelector(".market-header nav").prepend(adminButton);
         }
+        if (profile?.role === "teacher") {
+          await renderTeacherDashboard();
+          return;
+        }
       }
       const { data: o = [] } = await db
         .from("teacher_offers")
@@ -251,6 +255,93 @@
     applyUrlFilters();
     render();
     if (location.hash === "#purchases" && session) openPurchases();
+  }
+  async function renderTeacherDashboard() {
+    document.body.classList.add("teacher-mode");
+    document.querySelector(".category-rail").hidden = true;
+    document.querySelector(".market-search").hidden = true;
+    const [
+      { data: teacher },
+      { data: mine = [] },
+      { data: sales = [] },
+      { data: requests = [] },
+      { data: withdrawals = [] },
+      { data: wallet },
+    ] = await Promise.all([
+      db
+        .from("teacher_profiles")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .maybeSingle(),
+      db
+        .from("teacher_offers")
+        .select(
+          "id,title,status,token_price,created_at,chapters(title),subjects(name_fr)",
+        )
+        .eq("teacher_id", session.user.id)
+        .order("created_at", { ascending: false }),
+      db
+        .from("teacher_offer_purchases")
+        .select(
+          "id,teacher_tokens,tokens_paid,created_at,teacher_offers(title)",
+        )
+        .eq("teacher_id", session.user.id)
+        .order("created_at", { ascending: false }),
+      db
+        .from("teacher_requests")
+        .select(
+          "id,request_type,message,status,teacher_reply,created_at,teacher_offers(title)",
+        )
+        .eq("teacher_id", session.user.id)
+        .order("created_at", { ascending: false }),
+      db
+        .from("withdrawal_requests")
+        .select("id,tokens,amount_mad,status,created_at")
+        .eq("teacher_id", session.user.id)
+        .order("created_at", { ascending: false }),
+      db
+        .from("wallets")
+        .select("balance")
+        .eq("user_id", session.user.id)
+        .maybeSingle(),
+    ]);
+    const published = mine.filter((o) => o.status === "published").length,
+      pending = mine.filter((o) => o.status === "pending").length,
+      earned = sales.reduce((sum, s) => sum + s.teacher_tokens, 0);
+    document.querySelector("main").innerHTML =
+      `<section class="teacher-console"><header class="console-welcome"><div><span>ESPACE PROFESSEUR · ${teacher?.verification_status === "verified" ? "PROFIL VÉRIFIÉ" : "VÉRIFICATION EN COURS"}</span><h1>Salam ${esc(teacher?.display_name || profile.full_name)}.<br><em>Voici ton studio.</em></h1><p>Ici tu reçois les demandes des élèves, publies tes explications et suis tes revenus.</p></div><div class="console-actions"><button data-open-studio>+ Nouvelle explication</button>${teacher?.verification_status === "verified" ? `<a href="profile.html?id=${session.user.id}">Voir mon profil public ↗</a>` : ""}</div></header><div class="console-stats"><article><small>DEMANDES À TRAITER</small><b>${requests.filter((r) => r.status === "pending").length}</b><span>questions ou sessions</span></article><article><small>VIDÉOS PUBLIÉES</small><b>${published}</b><span>${pending} en validation</span></article><article><small>VENTES</small><b>${sales.length}</b><span>${earned} jetons gagnés</span></article><article class="lime"><small>SOLDE DISPONIBLE</small><b>${wallet?.balance || 0}</b><span>jetons</span></article></div><div class="console-grid"><section class="console-panel requests-panel"><div class="panel-head"><div><small>BOÎTE DE RÉCEPTION</small><h2>Demandes des élèves.</h2></div><b>${requests.filter((r) => r.status === "pending").length} nouvelles</b></div><div class="request-list">${requests.map((r) => `<article class="request ${r.status}"><div><span>${r.request_type === "session" ? "SESSION" : "QUESTION"} · ${new Date(r.created_at).toLocaleDateString("fr-MA")}</span><h3>${esc(r.teacher_offers?.title || "Demande générale")}</h3><p>${esc(r.message)}</p>${r.teacher_reply ? `<blockquote>${esc(r.teacher_reply)}</blockquote>` : ""}</div><div class="request-actions">${r.status === "pending" ? `<button data-request-action="declined" data-request-id="${r.id}">Refuser</button><button class="accept" data-request-action="accepted" data-request-id="${r.id}">Accepter / répondre</button>` : `<b>${esc(r.status)}</b>`}</div></article>`).join("") || '<div class="console-empty">Aucune demande pour le moment.</div>'}</div></section><aside class="console-panel"><div class="panel-head"><div><small>MES CONTENUS</small><h2>Explications.</h2></div></div><div class="compact-list">${mine.map((o) => `<article><div><b>${esc(o.title)}</b><small>${esc(o.subjects?.name_fr)} · ${esc(o.chapters?.title)}</small></div><span class="offer-status ${o.status}">${esc(o.status)}</span></article>`).join("") || "<p>Aucune explication.</p>"}</div><div class="panel-head second"><div><small>DERNIÈRES VENTES</small><h2>Activité.</h2></div></div><div class="compact-list">${
+        sales
+          .slice(0, 5)
+          .map(
+            (s) =>
+              `<article><div><b>${esc(s.teacher_offers?.title)}</b><small>${new Date(s.created_at).toLocaleDateString("fr-MA")}</small></div><strong>+${s.teacher_tokens}</strong></article>`,
+          )
+          .join("") || "<p>Aucune vente.</p>"
+      }</div>${withdrawals.length ? `<div class="withdraw-summary"><small>DERNIER RETRAIT</small><b>${withdrawals[0].amount_mad} MAD · ${esc(withdrawals[0].status)}</b></div>` : ""}</aside></div></section>`;
+    document.querySelector("[data-open-studio]").onclick = () => openStudio();
+    document.querySelectorAll("[data-request-action]").forEach(
+      (b) =>
+        (b.onclick = async () => {
+          let reply = null,
+            status = b.dataset.requestAction;
+          if (status === "accepted") {
+            reply = prompt("Ta réponse ou proposition de créneau :");
+            if (!reply) return;
+            status = "answered";
+          }
+          const { error } = await db
+            .from("teacher_requests")
+            .update({
+              status,
+              teacher_reply: reply,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", b.dataset.requestId);
+          if (error) return toast(error.message);
+          toast("Demande mise à jour.");
+          renderTeacherDashboard();
+        }),
+    );
   }
   const symbol = (s) =>
     s === "math"
@@ -705,11 +796,14 @@
     const x = [...offers, ...launchOffers].find((o) => o.id === id);
     if (!x) return;
     openModal(
-      `<div class="offer-detail"><div class="detail-video ${x.tone || tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>${x.demo ? "▶ Cadre de la future vidéo" : "▶ Aperçu vidéo"}</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Expérience</dt><dd>${esc(x.teacher_profiles?.experience || `${x.teacher_profiles?.experience_years || 0} ans`)}</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl>${x.demo || x.teacher_profiles?.public_story ? `<div class="teacher-story"><span>SON HISTOIRE</span><p>${esc(x.teacher_profiles.story || x.teacher_profiles.public_story || x.teacher_profiles.bio)}</p><span>SES RÉUSSITES</span><p>${esc(x.teacher_profiles.success || x.teacher_profiles.achievements || "Profil vérifié par Noqta.")}</p><span>FORMATION</span><p>${esc(x.teacher_profiles.credentials || "Informations vérifiées lors de la modération.")}</p><blockquote>« ${esc(x.teacher_profiles.signature || x.teacher_profiles.teaching_signature || "Comprendre avant de mémoriser")} »</blockquote></div>` : ""}${x.demo ? "" : `<a class="public-profile-link" href="profile.html?id=${x.teacher_id}">Voir son profil et toutes ses vidéos ↗</a>`}<div class="detail-price"><b>${x.token_price} jetons</b><button class="studio-primary" ${x.demo ? "disabled" : `data-buy="${x.id}"`}>${x.demo ? "Vidéo bientôt disponible" : purchases.has(x.id) ? "Déjà acheté ✓" : "Acheter →"}</button></div><small class="secure-note">${x.demo ? "Aperçu éditorial : aucune fausse vidéo ni faux achat." : "Paiement en jetons · débit atomique · aucun double achat."}</small></div></div>`,
+      `<div class="offer-detail"><div class="detail-video ${x.tone || tones[x.subject_id] || "lilac"}"><span>${symbol(x.subject_id)}</span><button>${x.demo ? "▶ Cadre de la future vidéo" : "▶ Aperçu vidéo"}</button></div><div class="detail-copy"><span class="subject-pill">${esc(names[x.subject_id])}</span><h2>${esc(x.title)}</h2><p>${esc(x.description)}</p><dl><div><dt>Professeur</dt><dd>${esc(x.teacher_profiles?.display_name)}</dd></div><div><dt>Expérience</dt><dd>${esc(x.teacher_profiles?.experience || `${x.teacher_profiles?.experience_years || 0} ans`)}</dd></div><div><dt>Langue</dt><dd>${esc(x.language)}</dd></div></dl>${x.demo || x.teacher_profiles?.public_story ? `<div class="teacher-story"><span>SON HISTOIRE</span><p>${esc(x.teacher_profiles.story || x.teacher_profiles.public_story || x.teacher_profiles.bio)}</p><span>SES RÉUSSITES</span><p>${esc(x.teacher_profiles.success || x.teacher_profiles.achievements || "Profil vérifié par Noqta.")}</p><span>FORMATION</span><p>${esc(x.teacher_profiles.credentials || "Informations vérifiées lors de la modération.")}</p><blockquote>« ${esc(x.teacher_profiles.signature || x.teacher_profiles.teaching_signature || "Comprendre avant de mémoriser")} »</blockquote></div>` : ""}${x.demo ? "" : `<div class="profile-links"><a class="public-profile-link" href="profile.html?id=${x.teacher_id}">Voir son profil et toutes ses vidéos ↗</a><button data-request-teacher>Poser une question / demander une session</button></div>`}<div class="detail-price"><b>${x.token_price} jetons</b><button class="studio-primary" ${x.demo ? "disabled" : `data-buy="${x.id}"`}>${x.demo ? "Vidéo bientôt disponible" : purchases.has(x.id) ? "Déjà acheté ✓" : "Acheter →"}</button></div><small class="secure-note">${x.demo ? "Aperçu éditorial : aucune fausse vidéo ni faux achat." : "Paiement en jetons · débit atomique · aucun double achat."}</small></div></div>`,
     );
     document
       .querySelector("[data-buy]")
       ?.addEventListener("click", () => purchaseOffer(x));
+    document
+      .querySelector("[data-request-teacher]")
+      ?.addEventListener("click", () => openTeacherRequest(x));
     if (session && !x.demo)
       db.from("teacher_watch_history").upsert({
         user_id: session.user.id,
@@ -717,6 +811,28 @@
         watched_seconds: 0,
         last_watched_at: new Date().toISOString(),
       });
+  }
+  function openTeacherRequest(offer) {
+    if (!session) return requireAuth(() => openTeacherRequest(offer));
+    openModal(
+      `<div class="studio-intro"><span class="kicker">CONTACTER LE PROFESSEUR</span><h2>Une demande claire, une réponse utile.</h2><form id="teacherRequestForm" class="studio-form"><label>Type<select name="type"><option value="question">Poser une question</option><option value="session">Demander une session</option></select></label><label class="full">Ta demande<textarea name="message" minlength="10" maxlength="600" required placeholder="Explique précisément le chapitre et ce qui te bloque..."></textarea></label><button class="studio-primary full">Envoyer au professeur →</button></form></div>`,
+    );
+    document.querySelector("#teacherRequestForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const f = new FormData(e.currentTarget),
+        { error } = await db
+          .from("teacher_requests")
+          .insert({
+            student_id: session.user.id,
+            teacher_id: offer.teacher_id,
+            offer_id: offer.id,
+            request_type: f.get("type"),
+            message: f.get("message"),
+          });
+      if (error) return toast(error.message);
+      closeModal();
+      toast("Demande envoyée au professeur.");
+    };
   }
   async function refreshWallet() {
     if (!session) return;

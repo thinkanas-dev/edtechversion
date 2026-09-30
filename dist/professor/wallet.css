@@ -225,6 +225,24 @@
   font-weight: 800;
   font-size: 12px;
 }
+.profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.profile-links .public-profile-link {
+  margin: 0;
+}
+.profile-links button {
+  border: 1px solid #171918;
+  border-radius: 99px;
+  background: #fff;
+  padding: 10px 13px;
+  font-weight: 800;
+  font-size: 11px;
+  cursor: pointer;
+}
 .notification-list {
   display: grid;
   margin-top: 25px;

@@ -1,0 +1,233 @@
+.teacher-mode main {
+  max-width: 1440px;
+  margin: auto;
+  padding: 38px 5% 80px;
+}
+.teacher-console {
+  display: grid;
+  gap: 18px;
+}
+.console-welcome {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 30px;
+  align-items: end;
+  background: #171918;
+  color: #fff;
+  border-radius: 28px;
+  padding: 44px;
+}
+.console-welcome span {
+  font: 800 9px Manrope;
+  letter-spacing: 0.16em;
+  color: #caff4f;
+}
+.console-welcome h1 {
+  font: 800 clamp(42px, 6vw, 75px)/0.95 Manrope;
+  margin: 18px 0;
+}
+.console-welcome h1 em {
+  font-family: "Playfair Display";
+  color: #d9cef7;
+}
+.console-welcome p {
+  color: #b8bab7;
+  max-width: 580px;
+}
+.console-actions {
+  display: grid;
+  gap: 9px;
+}
+.console-actions button,
+.console-actions a {
+  border: 1px solid #fff;
+  border-radius: 99px;
+  padding: 13px 18px;
+  background: #fff;
+  color: #171918;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 11px;
+  text-align: center;
+  cursor: pointer;
+}
+.console-actions button {
+  background: #caff4f;
+  border-color: #caff4f;
+}
+.console-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.console-stats article {
+  min-height: 165px;
+  border: 1px solid #171918;
+  border-radius: 20px;
+  padding: 22px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.console-stats article.lime {
+  background: #caff4f;
+}
+.console-stats small {
+  font-weight: 800;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+.console-stats b {
+  font: 800 48px Manrope;
+  margin: auto 0;
+}
+.console-stats span {
+  font-size: 10px;
+  color: #666;
+}
+.console-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 0.6fr;
+  gap: 18px;
+}
+.console-panel {
+  border: 1px solid #d8d9d3;
+  border-radius: 24px;
+  background: #fff;
+  padding: 28px;
+}
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+.panel-head small {
+  font: 800 8px Manrope;
+  letter-spacing: 0.14em;
+}
+.panel-head h2 {
+  font: 800 28px Manrope;
+  margin: 8px 0;
+}
+.panel-head > b {
+  background: #caff4f;
+  border-radius: 99px;
+  padding: 7px 10px;
+  font-size: 9px;
+}
+.request-list,
+.compact-list {
+  display: grid;
+}
+.request {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  padding: 20px 0;
+  border-top: 1px solid #ddd;
+}
+.request > div > span {
+  font-size: 8px;
+  font-weight: 800;
+  color: #777;
+}
+.request h3 {
+  margin: 7px 0;
+}
+.request p {
+  color: #555;
+}
+.request blockquote {
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  background: #f1f1ec;
+  border-left: 3px solid #caff4f;
+}
+.request-actions {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+.request-actions button {
+  border: 1px solid;
+  border-radius: 99px;
+  background: #fff;
+  padding: 9px 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.request-actions .accept {
+  background: #171918;
+  color: #fff;
+}
+.compact-list article {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 0;
+  border-top: 1px solid #eee;
+  gap: 14px;
+}
+.compact-list article div {
+  display: grid;
+}
+.compact-list small {
+  color: #777;
+}
+.compact-list strong {
+  color: #568500;
+}
+.panel-head.second {
+  margin-top: 30px;
+}
+.withdraw-summary {
+  margin-top: 24px;
+  background: #d9cef7;
+  border-radius: 15px;
+  padding: 16px;
+  display: grid;
+  gap: 6px;
+}
+.console-empty {
+  padding: 45px 0;
+  color: #777;
+}
+@media (max-width: 900px) {
+  .console-welcome,
+  .console-grid {
+    grid-template-columns: 1fr;
+  }
+  .console-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .teacher-mode main {
+    padding: 20px 16px 80px;
+  }
+  .console-welcome {
+    padding: 28px 22px;
+  }
+  .console-welcome h1 {
+    font-size: 45px;
+  }
+  .console-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .console-stats article {
+    min-height: 135px;
+    padding: 16px;
+  }
+  .console-stats b {
+    font-size: 38px;
+  }
+  .console-panel {
+    padding: 20px;
+  }
+  .request {
+    grid-template-columns: 1fr;
+  }
+  .request-actions {
+    justify-content: flex-end;
+  }
+}
